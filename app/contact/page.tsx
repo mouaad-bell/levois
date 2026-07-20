@@ -1,0 +1,3 @@
+import { ContactForm } from '@/components/ContactForm';
+export const metadata = { title: 'Échanger avec Mouaad' };
+export default function Page(){return <main className="page-main"><section className="page-hero container"><p className="eyebrow">Échanger</p><h1>Parlez de votre situation, pas seulement de votre bien.</h1><p className="lead">Votre message arrive directement à Mouaad. Aucune relance automatique et aucune promesse irréaliste.</p></section><section className="container section contact-layout"><div><h2>Contact direct</h2><a href="tel:+33781380121">07 81 38 01 21</a><a href="mailto:mouaad@levois.fr">mouaad@levois.fr</a><p>Lèves, Chartres, Lucé, Mainvilliers, Luisant et communes voisines.</p></div><ContactForm source="contact_page"/></section></main>}

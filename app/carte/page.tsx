@@ -1,0 +1,5 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { QrTracker } from '@/components/QrTracker';
+export const metadata = { title: 'Carte de visite — Mouaad Boullourou' };
+export default function Page(){return <main className="page-main"><QrTracker source="carte"/><section className="card-landing container"><Image src="/images/mouaad.webp" alt="Mouaad Boullourou" width={800} height={800}/><div><p className="eyebrow">À Lèves, je commence par écouter.</p><h1>Merci d’avoir scanné ma carte.</h1><p className="lead">Retrouvez ici mes coordonnées et ma manière de travailler, sans chercher dans une longue homepage.</p><div className="quick-actions"><a className="button" href="tel:+33781380121">Appeler Mouaad</a><a className="button button-secondary" href="mailto:mouaad@levois.fr">Écrire un email</a></div><dl><div><dt>Téléphone</dt><dd>07 81 38 01 21</dd></div><div><dt>Email</dt><dd>mouaad@levois.fr</dd></div><div><dt>Activité</dt><dd>Conseiller immobilier indépendant SAFTI</dd></div><div><dt>Zone</dt><dd>Lèves et bassin chartrain</dd></div></dl><Link href="/methode/">Découvrir la méthode LEVOIS →</Link></div></section></main>}
