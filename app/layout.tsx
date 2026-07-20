@@ -3,12 +3,13 @@ import './globals.css';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { AnalyticsBridge } from '@/components/AnalyticsBridge';
+import { site } from '@/lib/site';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://levois.fr'),
+  metadataBase: new URL(site.url),
   title: { default: 'LEVOIS — Comprendre avant de vendre', template: '%s — LEVOIS' },
   description: 'LEVOIS aide les propriétaires du bassin chartrain à comprendre comment le marché perçoit leur bien avant de décider comment le vendre.',
-  openGraph: { title: 'LEVOIS', description: 'Comprendre comment le marché perçoit votre bien.', url: 'https://levois.fr', siteName: 'LEVOIS', locale: 'fr_FR', type: 'website' },
+  openGraph: { title: 'LEVOIS', description: 'Comprendre comment le marché perçoit votre bien.', url: site.url, siteName: 'LEVOIS', locale: 'fr_FR', type: 'website' },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

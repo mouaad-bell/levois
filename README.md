@@ -28,8 +28,10 @@ npm run dev
 ## Vérification de production
 
 ```bash
-npm run build
+npm run check
 ```
+
+Cette commande exécute le contrôle TypeScript, le build et l’audit de sécurité npm.
 
 Le site statique est généré dans `out/`.
 
@@ -53,11 +55,7 @@ Alternative Cloudflare Pages classique :
 
 ## Formspree
 
-L’endpoint est défini dans `components/ContactForm.tsx` :
-
-```ts
-const ENDPOINT = 'https://formspree.io/f/xnjynroj';
-```
+L’endpoint est centralisé dans `lib/site.ts` et peut être remplacé avec `NEXT_PUBLIC_FORMSPREE_ENDPOINT`. Voir `.env.example`.
 
 Vérifier dans Formspree que les notifications arrivent bien sur `mouaad@levois.fr` et que le domaine `levois.fr` est autorisé.
 
@@ -85,3 +83,8 @@ Avant l’activation de GA4, ajouter un gestionnaire de consentement et charger 
 ## Effets visuels
 
 Les animations scroll-driven utilisent `animation-timeline: view()` lorsqu’elle est prise en charge. Un rendu statique propre reste disponible sur les navigateurs plus anciens. `prefers-reduced-motion` désactive les animations.
+
+
+## Audit
+
+Consulter `AUDIT_TECHNIQUE.md` avant le déploiement.

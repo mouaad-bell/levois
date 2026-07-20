@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { site } from '@/lib/site';
 
 export function SiteFooter() {
   return (
@@ -16,8 +17,8 @@ export function SiteFooter() {
           <Link href="/contact/">Échanger</Link>
         </div>
         <div className="footer-links">
-          <a href="tel:+33781380121">07 81 38 01 21</a>
-          <a href="mailto:mouaad@levois.fr">mouaad@levois.fr</a>
+          <a href={site.phoneHref} data-event="phone_clicked" data-source="footer">{site.phoneDisplay}</a>
+          <a href={`mailto:${site.email}`} data-event="email_clicked" data-source="footer">{site.email}</a>
           <Link href="/mentions-legales/">Mentions légales</Link>
           <Link href="/politique-confidentialite/">Confidentialité</Link>
           <Link href="/cookies/">Cookies</Link>

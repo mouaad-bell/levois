@@ -36,7 +36,7 @@ export default function HomePage() {
           <p className="micro">Un premier regard utile, sans discours commercial.</p>
         </div>
         <div className="hero-media">
-          <Image src="/images/mouaad-lea.jpg" alt="Mouaad échangeant avec Léa, assistante virtuelle de LEVOIS" width={1536} height={1024} priority />
+          <Image src="/images/mouaad-lea.webp" alt="Mouaad échangeant avec Léa, assistante virtuelle de LEVOIS" width={1536} height={1024} priority />
           <div className="image-note"><strong>Léa, assistante virtuelle</strong><span>Elle explique et oriente. Mouaad analyse, conseille et accompagne.</span></div>
         </div>
       </section>
@@ -44,7 +44,7 @@ export default function HomePage() {
       <section className="container section situation-section">
         <div className="section-head"><div><p className="eyebrow">Votre point de départ</p><h2>Commencez par votre situation, pas par nos services.</h2></div><p>Chaque problème indique une prochaine décision différente. Choisissez l’entrée qui vous ressemble aujourd’hui.</p></div>
         <div className="situation-grid">
-          {situations.map(([title, text], i) => <Link key={title} href="/diagnostic/" className="situation-card"><span>{String(i+1).padStart(2,'0')}</span><h3>{title}</h3><p>{text}</p><b>Commencer →</b></Link>)}
+          {situations.map(([title, text], i) => <Link key={title} href="/diagnostic/" className="situation-card" data-event="situation_selected" data-source={title}><span>{String(i+1).padStart(2,'0')}</span><h3>{title}</h3><p>{text}</p><b>Commencer →</b></Link>)}
         </div>
       </section>
 
@@ -76,7 +76,7 @@ export default function HomePage() {
       </section>
 
       <section className="container section orientation">
-        <div className="orientation-copy"><p className="eyebrow">Première orientation</p><h2>Obtenez une lecture utile de votre situation.</h2><p>Le diagnostic ne donne ni une estimation définitive ni une vérité automatique. Il aide à identifier le pilier où se situe le principal écart et la prochaine étape à envisager.</p><ul><li>5 questions simples</li><li>Une orientation immédiate</li><li>Aucune coordonnée obligatoire</li></ul><Link className="button" href="/diagnostic/">Démarrer le diagnostic</Link></div>
+        <div className="orientation-copy"><p className="eyebrow">Première orientation</p><h2>Obtenez une lecture utile de votre situation.</h2><p>Le diagnostic ne donne ni une estimation définitive ni une vérité automatique. Il aide à identifier le pilier où se situe le principal écart et la prochaine étape à envisager.</p><ul><li>5 questions simples</li><li>Une orientation immédiate</li><li>Aucune coordonnée obligatoire</li></ul><Link className="button" href="/diagnostic/" data-event="diagnostic_started" data-source="homepage_orientation">Démarrer le diagnostic</Link></div>
         <div className="orientation-visual" aria-hidden="true"><div className="orbit o1">Comprendre</div><div className="orbit o2">Positionner</div><div className="orbit o3">Piloter</div><div className="core">Votre prochaine décision</div></div>
       </section>
 
@@ -90,14 +90,14 @@ export default function HomePage() {
           <div className="team-grid">
             <article className="team-card photo"><Image src="/images/mouaad.webp" alt="Mouaad Boullourou" width={800} height={800}/><div><small>Mouaad</small><h3>La relation humaine</h3><p>Il écoute, analyse votre situation et engage sa responsabilité professionnelle.</p></div></article>
             <article className="team-card levois"><small>LEVOIS</small><h3>La structure</h3><p>La méthode, les diagnostics, les contenus et les outils qui rendent les décisions plus lisibles.</p><div className="system-motif"></div></article>
-            <article className="team-card photo lea"><Image src="/images/lea.png" alt="Léa, assistante virtuelle de LEVOIS" width={1104} height={1472}/><div><small>Léa · assistante virtuelle</small><h3>La continuité pédagogique</h3><p>Elle explique, reformule et vous oriente vers la bonne ressource.</p></div></article>
+            <article className="team-card photo lea"><Image src="/images/lea.webp" alt="Léa, assistante virtuelle de LEVOIS" width={1104} height={1472}/><div><small>Léa · assistante virtuelle</small><h3>La continuité pédagogique</h3><p>Elle explique, reformule et vous oriente vers la bonne ressource.</p></div></article>
           </div>
         </div>
       </section>
 
       <section className="container section final-cta">
         <p className="eyebrow">Commencer simplement</p><h2>Pas besoin d’être prêt à vendre pour commencer à y voir clair.</h2>
-        <div className="cta-grid"><Link href="/contact/"><span>01</span><h3>Parler de votre situation</h3><p>Un échange confidentiel avec Mouaad, sans engagement.</p></Link><Link href="/votre-rue/"><span>02</span><h3>Voir ce qui s’est vendu autour de vous</h3><p>Une porte d’entrée locale pour contextualiser votre marché.</p></Link><Link href="/carte/"><span>03</span><h3>Retrouver les coordonnées de Mouaad</h3><p>Téléphone, email et accès direct après une rencontre.</p></Link></div>
+        <div className="cta-grid"><Link href="/contact/" data-event="contact_started" data-source="homepage_final"><span>01</span><h3>Parler de votre situation</h3><p>Un échange confidentiel avec Mouaad, sans engagement.</p></Link><Link href="/votre-rue/" data-event="resource_opened" data-source="homepage_final"><span>02</span><h3>Voir ce qui s’est vendu autour de vous</h3><p>Une porte d’entrée locale pour contextualiser votre marché.</p></Link><Link href="/carte/" data-event="resource_opened" data-source="homepage_final"><span>03</span><h3>Retrouver les coordonnées de Mouaad</h3><p>Téléphone, email et accès direct après une rencontre.</p></Link></div>
       </section>
     </main>
   );
