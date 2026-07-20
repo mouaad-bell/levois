@@ -1,40 +1,24 @@
-# LEVOIS — site de production
+# LEVOIS — déploiement Cloudflare Workers
 
-Projet Next.js statique prêt pour GitHub et Cloudflare Pages.
+Ce projet est un export statique Next.js.
 
-## Développement
+## Commandes Cloudflare
+
+- Build command : `npm run build`
+- Deploy command : `npm run deploy`
+- Root directory : `/`
+- Node.js : 22
+
+Le fichier `wrangler.jsonc` indique explicitement à Cloudflare de publier le dossier statique `out/`. Il évite l’auto-détection Next.js qui cherchait à déployer `.next` comme une application dynamique.
+
+## Routes physiques à conserver
+
+- `/carte/`
+- `/votre-rue/`
+
+## Vérification locale
 
 ```bash
 npm install
-npm run dev
-```
-
-## Vérification de production
-
-```bash
 npm run build
 ```
-
-Le dossier statique généré est `out/`.
-
-## Cloudflare Pages
-
-- Framework preset : Next.js (Static HTML Export) ou aucun
-- Build command : `npm run build`
-- Output directory : `out`
-- Node.js : 20 ou 22
-
-## Routes prioritaires
-
-- `/` — accueil
-- `/carte/` — QR code de la carte de visite
-- `/votre-rue/` — QR code de l’encart magazine
-- `/diagnostic/`
-- `/methode/`
-- `/ressources/`
-- `/mouaad/`
-- `/contact/`
-
-## Avant mise en ligne définitive
-
-Compléter les mentions légales avec les informations réglementaires exactes SAFTI et vérifier le domaine personnalisé `levois.fr` dans Cloudflare Pages.
