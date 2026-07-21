@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import styles from './hero.module.css';
 
 const situations = [
   ['Je réfléchis à vendre','Clarifier votre projet avant de parler prix ou mandat.'],
@@ -27,17 +28,62 @@ const resources = [
 export default function HomePage() {
   return (
     <main>
-      <section className="hero container">
-        <div className="hero-copy">
-          <p className="eyebrow">Vendre dans le bassin chartrain</p>
-          <h1>Vous connaissez votre maison.<br/><span>Le marché la découvre autrement.</span></h1>
-          <p className="lead">Avant de décider comment vendre, il faut comprendre comment votre bien sera perçu, comparé et choisi.</p>
-          <div className="button-row"><Link className="button" href="/faire-le-point/">Faire le point</Link><Link className="button button-secondary" href="/methode/">Découvrir la méthode</Link></div>
-          <p className="micro">Un premier regard utile, sans discours commercial.</p>
+      <section className={styles.hero} aria-labelledby="levois-hero-title">
+        <div className={styles.copy}>
+          <div className={styles.metaRow}>
+            <p className={styles.kicker}>Un même bien. Deux lectures.</p>
+            <span className={styles.issue}>Levois / 01</span>
+          </div>
+
+          <h1 className={styles.title} id="levois-hero-title">
+            <span>Vous connaissez votre bien</span>
+            <span className={styles.inside}>de l’intérieur.</span>
+            <span className={styles.outside}>Le marché le découvre de l’extérieur.</span>
+          </h1>
+
+          <p className={styles.promise}>
+            Levois rend visible l’écart entre votre perception, la présentation du bien et les réactions du marché, avant de décider quoi changer.
+          </p>
+
+          <div className={styles.actions}>
+            <Link className={styles.primary} href="/faire-le-point/" data-event="diagnostic_started" data-source="homepage_hero">
+              Situer ma vente
+            </Link>
+            <Link className={styles.secondary} href="/methode/">
+              Découvrir la méthode
+            </Link>
+          </div>
+
+          <p className={styles.reassurance}>Une première lecture utile · aucune coordonnée obligatoire.</p>
         </div>
-        <div className="hero-media">
-          <Image src="/images/mouaad-lea.webp" alt="Mouaad échangeant avec Léa, assistante virtuelle de LEVOIS" width={1536} height={1024} priority />
-          <div className="image-note"><strong>Léa, assistante virtuelle</strong><span>Elle explique et oriente. Mouaad analyse, conseille et accompagne.</span></div>
+
+        <div className={styles.visual} aria-label="Représentation de deux lectures différentes d’un même bien">
+          <div className={styles.visualTop} aria-hidden="true">
+            <span>01</span>
+            <span>Une seule réalité</span>
+          </div>
+
+          <div className={styles.canvas} aria-hidden="true">
+            <div className={styles.horizon} />
+            <div className={styles.facade} />
+            <div className={styles.door} />
+            <div className={styles.windowLeft} />
+            <div className={styles.windowRight} />
+
+            <p className={`${styles.note} ${styles.noteA}`}>Une histoire que vous connaissez entièrement.</p>
+            <p className={`${styles.note} ${styles.noteB}`}>Des choix et des travaux auxquels vous donnez du sens.</p>
+            <p className={`${styles.note} ${styles.noteC}`}>Une comparaison faite en quelques secondes.</p>
+            <p className={`${styles.note} ${styles.noteD}`}>Un prix arbitré face à d’autres possibilités.</p>
+
+            <div className={styles.divider}><span>L’écart</span></div>
+          </div>
+
+          <div className={styles.reading} aria-hidden="true">
+            <span>Ce qui donne de la valeur pour vous</span>
+            <span>Ce qui déclenche une décision</span>
+          </div>
+
+          <div className={styles.signature}>Interprétation locale · Mouaad Boullourou</div>
         </div>
       </section>
 
