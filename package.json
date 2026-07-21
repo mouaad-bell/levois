@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "clean": "rm -rf .next out",
+    "build": "npm run clean && next build",
     "typecheck": "tsc --noEmit",
     "security:audit": "npm audit --audit-level=high",
     "check": "npm run typecheck && npm run build && npm run security:audit",
