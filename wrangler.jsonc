@@ -13,7 +13,9 @@
   },
   "env": {
     "studio": {
-      "name": "levois-studio"
+      "name": "levois-studio",
+      "workers_dev": true,
+      "preview_urls": true
     }
   }
 }
