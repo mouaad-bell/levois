@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { buildStudioProject, STUDIO_FIXTURES } from '@/lib/studio-engine';
+import { buildStudioProjectFromResearch, type ResearchApiResponse } from '@/lib/studio-research';
 import type { StudioProject } from '@/lib/studio-schema';
 import styles from '@/app/studio/studio.module.css';
 
@@ -16,24 +17,78 @@ const tabs: Array<[Tab, string]> = [
   ['json', 'JSON'],
 ];
 
+const SESSION_KEY = 'levois_studio_access_key';
+
 export function Studio() {
   const [input, setInput] = useState(STUDIO_FIXTURES[0]);
   const [project, setProject] = useState<StudioProject>(() => buildStudioProject(STUDIO_FIXTURES[0]));
   const [tab, setTab] = useState<Tab>('scope');
   const [error, setError] = useState('');
+  const [studioKey, setStudioKey] = useState('');
+  const [researching, setResearching] = useState(false);
+  const [researchMeta, setResearchMeta] = useState<ResearchApiResponse['meta'] | null>(null);
+
+  useEffect(() => {
+    try {
+      setStudioKey(sessionStorage.getItem(SESSION_KEY) ?? '');
+    } catch {}
+  }, []);
 
   const familyStyle = useMemo(
     () => ({ '--studio-accent': project.family.accent } as React.CSSProperties),
     [project.family.accent],
   );
 
-  function run() {
+  function updateStudioKey(value: string) {
+    setStudioKey(value);
+    try {
+      if (value) sessionStorage.setItem(SESSION_KEY, value);
+      else sessionStorage.removeItem(SESSION_KEY);
+    } catch {}
+  }
+
+  function runLocal() {
     try {
       setProject(buildStudioProject(input));
+      setResearchMeta(null);
       setTab('scope');
       setError('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Impossible de construire le projet.');
+    }
+  }
+
+  async function runResearch() {
+    if (!studioKey.trim()) {
+      setError('Ajoutez la clé Studio privée pour lancer la recherche web.');
+      return;
+    }
+
+    setResearching(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/studio/research', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-studio-key': studioKey.trim(),
+        },
+        body: JSON.stringify({ input }),
+      });
+
+      const payload = await response.json() as Partial<ResearchApiResponse> & { error?: string };
+      if (!response.ok || !payload.bundle || !payload.meta) {
+        throw new Error(payload.error || 'La recherche n’a pas produit de dossier exploitable.');
+      }
+
+      setProject(buildStudioProjectFromResearch(input, payload.bundle));
+      setResearchMeta(payload.meta);
+      setTab('evidence');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'La recherche a échoué.');
+    } finally {
+      setResearching(false);
     }
   }
 
@@ -42,7 +97,10 @@ export function Studio() {
       <header className={styles.topbar}>
         <div>
           <p className={styles.brand}>LEVOIS / STUDIO</p>
-          <p className={styles.statusLine}>Core Schema V1 · prototype interne · aucun chiffre inventé</p>
+          <p className={styles.statusLine}>
+            Core Schema V1 · recherche sourcée · aucun chiffre inventé
+            {researchMeta ? ` · ${researchMeta.model}` : ''}
+          </p>
         </div>
         <div className={styles.familyBadge}>
           <span>{project.family.code}</span>
@@ -55,8 +113,8 @@ export function Studio() {
           <p className={styles.kicker}>Matière de départ</p>
           <h1>De quoi voulez-vous parler ?</h1>
           <p>
-            Le prototype transforme une idée en Scope, Evidence Pack, angles, Article Master et Storyboard.
-            Tant qu’une preuve manque, il bloque la publication au lieu de compléter au hasard.
+            Donnez une idée, une question ou une URL. Le Studio cherche les preuves, distingue faits et inconnues,
+            puis construit l’angle, l’article et le storyboard. Si une preuve manque, il bloque la conclusion.
           </p>
         </div>
 
@@ -64,9 +122,10 @@ export function Studio() {
           <textarea
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            aria-label="Idée ou question"
+            aria-label="Idée, question ou URL"
             rows={5}
           />
+
           <div className={styles.fixtureRow}>
             {STUDIO_FIXTURES.map((fixture) => (
               <button key={fixture} type="button" onClick={() => setInput(fixture)}>
@@ -74,17 +133,43 @@ export function Studio() {
               </button>
             ))}
           </div>
-          <button className={styles.runButton} type="button" onClick={run}>
-            Construire le dossier
-          </button>
+
+          <div className={styles.accessRow}>
+            <label>
+              <span>Clé Studio privée</span>
+              <input
+                type="password"
+                value={studioKey}
+                onChange={(event) => updateStudioKey(event.target.value)}
+                autoComplete="off"
+                placeholder="Session uniquement"
+              />
+            </label>
+            <p>La clé OpenAI reste côté serveur. Cette clé d’accès ne quitte pas votre requête vers LEVOIS.</p>
+          </div>
+
+          <div className={styles.actionRow}>
+            <button className={styles.secondaryButton} type="button" onClick={runLocal} disabled={researching}>
+              Structure seule
+            </button>
+            <button className={styles.runButton} type="button" onClick={runResearch} disabled={researching}>
+              {researching ? 'Recherche en cours…' : 'Rechercher + construire'}
+            </button>
+          </div>
+
+          {researchMeta ? (
+            <p className={styles.researchMeta}>
+              {researchMeta.searchedSources} sources web observées · {researchMeta.acceptedSources} retenues · {researchMeta.downgradedClaims} claim(s) déclassé(s)
+            </p>
+          ) : null}
           {error ? <p className={styles.error}>{error}</p> : null}
         </div>
       </section>
 
       <section className={styles.summary}>
         <SummaryCard label="Statut" value={project.status === 'storyboard_ready' ? 'Storyboard prêt' : 'Recherche requise'} />
+        <SummaryCard label="Sources retenues" value={String(project.evidencePack.sources.length)} />
         <SummaryCard label="Claims vérifiés" value={String(project.evidencePack.summary.verifiedClaims)} />
-        <SummaryCard label="Inconnues" value={String(project.evidencePack.unknowns.length)} />
         <SummaryCard label="Slides" value={String(project.storyboard.slideCount)} />
       </section>
 
@@ -148,7 +233,7 @@ function EvidenceView({ project }: { project: StudioProject }) {
       <section className={styles.evidenceHeader}>
         <div>
           <p className={styles.kicker}>Evidence Pack</p>
-          <h2>{pack.summary.canPublish ? 'Angle soutenable' : 'Publication bloquée avant recherche'}</h2>
+          <h2>{pack.summary.canPublish ? 'Angle soutenable' : 'Publication bloquée avant preuve suffisante'}</h2>
         </div>
         <span data-ready={pack.summary.canPublish ? 'true' : 'false'}>
           {pack.summary.canPublish ? 'CAN PUBLISH' : 'RESEARCH REQUIRED'}
@@ -162,6 +247,12 @@ function EvidenceView({ project }: { project: StudioProject }) {
               <div className={styles.claimMeta}><span>{claim.claimId}</span><b>{claim.status}</b></div>
               <h3>{claim.value !== undefined ? `${String(claim.value).replace('.', ',')}${claim.unit ? ' ' + claim.unit : ''}` : claim.claim}</h3>
               <p>{claim.claim}</p>
+              {claim.allowedUses.length ? (
+                <div className={styles.claimAllowed}>
+                  <strong>Permet de dire :</strong>
+                  <ul>{claim.allowedUses.map((item) => <li key={item}>{item}</li>)}</ul>
+                </div>
+              ) : null}
               <div className={styles.claimRule}>
                 <strong>Ne permet pas de conclure :</strong>
                 <ul>{claim.forbiddenInferences.map((item) => <li key={item}>{item}</li>)}</ul>
@@ -178,11 +269,14 @@ function EvidenceView({ project }: { project: StudioProject }) {
 
       {pack.sources.length ? (
         <section className={styles.card}>
-          <p className={styles.cardIndex}>Sources</p>
+          <p className={styles.cardIndex}>Sources réellement retenues</p>
           {pack.sources.map((source) => (
             <div className={styles.sourceRow} key={source.sourceId}>
               <span>{source.sourceId}</span>
-              <div><strong>{source.publisher}</strong><p>{source.title} · {source.dataPeriod}</p></div>
+              <div>
+                <strong>{source.publisher}</strong>
+                <p>{source.title}{source.dataPeriod ? ` · ${source.dataPeriod}` : ''}</p>
+              </div>
               {source.url ? <a href={source.url} target="_blank" rel="noreferrer">Ouvrir ↗</a> : null}
             </div>
           ))}
@@ -191,12 +285,12 @@ function EvidenceView({ project }: { project: StudioProject }) {
 
       <section className={styles.card}>
         <p className={styles.cardIndex}>Inconnues / limites</p>
-        {pack.unknowns.map((unknown) => (
+        {pack.unknowns.length ? pack.unknowns.map((unknown) => (
           <div className={styles.unknownRow} key={unknown.unknownId}>
             <span>{unknown.blocking ? 'BLOQUANT' : 'À GARDER EN TÊTE'}</span>
             <div><strong>{unknown.question}</strong><p>{unknown.reason}</p></div>
           </div>
-        ))}
+        )) : <p>Aucune inconnue déclarée par le dossier.</p>}
         {pack.summary.limitations.map((item) => <p key={item} className={styles.limitText}>→ {item}</p>)}
       </section>
     </div>
