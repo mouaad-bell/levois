@@ -307,6 +307,7 @@ function AnglesView({ project }: { project: StudioProject }) {
           <p>{angle.promise}</p>
           <dl className={styles.angleDetails}>
             <div><dt>Preuve centrale</dt><dd>{angle.centralProof}</dd></div>
+            {angle.claimRefs?.length ? <div><dt>Claims centraux</dt><dd>{angle.claimRefs.join(', ')}</dd></div> : null}
             <div><dt>Pourquoi enregistrer</dt><dd>{angle.saveValue}</dd></div>
             <div><dt>Pont personnel</dt><dd>{angle.bridgeQuestion}</dd></div>
           </dl>
