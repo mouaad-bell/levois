@@ -146,7 +146,6 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
   const qualifiedClaims = claims.filter((claim) => claim.status === 'qualified').length;
   const insufficientClaims = claims.filter((claim) => claim.status === 'insufficient').length;
   const rejectedClaims = claims.filter((claim) => claim.status === 'rejected').length;
-  const canPublish = !blockingUnknown && verifiedClaims > 0 && bundle.sources.length > 0;
 
   const sections = bundle.articleMaster.sections.map((section) => ({
     ...section,
@@ -166,6 +165,24 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
   if (selectedAngles.length && !selectedAngles.some((angle) => angle.selected)) {
     selectedAngles[0] = { ...selectedAngles[0], selected: true };
   }
+
+  const statusByClaim = new Map(claims.map((claim) => [claim.claimId, claim.status]));
+  const proofRefs = [
+    ...sections.filter((section) => section.type === 'proof').flatMap((section) => section.claimRefs),
+    ...slides.filter((slide) => slide.narrativeRole === 'proof').flatMap((slide) => slide.claimRefs),
+  ];
+  const proofSupported =
+    proofRefs.length > 0 &&
+    proofRefs.every((claimId) => {
+      const status = statusByClaim.get(claimId);
+      return status === 'verified' || status === 'qualified';
+    });
+  const canPublish =
+    !blockingUnknown &&
+    verifiedClaims > 0 &&
+    bundle.sources.length > 0 &&
+    slides.length >= 7 &&
+    proofSupported;
 
   return {
     schemaVersion: STUDIO_SCHEMA_VERSION,
