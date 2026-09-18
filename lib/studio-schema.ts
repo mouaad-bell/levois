@@ -104,6 +104,7 @@ export type EditorialAngle = {
   centralProof: string;
   saveValue: string;
   bridgeQuestion: string;
+  claimRefs?: string[];
   selected?: boolean;
 };
 
