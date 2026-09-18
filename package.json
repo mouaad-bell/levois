@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "clean": "rm -rf .next out",
+    "clean": "node -e \"const fs=require('fs'); for (const p of ['.next','out']) fs.rmSync(p,{recursive:true,force:true})\"",
     "build": "npm run clean && next build",
     "typecheck": "tsc --noEmit",
     "security:audit": "npm audit --audit-level=high",
