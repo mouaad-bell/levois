@@ -61,6 +61,7 @@ export type ResearchBundle = {
     centralProof: string;
     saveValue: string;
     bridgeQuestion: string;
+    claimRefs: string[];
     selected: boolean;
   }>;
   articleMaster: {
@@ -141,7 +142,7 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
   });
 
   const claimIds = new Set(claims.map((claim) => claim.claimId));
-  const blockingUnknown = bundle.unknowns.some((unknown) => unknown.blocking);
+  const blockingUnknown = bundle.unknowns.some((unknown) => unknown.blocking && unknown.importance === 'high');
   const verifiedClaims = claims.filter((claim) => claim.status === 'verified').length;
   const qualifiedClaims = claims.filter((claim) => claim.status === 'qualified').length;
   const insufficientClaims = claims.filter((claim) => claim.status === 'insufficient').length;
@@ -161,7 +162,10 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
       sourceLabel: slide.sourceLabel || undefined,
     }));
 
-  const selectedAngles = bundle.angles.slice(0, 3);
+  const selectedAngles = bundle.angles.slice(0, 3).map((angle) => ({
+    ...angle,
+    claimRefs: cleanRefs(angle.claimRefs ?? [], claimIds),
+  }));
   if (selectedAngles.length && !selectedAngles.some((angle) => angle.selected)) {
     selectedAngles[0] = { ...selectedAngles[0], selected: true };
   }
@@ -177,12 +181,21 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
       const status = statusByClaim.get(claimId);
       return status === 'verified' || status === 'qualified';
     });
+  const selectedAngle = selectedAngles.find((angle) => angle.selected) ?? selectedAngles[0];
+  const centralProofSupported =
+    Boolean(selectedAngle?.claimRefs.length) &&
+    selectedAngle.claimRefs.every((claimId) => {
+      const status = statusByClaim.get(claimId);
+      return status === 'verified' || status === 'qualified';
+    });
+
   const canPublish =
     !blockingUnknown &&
     verifiedClaims > 0 &&
     bundle.sources.length > 0 &&
     slides.length >= 7 &&
-    proofSupported;
+    proofSupported &&
+    centralProofSupported;
 
   return {
     schemaVersion: STUDIO_SCHEMA_VERSION,
