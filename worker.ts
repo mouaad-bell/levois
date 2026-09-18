@@ -114,9 +114,10 @@ const researchSchema = {
           centralProof: { type: 'string' },
           saveValue: { type: 'string' },
           bridgeQuestion: { type: 'string' },
+          claimRefs: { type: 'array', items: { type: 'string' } },
           selected: { type: 'boolean' },
         },
-        required: ['angleId', 'title', 'promise', 'hook', 'centralProof', 'saveValue', 'bridgeQuestion', 'selected'],
+        required: ['angleId', 'title', 'promise', 'hook', 'centralProof', 'saveValue', 'bridgeQuestion', 'claimRefs', 'selected'],
       },
     },
     articleMaster: {
@@ -313,7 +314,10 @@ function sanitizeBundle(bundle: ResearchBundle, webSources: Map<string, { url: s
       claims,
       unknowns: bundle.unknowns.slice(0, 12).map((unknown, index) => ({ ...unknown, unknownId: `U${String(index + 1).padStart(3, '0')}` })),
       limitations: bundle.limitations.slice(0, 10),
-      angles: bundle.angles.slice(0, 3),
+      angles: bundle.angles.slice(0, 3).map((angle) => ({
+        ...angle,
+        claimRefs: remapClaimRefs(angle.claimRefs ?? []),
+      })),
       articleMaster,
       storyboard,
     },
@@ -356,10 +360,12 @@ CONTRAT DE VÉRITÉ
 - Ne fabrique jamais chiffre, prix, date, distance, temps de trajet, DPE, surface, règle ou citation.
 - Chaque claim de type fact ou calculation doit référencer au moins une source réellement trouvée.
 - Distingue clairement ce que la preuve démontre de ce qu'elle ne permet pas de conclure.
-- Si une donnée importante manque, crée un unknown ; blocking=true si la conclusion centrale en dépend.
+- Si une donnée importante manque, crée un unknown. Mets blocking=true UNIQUEMENT si l'angle sélectionné ne peut pas être publié honnêtement sans cette information. Une donnée manquante seulement nécessaire pour personnaliser le cas du lecteur, calculer ses trajets exacts ou enrichir l'exemple doit rester blocking=false.
 - Un scénario pédagogique est autorisé seulement avec claimType=scenario et sans le présenter comme un cas réel.
 - N'utilise pas une statistique locale hors de son périmètre ou de sa période.
 - La conclusion doit rester proportionnée aux preuves.
+- Pour “Chartres et alentours”, choisis le périmètre statistique qui correspond réellement à l'affirmation (commune, bassin de vie, unité urbaine, aire d'attraction ou liste de communes). Ne remplace jamais silencieusement un périmètre par un autre. Affiche toujours le périmètre exact.
+- N'ajoute pas une statistique simplement parce qu'elle est disponible : chaque claim doit servir soit la pertinence locale, soit le mécanisme, soit une limite utile.
 
 LIGNE ÉDITORIALE
 - Français simple, concret, compréhensible par un collégien sans être infantilisant.
@@ -367,9 +373,12 @@ LIGNE ÉDITORIALE
 - Le lecteur doit repartir avec une méthode réutilisable, une raison d'enregistrer le carrousel et une question personnelle qui l'amène naturellement vers levois.fr.
 - Pas de clickbait mensonger, pas de jargon, pas de CTA commercial agressif.
 - Le hook doit être court, provocant par l'idée ou l'image, pas par l'exagération.
-- Produit exactement 3 angles éditoriaux et sélectionne le meilleur.
+- Produit exactement 3 angles éditoriaux et sélectionne le meilleur. Chaque angle doit contenir claimRefs avec les IDs des preuves factuelles centrales qui le soutiennent.
 - Article Master : 8 sections dans cet ordre logique : question, intuition, proof, mechanism, case, method, limits, application.
+- Méthode : vise 3 opérations mémorisables ; 4 maximum seulement si le sujet l'exige réellement. Évite les listes de 5 étapes ou plus.
 - Storyboard : 7 à 10 slides ; slide 1=hook ; dernière=bridge ; une idée dominante par slide ; texte lisible sur mobile.
+- Dans le dernier tiers du carrousel, n'introduis pas un nouveau grand sujet qui détourne du raisonnement central. Par exemple, ne fais pas entrer le prix dans un carrousel de mobilité sauf s'il était déjà une variable centrale.
+- La dernière slide doit ouvrir explicitement la question personnelle créée par le contenu et proposer un CTA LEVOIS contextuel, sans sollicitation commerciale agressive.
 - Choisis une seule famille parmi les 8 IDs autorisés.
 
 SOURCES
