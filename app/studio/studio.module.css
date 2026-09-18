@@ -43,3 +43,14 @@
 .jsonPanel>div{display:flex;justify-content:space-between;align-items:center}.jsonPanel pre{overflow:auto;max-height:75vh;background:#031016;border-radius:16px;padding:18px;color:#d8e3e8;font-size:12px;line-height:1.6}
 @media(max-width:980px){.composer,.twoColumns{grid-template-columns:1fr}.angleGrid{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,1fr)}.claimGrid{grid-template-columns:1fr}.slideGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){.shell{padding-inline:15px}.topbar{align-items:flex-start;flex-direction:column;margin-bottom:38px}.composer{gap:20px}.composerCopy h1{font-size:56px}.inputPanel textarea{font-size:18px}.summary{grid-template-columns:1fr 1fr}.summary article{min-height:86px;padding:14px}.slideGrid{grid-template-columns:1fr}.angleCard{min-height:auto}.sourceRow{grid-template-columns:55px 1fr}.sourceRow a{grid-column:2}.evidenceHeader{align-items:flex-start;flex-direction:column}.definitionList div{grid-template-columns:1fr}.claimCard h3{font-size:64px}}
+
+.accessRow{display:grid;grid-template-columns:minmax(220px,.7fr) 1.3fr;gap:14px;align-items:end;margin:14px 0}
+.accessRow label{display:grid;gap:7px}.accessRow label span{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--studio-muted);font-weight:800}
+.accessRow input{width:100%;border:1px solid var(--studio-line);border-radius:12px;background:#07141c;color:var(--studio-text);padding:12px 13px;font:inherit;outline:none}
+.accessRow input:focus{border-color:var(--studio-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--studio-accent) 18%,transparent)}
+.accessRow p{margin:0;color:var(--studio-muted);font-size:12px;line-height:1.45}
+.actionRow{display:flex;gap:10px}.actionRow .runButton{width:auto;flex:1}.secondaryButton{flex:.55;border:1px solid var(--studio-line);border-radius:14px;padding:14px 16px;background:transparent;color:var(--studio-text);font:750 14px/1 inherit;cursor:pointer}.secondaryButton:hover{border-color:var(--studio-accent)}
+.runButton:disabled,.secondaryButton:disabled{opacity:.55;cursor:wait}
+.researchMeta{margin:12px 2px 0;color:var(--studio-muted);font-size:12px}
+.claimAllowed{border-top:1px solid rgba(7,20,28,.15);margin-top:24px;padding-top:18px}.claimAllowed strong{font-size:12px;text-transform:uppercase}.claimAllowed ul{padding-left:18px;color:#31564a}
+@media(max-width:640px){.accessRow{grid-template-columns:1fr}.actionRow{flex-direction:column}.actionRow .runButton,.secondaryButton{width:100%;flex:auto}}
