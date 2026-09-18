@@ -20,7 +20,7 @@ const tabs: Array<[Tab, string]> = [
 const SESSION_KEY = 'levois_studio_access_key';
 
 export function Studio() {
-  const [input, setInput] = useState(STUDIO_FIXTURES[0]);
+  const [input, setInput] = useState<string>(STUDIO_FIXTURES[0]);
   const [project, setProject] = useState<StudioProject>(() => buildStudioProject(STUDIO_FIXTURES[0]));
   const [tab, setTab] = useState<Tab>('scope');
   const [error, setError] = useState('');
