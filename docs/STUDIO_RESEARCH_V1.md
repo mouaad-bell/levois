@@ -124,3 +124,6 @@ Le premier possède aussi une fixture locale déterministe. Les deux autres peuv
 - analytics éditoriaux.
 
 Ces briques doivent rester en aval du contrat de vérité.
+
+
+<!-- preview-trigger: research-v1 -->
