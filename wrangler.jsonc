@@ -10,5 +10,10 @@
       "/api/studio/*"
     ],
     "not_found_handling": "404-page"
+  },
+  "env": {
+    "studio": {
+      "name": "levois-studio"
+    }
   }
 }
