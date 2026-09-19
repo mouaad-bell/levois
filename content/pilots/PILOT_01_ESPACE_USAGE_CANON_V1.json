@@ -49,7 +49,9 @@
       "evidenceRefs": [
         "V2-DEF-0029"
       ],
-      "claimRefs": []
+      "claimRefs": [],
+      "evidenceStatus": "non_numeric",
+      "qualifier": ""
     },
     {
       "mode": "scene",
@@ -58,7 +60,9 @@
       "explicitPromise": "Montrer un conflit d’usage concret qui n’apparaît pas dans la simple liste des pièces.",
       "implicitPromise": "Le lecteur saura reproduire ce test sur un autre plan.",
       "evidenceRefs": [],
-      "claimRefs": []
+      "claimRefs": [],
+      "evidenceStatus": "non_numeric",
+      "qualifier": ""
     },
     {
       "mode": "comparison",
@@ -69,7 +73,9 @@
       "evidenceRefs": [
         "V2-DEF-0029"
       ],
-      "claimRefs": []
+      "claimRefs": [],
+      "evidenceStatus": "non_numeric",
+      "qualifier": ""
     }
   ],
   "selectedHookMode": "scene",
