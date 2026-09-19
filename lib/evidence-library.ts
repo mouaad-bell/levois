@@ -126,13 +126,14 @@ function normalize(text: string) {
   return text
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
+    .replace(/²/g, '2')
     .toLowerCase();
 }
 
 export function inferRetrievalIntent(text: string): RetrievalIntent {
   const q = normalize(text);
 
-  if (/\b(surface|m2|metre carre|plan|piece|chambre|usage|espace)\b/.test(q)) {
+  if (/\b(surface|m2|metre carre|plan|piece|chambre|usage|espace|place)\b/.test(q)) {
     return 'surface_usage';
   }
   if (/\b(distance|loin|trajet|transport|gare|deplacement|soiree)\b/.test(q)) {
@@ -154,14 +155,16 @@ export function extractLibraryTokens(text: string) {
   const normalized = normalize(text);
   const base = normalized
     .split(/[^a-z0-9]+/)
-    .filter((token) =>
-      (token.length >= 3 || /^\d{2,}$/.test(token)) &&
-      !STOP_WORDS.has(token),
+    .filter(
+      (token) =>
+        token.length >= 3 &&
+        !/^\d+$/.test(token) &&
+        !STOP_WORDS.has(token),
     );
 
   const expanded: string[] = [];
   for (const [pattern, tokens] of QUERY_EXPANSIONS) {
-    if (pattern.test(text)) expanded.push(...tokens);
+    if (pattern.test(normalized)) expanded.push(...tokens);
   }
 
   return Array.from(new Set([...base, ...expanded])).slice(0, 20);
@@ -286,7 +289,7 @@ function intentScore(
     if (claim.includes('valeur fonciere')) score += 9;
     if (claim.includes('mutation')) score += 7;
     if (topic.includes('methodology') && /(prix|mutation|compar)/.test(haystack)) score += 15;
-    if (topic.includes('definition') && /(mutation|valeur fonciere|dvf)/.test(haystack)) score += 13;
+    if (topic.includes('definition') && /(mutation|valeur fonciere|dvf)/.test(haystack)) score += 20;
     if (subtopic.includes('asking') || subtopic.includes('price_per')) score += 14;
     return score;
   }
