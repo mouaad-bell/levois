@@ -531,7 +531,7 @@ async function librarySearch(request: Request, env: StudioEnv) {
   }
 
   const limit = typeof body.limit === 'number' ? body.limit : 24;
-  const hits = await searchEvidenceLibrary(env.LEVOIS_EVIDENCE_DB, { text: input, limit });
+  const hits = await searchEvidenceLibrary(env.LEVOIS_EVIDENCE_DB, { text: input, geographicLabels: [...LEVOIS_LOCAL_LABELS], limit });
 
   const coverage = libraryCoverageSummary(hits);
   const evidencePack = buildEvidencePackFromLibrary(hits);
