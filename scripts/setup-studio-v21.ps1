@@ -138,6 +138,23 @@ if (-not $env:STUDIO_ACCESS_TOKEN) {
 }
 
 $env:STUDIO_BASE_URL = $StudioUrl
+
+Step "Contrôle santé D1"
+$healthHeaders = @{
+  "x-studio-key" = $env:STUDIO_ACCESS_TOKEN
+  "content-type" = "application/json"
+}
+try {
+  $health = Invoke-RestMethod -Method Post -Uri ($StudioUrl.TrimEnd("/") + "/api/studio/health") -Headers $healthHeaders -Body "{}"
+  $health | ConvertTo-Json -Depth 10
+  if (-not $health.ok) {
+    throw "Le Studio répond mais le contrôle V2.1 n est pas vert."
+  }
+} catch {
+  throw "Contrôle santé Studio impossible : $($_.Exception.Message)"
+}
+
+Step "Validation live du retrieval"
 node scripts/validate-live-retrieval.mjs
 
 Step "Terminé"
