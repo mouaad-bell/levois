@@ -99,7 +99,7 @@ export function Studio() {
         <div>
           <p className={styles.brand}>LEVOIS / STUDIO</p>
           <p className={styles.statusLine}>
-            Core Schema V1 · recherche sourcée · aucun chiffre inventé
+            Canon Contenu V1 · Evidence V2.1 · aucun chiffre inventé
             {researchMeta ? ` · ${researchMeta.model}` : ''}
           </p>
         </div>
