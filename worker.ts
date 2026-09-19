@@ -2,7 +2,7 @@ import type { ResearchBundle } from './lib/studio-research';
 import { searchEvidenceLibrary, libraryCoverageSummary, inferRetrievalIntent, type EvidenceDb } from './lib/evidence-library';
 import { buildEvidencePackFromLibrary } from './lib/evidence-pack';
 import type { EditorialBundle } from './lib/studio-editorial';
-import { recordGenerationRun, persistTraceabilityManifest, findImpactedContent, findStaleContentDependencies } from './lib/content-traceability-db';
+import { recordGenerationRun, persistTraceabilityManifest, findImpactedContent, findStaleContentDependencies, syncStaleContentReviews } from './lib/content-traceability-db';
 import type { ContentTraceabilityManifest } from './lib/content-traceability';
 
 type AssetsBinding = { fetch(request: Request): Promise<Response> };
@@ -683,6 +683,49 @@ async function editorial(request: Request, env: StudioEnv) {
     },
   });
 }
+async function traceabilitySync(request: Request, env: StudioEnv) {
+  if (!env.STUDIO_ACCESS_TOKEN) {
+    return json(
+      { error: 'Studio non configuré : STUDIO_ACCESS_TOKEN requis.' },
+      { status: 503 },
+    );
+  }
+
+  const provided = request.headers.get('x-studio-key') ?? '';
+  if (!provided || !safeEqual(provided, env.STUDIO_ACCESS_TOKEN)) {
+    return json({ error: 'Accès Studio refusé.' }, { status: 401 });
+  }
+
+  if (!env.LEVOIS_EVIDENCE_DB) {
+    return json(
+      { error: 'Bibliothèque LEVOIS non connectée.' },
+      { status: 503 },
+    );
+  }
+
+  let body: { limit?: unknown } = {};
+  try {
+    body = await request.json() as { limit?: unknown };
+  } catch {
+    return json({ error: 'Corps JSON invalide.' }, { status: 400 });
+  }
+
+  const limit =
+    typeof body.limit === 'number'
+      ? body.limit
+      : 500;
+
+  const result = await syncStaleContentReviews(
+    env.LEVOIS_EVIDENCE_DB,
+    limit,
+  );
+
+  return json({
+    synced: true,
+    ...result,
+  });
+}
+
 async function traceabilityStale(request: Request, env: StudioEnv) {
   if (!env.STUDIO_ACCESS_TOKEN) {
     return json(
@@ -1167,6 +1210,11 @@ export default {
       if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
       return editorial(request, env);
     }
+    if (url.pathname === '/api/studio/traceability/sync') {
+      if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
+      return traceabilitySync(request, env);
+    }
+
     if (url.pathname === '/api/studio/traceability/stale') {
       if (request.method !== 'GET' && request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'GET, POST' } });
       return traceabilityStale(request, env);
