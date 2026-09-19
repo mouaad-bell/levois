@@ -30,6 +30,11 @@ const LEVOIS_LOCAL_LABELS = [
   'Luisant',
   'Le Coudray',
   'Champhol',
+  'Chartres Métropole',
+  'Bassin de vie 2022 de Chartres',
+  'Unité urbaine 2020 de Chartres',
+  'Aire d’attraction de Chartres',
+  "Aire d'attraction de Chartres",
 ] as const;
 
 const FAMILY_IDS = [
