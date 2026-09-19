@@ -7,8 +7,6 @@ import { buildStudioProjectFromEditorial, type EditorialApiResponse } from '@/li
 import type { StudioProject } from '@/lib/studio-schema';
 import { reviewCanon } from '@/lib/canon-review';
 import { buildPublicationPackage } from '@/lib/publication-package';
-import { buildStructuralRenderPackage } from '@/lib/render-package-builder';
-import { reviewCarouselRender } from '@/lib/carousel-render-contract';
 import { CarouselFrame } from '@/components/render/CarouselFrame';
 import styles from '@/app/studio/studio.module.css';
 
@@ -666,8 +664,8 @@ function PublicationView({
   studioKey: string;
 }) {
   const publication = buildPublicationPackage(project);
-  const renderPackage = buildStructuralRenderPackage(project);
-  const renderReview = reviewCarouselRender(renderPackage);
+  const renderPackage = publication.render.package;
+  const renderReview = publication.render.review;
   const [previewSlideIndex, setPreviewSlideIndex] = useState(0);
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
