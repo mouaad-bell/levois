@@ -32,6 +32,9 @@ npx wrangler d1 execute $DatabaseName $remoteFlag --file="db/evidence-library-sc
 Step "Application de la migration V2.1"
 npx wrangler d1 execute $DatabaseName $remoteFlag --file="db/evidence-library-v21-migration.sql"
 
+Step "Application du schéma de traçabilité contenus"
+npx wrangler d1 execute $DatabaseName $remoteFlag --file="db/content-traceability-schema.sql"
+
 Step "Construction des lots d'import"
 node scripts/build-evidence-d1.mjs --input $LibraryPath --version V21 --database $DatabaseName
 
