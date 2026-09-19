@@ -100,8 +100,37 @@ function classifyClaims(project: StudioProject) {
   const blocking: string[] = [];
 
   for (const claim of project.evidencePack.claims) {
-    if (claim.status === 'rejected' || claim.status === 'insufficient') {
+    if (
+      claim.status === 'rejected' ||
+      claim.status === 'insufficient' ||
+      claim.publicationReadiness === 'forbidden'
+    ) {
       blocking.push(claim.claimId);
+      continue;
+    }
+
+    if (
+      claim.publicationReadiness === 'refresh_required' ||
+      claim.verificationRequiredBeforePublication
+    ) {
+      reviewDue.push(claim.claimId);
+      continue;
+    }
+
+    if (
+      claim.publicationReadiness === 'historical_only' ||
+      claim.publicationReadiness === 'property_check' ||
+      claim.publicationReadiness === 'person_check'
+    ) {
+      reviewDue.push(claim.claimId);
+      continue;
+    }
+
+    if (
+      claim.publicationReadiness === 'direct' ||
+      claim.evidenceUseClass === 'REUSABLE_IMMEDIATELY'
+    ) {
+      reusable.push(claim.claimId);
       continue;
     }
 
