@@ -14,7 +14,7 @@ Fichiers :
 
 - PILOT_01_ESPACE_USAGE_CANON_V1.json
 - PILOT_01_RENDER_CONTRACT_V1.json
-- ../../docs/pilots/PILOT_01_80M2_ARTICLE.md
+- ../drafts/01_80M2_USAGE_ARTICLE_V1.md
 
 Question :
 
@@ -33,7 +33,7 @@ Fichiers :
 
 - PILOT_02_MOBILITE_CANON_V1.json
 - PILOT_02_RENDER_CONTRACT_V1.json
-- ../../docs/pilots/PILOT_02_MOBILITE_ARTICLE.md
+- ../drafts/02_MOBILITY_ARTICLE_V1.md
 
 Question :
 
@@ -56,7 +56,7 @@ Fichiers :
 
 - PILOT_03_PRIX_VALEUR_CANON_V1.json
 - PILOT_03_RENDER_CONTRACT_V1.json
-- ../../docs/pilots/PILOT_03_PRIX_VALEUR_ARTICLE.md
+- ../drafts/03_PRICE_VALUE_ARTICLE_V1.md
 
 Question :
 
