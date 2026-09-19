@@ -434,7 +434,7 @@ Transformer le sujet fourni en dossier factuel et éditorial. Commence par la bi
 
 CONTRAT DE VÉRITÉ
 - Ne fabrique jamais chiffre, prix, date, distance, temps de trajet, DPE, surface, règle ou citation.
-- Chaque claim de type fact ou calculation doit référencer au moins une source réellement trouvée.
+- Chaque claim de type fact ou calculation doit référencer au moins une source réellement fournie par la bibliothèque ou réellement trouvée sur le web.
 - Distingue clairement ce que la preuve démontre de ce qu'elle ne permet pas de conclure.
 - Si une donnée importante manque, crée un unknown. Mets blocking=true UNIQUEMENT si l'angle sélectionné ne peut pas être publié honnêtement sans cette information. Une donnée manquante seulement nécessaire pour personnaliser le cas du lecteur, calculer ses trajets exacts ou enrichir l'exemple doit rester blocking=false.
 - Un scénario pédagogique est autorisé seulement avec claimType=scenario et sans le présenter comme un cas réel.
