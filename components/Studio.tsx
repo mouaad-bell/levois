@@ -360,7 +360,7 @@ export function Studio() {
         {tab === 'angles' ? <AnglesView project={project} /> : null}
         {tab === 'article' ? <ArticleView project={project} /> : null}
         {tab === 'storyboard' ? <StoryboardView project={project} /> : null}
-        {tab === 'publication' ? <PublicationView project={project} /> : null}
+        {tab === 'publication' ? <PublicationView project={project} studioKey={studioKey} /> : null}
         {tab === 'json' ? <JsonView project={project} /> : null}
       </main>
     </div>
@@ -655,8 +655,74 @@ function StoryboardView({ project }: { project: StudioProject }) {
   );
 }
 
-function PublicationView({ project }: { project: StudioProject }) {
+function PublicationView({
+  project,
+  studioKey,
+}: {
+  project: StudioProject;
+  studioKey: string;
+}) {
   const publication = buildPublicationPackage(project);
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
+
+  async function saveTraceability() {
+    if (!studioKey.trim()) {
+      setSaveMessage('Ajoutez la clé Studio privée avant d’enregistrer la trace.');
+      return;
+    }
+
+    setSaving(true);
+    setSaveMessage('');
+
+    try {
+      const items = [
+        {
+          manifest: publication.traceability.article,
+          slug: publication.article.slug,
+          status: 'DRAFT_REVIEWED',
+          notes: 'Trace article enregistrée depuis le Publication Package V1.',
+        },
+        {
+          manifest: publication.traceability.carousel,
+          status: 'DRAFT_REVIEWED',
+          notes: 'Trace carrousel enregistrée depuis le Publication Package V1.',
+        },
+      ];
+
+      for (const item of items) {
+        const response = await fetch('/api/studio/traceability/save', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'x-studio-key': studioKey.trim(),
+          },
+          body: JSON.stringify(item),
+        });
+
+        const payload = await response.json() as {
+          error?: string;
+        };
+
+        if (!response.ok) {
+          throw new Error(
+            payload.error ||
+              'Impossible d’enregistrer la traçabilité.',
+          );
+        }
+      }
+
+      setSaveMessage('Traces article + carrousel enregistrées dans D1.');
+    } catch (error) {
+      setSaveMessage(
+        error instanceof Error
+          ? error.message
+          : 'Enregistrement de la traçabilité impossible.',
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <div className={styles.stack}>
@@ -717,6 +783,19 @@ function PublicationView({ project }: { project: StudioProject }) {
         <p className={styles.limitText}>
           Une modification d’un evidence_id peut déclencher une revue ciblée avant republication.
         </p>
+        <div className={styles.actionRow}>
+          <button
+            className={styles.secondaryButton}
+            type="button"
+            onClick={saveTraceability}
+            disabled={saving}
+          >
+            {saving ? 'Enregistrement…' : 'Enregistrer la trace D1'}
+          </button>
+        </div>
+        {saveMessage ? (
+          <p className={styles.researchMeta}>{saveMessage}</p>
+        ) : null}
       </section>
     </div>
   );
