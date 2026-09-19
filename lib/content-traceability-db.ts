@@ -507,6 +507,25 @@ export async function resolveContentReview(
   const id = reviewId.trim();
   if (!id) return false;
 
+  const review = await db
+    .prepare(
+      [
+        'SELECT artifact_id, evidence_id, status',
+        'FROM content_review_queue',
+        'WHERE review_id=?',
+      ].join(' '),
+    )
+    .bind(id)
+    .first<{
+      artifact_id: string;
+      evidence_id: string | null;
+      status: string;
+    }>();
+
+  if (!review || review.status !== 'OPEN') {
+    return review?.status === 'RESOLVED';
+  }
+
   await db
     .prepare(
       [
@@ -517,6 +536,48 @@ export async function resolveContentReview(
     )
     .bind(resolution.slice(0, 2000), id)
     .run();
+
+  if (review.evidence_id) {
+    const snapshot = await db
+      .prepare(
+        [
+          'SELECT status, engine_use_class, next_review_date,',
+          'verification_required_before_publication',
+          'FROM evidence WHERE evidence_id=?',
+        ].join(' '),
+      )
+      .bind(review.evidence_id)
+      .first<{
+        status: string | null;
+        engine_use_class: string | null;
+        next_review_date: string | null;
+        verification_required_before_publication: number | null;
+      }>();
+
+    if (snapshot) {
+      await db
+        .prepare(
+          [
+            'UPDATE content_evidence_dependencies SET',
+            'evidence_status_snapshot=?,',
+            'engine_use_class_snapshot=?,',
+            'next_review_date_snapshot=?,',
+            'verification_required_before_publication_snapshot=?,',
+            'recorded_at=CURRENT_TIMESTAMP',
+            'WHERE artifact_id=? AND evidence_id=?',
+          ].join(' '),
+        )
+        .bind(
+          snapshot.status || null,
+          snapshot.engine_use_class || null,
+          snapshot.next_review_date || null,
+          snapshot.verification_required_before_publication || 0,
+          review.artifact_id,
+          review.evidence_id,
+        )
+        .run();
+    }
+  }
 
   const row = await db
     .prepare(
