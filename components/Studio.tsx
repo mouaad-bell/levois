@@ -332,6 +332,7 @@ export function Studio() {
               {editorialMeta.directEvidence} directe(s) ·{' '}
               {editorialMeta.conditionalEvidence} conditionnelle(s) · web non utilisé ·{' '}
               {editorialMeta.model}
+              {editorialMeta.totalTokens ? ' · ' + editorialMeta.totalTokens.toLocaleString('fr-FR') + ' tokens' : ''}
               {editorialMeta.cacheHit ? ' · cache éditorial réutilisé' : ''}
               {editorialMeta.traceabilityLogged ? ' · trace D1 enregistrée' : ''}
             </p>
@@ -345,6 +346,7 @@ export function Studio() {
                 : `${researchMeta.searchedSources} source(s) web observée(s)`} ·{' '}
               {researchMeta.acceptedSources} source(s) retenue(s) ·{' '}
               {researchMeta.downgradedClaims} claim(s) déclassé(s)
+              {researchMeta.totalTokens ? ' · ' + researchMeta.totalTokens.toLocaleString('fr-FR') + ' tokens' : ''}
               {researchMeta.traceabilityLogged ? ' · trace D1 enregistrée' : ''}
             </p>
           ) : null}
