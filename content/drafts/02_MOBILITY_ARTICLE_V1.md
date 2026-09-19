@@ -1,186 +1,159 @@
-# Acheter plus loin pour payer moins cher : comment tester ce que le trajet change vraiment
+# PILOT 02 — Article Answers V1
+## Acheter plus loin pour payer moins cher : comment tester ce que le trajet change vraiment
 
-> Statut : brouillon éditorial canonique V1. Non publié. Le cas chiffré est fictif et sert uniquement à expliquer la méthode.
+**Statut :** copie éditoriale prête pour revue, non publiée.  
+**Canon :** CONTENT_EXPERIENCE_V1_2026-09-19.  
+**Famille :** Lieu / Mobilité.  
+**Preuve locale :** INSEE-f36f351aab7a2171 — historique 2023.
 
-## Réponse courte
+### Réponse courte
 
-S’éloigner pour payer moins cher peut être un compromis tout à fait acceptable. Le bon test n’est pas de demander si dix ou quinze minutes de trajet sont « beaucoup » en général. Il faut regarder ce que ce temps supplémentaire change dans le moment le plus contraint de votre semaine. Une durée modeste peut être facile à absorber dans une organisation et dépasser une marge horaire dans une autre.
+S’éloigner pour payer moins cher peut être un compromis acceptable. Mais une durée supplémentaire n’a pas le même effet selon l’organisation dans laquelle elle tombe.
 
-**Limite essentielle :** les horaires et durées ci-dessous sont fictifs. Ils n’indiquent pas le temps de trajet réel autour de Chartres et ne permettent pas de conclure qu’habiter plus loin est un mauvais choix.
+Avant de juger qu’un logement est « trop loin » ou que quelques minutes supplémentaires sont négligeables, prenez le moment le plus contraint de votre semaine. Refaites l’enchaînement depuis le logement envisagé. Puis regardez quelle adaptation devient nécessaire.
 
-## Le compromis de départ mérite d’être conservé
+Le test ne décide pas à votre place. Il montre ce que l’éloignement change réellement.
 
-Vous trouvez une maison qui offre davantage de place pour un prix inférieur à une autre option.
+## « Plus loin » n’est pas encore une conclusion
 
-Elle est plus éloignée.
+Deux logements peuvent être à des distances différentes d’un même centre-ville sans produire le même effet sur deux personnes.
 
-La première lecture est raisonnable : accepter un peu plus de trajet peut permettre d’acheter un logement qui répond mieux à d’autres priorités.
+L’une travaille à domicile plusieurs jours par semaine.  
+L’autre doit récupérer un enfant avant une heure fixe.  
+Une troisième prend le train.  
+Une quatrième travaille déjà dans une autre commune.
 
-Le raisonnement ne doit pas effacer cet avantage.
+La distance n’est donc pas inutile. Elle est simplement incomplète tant qu’on ne la relie pas à ce que votre semaine vous oblige réellement à faire.
 
-Le but du test n’est donc pas de démontrer que « loin = mauvais ». Il sert à vérifier **quelle organisation est nécessaire pour conserver l’économie recherchée**.
+## Un contexte local : les déplacements dépassent déjà les limites communales
+
+En 2023, dans le **Bassin de vie 2022 de Chartres**, 73,7 % des actifs de 15 ans ou plus ayant un emploi et résidant dans la zone travaillaient dans une commune autre que leur commune de résidence.
+
+Cette donnée est historique. Elle décrit un périmètre et une année précis.
+
+Elle ne permet pas de conclure que les trajets sont longs, difficiles ou coûteux. Elle ne donne aucune durée moyenne. Elle ne dit rien de votre propre quotidien.
+
+Elle montre seulement qu’un changement de commune est fréquent dans ce périmètre : pour décider si un logement est « loin », il faut donc regarder plus précisément ce que la localisation change pour vous.
 
 ## Cas fictif : les quinze minutes qui dépassent la marge
 
-Imaginez une organisation simple.
+Prenons une famille fictive.
 
-Vous terminez à 17 h 30.
+Une personne termine à 17 h 30.  
+L’accueil ferme à 18 h 15.
 
-L’accueil de votre enfant ferme à 18 h 15.
+Le créneau disponible est donc de 45 minutes.
 
-Vous disposez donc de quarante-cinq minutes entre les deux horaires.
+Aujourd’hui, le trajet testé dans le scénario dure 35 minutes. Il reste 10 minutes de marge.
 
-Dans le scénario actuel, le trajet prend trente-cinq minutes.
-
-Votre marge est de dix minutes.
-
-Le logement envisagé est plus éloigné. Dans les conditions choisies pour cette simulation, le même enchaînement prendrait cinquante minutes.
+Depuis le logement envisagé, le trajet simulé dure 50 minutes.
 
 L’arrivée serait alors à 18 h 20.
 
-Le trajet n’a augmenté que de quinze minutes.
+Le changement de trajet est de 15 minutes. Pourtant, l’effet n’est pas simplement « quinze minutes de plus ».
 
-Mais ces quinze minutes ont un effet particulier : **elles dépassent une marge qui n’en comptait que dix.**
+Dans ce scénario, les quinze minutes supplémentaires dépassent une marge qui n’en comptait que dix.
 
-Ce n’est pas la durée supplémentaire, prise isolément, qui décide à votre place. C’est ce qu’elle fait à l’organisation testée.
+L’organisation ne fonctionne donc plus telle quelle.
 
-## Pourquoi « quinze minutes de plus » ne veut rien dire tout seul
+**CAS FICTIF :** ces horaires et ces durées ne décrivent aucun trajet réel autour de Chartres.
 
-Pour une personne, quinze minutes supplémentaires peuvent ne rien changer.
+## Ce que le cas permet — et ne permet pas — de comprendre
 
-Pour une autre, elles peuvent imposer de modifier :
+Il ne permet pas de dire :
 
-- l’heure de départ ;
-- la personne qui récupère l’enfant ;
-- le mode de garde ;
-- le jour de télétravail ;
-- le lieu d’une activité ;
-- ou simplement la marge de sécurité acceptée.
+- qu’habiter plus loin est une mauvaise décision ;
+- que les trajets autour de Chartres durent cinquante minutes ;
+- qu’une famille doit renoncer au logement ;
+- que le gain à l’achat disparaît automatiquement.
 
-Le même logement peut donc être compatible avec une vie et demander une réorganisation importante dans une autre.
+Il permet de comprendre une relation :
 
-Il n’existe pas de nombre universel de minutes à partir duquel un achat devient mauvais.
+> une même durée supplémentaire n’a pas le même poids selon la marge dans laquelle elle tombe.
 
-La question utile est plus précise :
+Une autre personne, un autre horaire ou une autre organisation peut produire une conclusion différente.
 
-> **qu’est-ce que ce temps change dans votre moment le plus contraint ?**
+## Revenons à la décision immobilière
 
-## La méthode : partez de la contrainte, pas de la carte
+Le logement envisagé était moins cher.
 
-### 1. Prenez le moment le plus contraint de votre semaine
+Cet avantage ne doit pas disparaître parce qu’un trajet pose une difficulté dans un scénario.
 
-Choisissez un enchaînement où l’horaire bouge difficilement.
+La bonne question devient :
 
-Par exemple :
+**l’économie recherchée reste-t-elle intéressante avec une organisation que vous jugez réalisable et acceptable ?**
 
-- sortie du travail → école ;
-- gare → crèche ;
-- école → activité sportive ;
-- rendez-vous médical → retour à domicile ;
-- fin de journée → dernier train réellement utilisable.
+Peut-être qu’une autre personne peut récupérer l’enfant.  
+Peut-être qu’un horaire de travail peut bouger.  
+Peut-être qu’un autre accueil existe.  
+Peut-être qu’aucune adaptation n’est acceptable.
 
-Ne commencez pas par tous vos déplacements.
+Le contenu ne choisit pas laquelle de ces réponses est « bonne ». Il rend visible ce qu’il faut examiner avant de qualifier l’éloignement de compromis acceptable.
 
-Commencez par celui qui laisse le moins de marge.
+## La méthode : prenez le moment le plus contraint
 
-### 2. Refaites l’enchaînement depuis le logement envisagé
+### 1. Repérez votre contrainte la plus rigide
 
-Il ne suffit pas de regarder la distance en kilomètres.
+Cherchez un moment où l’horaire bouge peu :
 
-Vous cherchez le temps nécessaire dans des conditions pertinentes pour votre usage.
+- début de travail ;
+- départ d’un train ;
+- sortie d’école ;
+- accueil d’un enfant ;
+- rendez-vous régulier ;
+- activité indispensable.
 
-Une mesure de trajet reste une observation ou une simulation, pas une garantie quotidienne. L’heure, le jour, les travaux, la circulation ou le mode de transport peuvent modifier le résultat.
+### 2. Refaites l’enchaînement depuis le logement
 
-Le but est de rendre votre hypothèse visible, pas de prédire chaque journée future.
+Mesurez le trajet dans des conditions pertinentes.
 
-### 3. Regardez l’organisation nécessaire
+Une simulation ponctuelle n’est pas une garantie quotidienne : l’heure, le jour, la circulation et le mode de transport peuvent changer.
 
-Si la nouvelle durée entre dans votre marge, le compromis peut rester simple.
+### 3. Regardez l’adaptation nécessaire
 
-Si elle la dépasse, ne concluez pas immédiatement que le logement doit être abandonné.
+Ne demandez pas seulement :
 
-Écrivez ce qui devrait changer.
+**« Combien de minutes en plus ? »**
 
-Par exemple :
+Demandez :
 
-> « Pour que cette maison fonctionne, il faut que deux soirs par semaine une autre personne assure la récupération. »
+**« Qu’est-ce que ces minutes m’obligent à changer ? »**
 
-Cette phrase est beaucoup plus utile que :
+Vous pourrez alors revenir à l’avantage recherché : prix, surface, environnement ou autre.
 
-> « C’est trop loin. »
+## Ce que cette méthode ne remplace pas
 
-Elle rend le compromis discutable et assumable.
+Elle ne remplace pas :
 
-## Revenez ensuite à la décision immobilière
+- la mesure réelle des trajets ;
+- l’examen de leurs variations ;
+- votre budget ;
+- vos préférences ;
+- la qualité du logement ;
+- les autres destinations importantes de votre semaine.
 
-Le test du trajet ne doit pas faire disparaître le prix.
+Elle sert à éviter une erreur plus simple : traiter « plus loin » comme une conclusion alors que ce n’est encore qu’une description.
 
-C’est une erreur fréquente dans une comparaison : on découvre une contrainte, puis on oublie l’avantage qui avait rendu l’option intéressante.
+## À tester sur votre propre recherche
 
-Revenez donc à la question de départ :
+Prenez un logement qui vous semble intéressant mais un peu plus éloigné.
 
-> **L’économie à l’achat reste-t-elle intéressante avec l’organisation qu’elle demande ?**
+Choisissez **le moment le plus contraint de votre semaine**.
 
-La réponse peut être oui.
+Refaites l’enchaînement.
 
-Elle peut être non.
+Puis écrivez une seule phrase :
 
-Elle peut aussi dépendre d’une information encore inconnue.
+> « Pour que ce logement fonctionne, il faudrait… »
 
-LEVOIS n’a pas à décider quelle concession vous devez accepter. Le rôle de la méthode est de rendre cette concession explicite.
+Vous saurez alors beaucoup mieux ce que l’éloignement change réellement dans votre décision.
 
-## Ce que les données locales peuvent — et ne peuvent pas — ajouter
+---
 
-La bibliothèque LEVOIS contient des données historiques de mobilité sur Chartres Métropole.
+### Source de production
 
-Elles peuvent servir à décrire certains comportements de déplacement dans un périmètre et une période donnés.
+- **INSEE-f36f351aab7a2171** — INSEE — ACT T4 — Bassin de vie 2022 de Chartres — 2023 — 73,7 % des actifs résidents ayant un emploi travaillent dans une commune autre que leur commune de résidence.
+- Limite : cette preuve ne mesure ni distance, ni durée, ni coût, ni difficulté de trajet.
 
-Elles ne permettent pas, à elles seules, de connaître :
-
-- votre trajet ;
-- sa durée ;
-- sa variabilité ;
-- son coût ;
-- la fermeture de votre mode de garde ;
-- ou la marge que vous jugez acceptable.
-
-Pour une décision personnelle, ces éléments doivent être mesurés ou renseignés dans votre situation.
-
-Une statistique locale peut donner du contexte. Elle ne remplace pas le test.
-
-## À faire avant de considérer l’éloignement comme un compromis acceptable
-
-Prenez une feuille.
-
-Écrivez :
-
-**Moment le plus contraint :** …
-
-**Heure de départ :** …
-
-**Heure limite :** …
-
-**Marge actuelle :** …
-
-**Temps simulé depuis le logement :** …
-
-**Nouvelle marge :** …
-
-**Si elle disparaît, quelle organisation devient nécessaire ?** …
-
-Vous venez de transformer « un peu plus loin » en une question que vous pouvez réellement examiner.
-
-## Sources et statut des informations
-
-- Le scénario 17 h 30 / 18 h 15 / 35 min / 50 min est un **cas fictif pédagogique** du Canon LEVOIS Contenu et expérience V1.
-- Les durées ne décrivent aucun trajet réel à Chartres ou dans son agglomération.
-- Toute utilisation d’un temps réel doit préciser les conditions de mesure et ne pas être présentée comme une garantie quotidienne.
-- La bibliothèque V2.1 contient une donnée historique INSEE sur les actifs travaillant hors de leur commune de résidence à Chartres Métropole (INSEE-832df7e2d880897a), volontairement non utilisée comme preuve du mécanisme de cet article : elle ne mesure ni distance ni durée ni difficulté du trajet.
-
-## Continuer
-
-La méthode est complète sans prise de contact.
-
-Une suite LEVOIS éventuelle peut seulement servir à l’appliquer à plusieurs logements ou à clarifier les concessions acceptables dans votre recherche.
-
-CTA candidat, à activer uniquement si la destination publique réalise réellement cette action : **Comparer mes scénarios**.
+**CTA public : non activé dans cette version.**  
+La méthode autonome clôt la réponse tant que la destination LEVOIS correspondante n’a pas été recettée.
