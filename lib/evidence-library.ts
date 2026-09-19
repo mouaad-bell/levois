@@ -389,6 +389,8 @@ export function libraryCoverageSummary(hits: LibraryEvidence[]) {
 
   const freshDirect = direct.filter((hit) => hit.freshness === 'fresh').length;
   const primaryDirect = direct.filter((hit) => hit.sourceTier === 1).length;
+  const strongDirect = direct.filter((hit) => hit.score >= 15).length;
+  const topDirectScore = direct.length ? Math.max(...direct.map((hit) => hit.score)) : 0;
   const uniqueTopics = new Set(hits.map((hit) => hit.topic)).size;
 
   return {
@@ -400,10 +402,13 @@ export function libraryCoverageSummary(hits: LibraryEvidence[]) {
     personCheck: personCheck.length,
     freshDirect,
     primaryDirect,
+    strongDirect,
+    topDirectScore,
     uniqueTopics,
     candidateForWebSkip:
-      direct.length >= 4 &&
-      freshDirect >= 3 &&
-      primaryDirect >= 2,
+      strongDirect >= 4 &&
+      freshDirect >= 4 &&
+      primaryDirect >= 3 &&
+      topDirectScore >= 18,
   };
 }
