@@ -79,6 +79,13 @@ export async function persistTraceabilityManifest(
     )
     .run();
 
+  await db
+    .prepare(
+      'DELETE FROM content_evidence_dependencies WHERE artifact_id = ?',
+    )
+    .bind(manifest.artifactId)
+    .run();
+
   for (const dependency of manifest.dependencies) {
     const dependencySql = [
       'INSERT OR REPLACE INTO content_evidence_dependencies (',
