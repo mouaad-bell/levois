@@ -146,3 +146,42 @@ export async function queueEvidenceReview(
 
   return artifacts.map((item) => item.artifact_id);
 }
+
+
+export async function findImpactedContent(
+  db: EvidenceDb,
+  evidenceIds: string[],
+) {
+  const ids = Array.from(
+    new Set(evidenceIds.filter(Boolean)),
+  ).slice(0, 100);
+
+  if (!ids.length) return [];
+
+  const placeholders = ids.map(() => '?').join(',');
+
+  const sql =
+    'SELECT DISTINCT ' +
+    'a.artifact_id, a.artifact_type, a.title, a.status, ' +
+    'd.evidence_id, d.dependency_role ' +
+    'FROM content_evidence_dependencies d ' +
+    'JOIN content_artifacts a ON a.artifact_id = d.artifact_id ' +
+    'WHERE d.evidence_id IN (' +
+    placeholders +
+    ') ' +
+    'ORDER BY a.artifact_id, d.evidence_id';
+
+  const rows = await db
+    .prepare(sql)
+    .bind(...ids)
+    .all<{
+      artifact_id: string;
+      artifact_type: string;
+      title: string;
+      status: string;
+      evidence_id: string;
+      dependency_role: string;
+    }>();
+
+  return rows.results || [];
+}
