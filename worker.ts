@@ -2,7 +2,7 @@ import type { ResearchBundle } from './lib/studio-research';
 import { searchEvidenceLibrary, libraryCoverageSummary, inferRetrievalIntent, type EvidenceDb } from './lib/evidence-library';
 import { buildEvidencePackFromLibrary } from './lib/evidence-pack';
 import type { EditorialBundle } from './lib/studio-editorial';
-import { recordGenerationRun, persistTraceabilityManifest } from './lib/content-traceability-db';
+import { recordGenerationRun, persistTraceabilityManifest, findImpactedContent } from './lib/content-traceability-db';
 import type { ContentTraceabilityManifest } from './lib/content-traceability';
 
 type AssetsBinding = { fetch(request: Request): Promise<Response> };
@@ -683,6 +683,62 @@ async function editorial(request: Request, env: StudioEnv) {
     },
   });
 }
+async function traceabilityImpact(request: Request, env: StudioEnv) {
+  if (!env.STUDIO_ACCESS_TOKEN) {
+    return json(
+      { error: 'Studio non configuré : STUDIO_ACCESS_TOKEN requis.' },
+      { status: 503 },
+    );
+  }
+
+  const provided = request.headers.get('x-studio-key') ?? '';
+  if (!provided || !safeEqual(provided, env.STUDIO_ACCESS_TOKEN)) {
+    return json({ error: 'Accès Studio refusé.' }, { status: 401 });
+  }
+
+  if (!env.LEVOIS_EVIDENCE_DB) {
+    return json(
+      { error: 'Bibliothèque LEVOIS non connectée.' },
+      { status: 503 },
+    );
+  }
+
+  let body: { evidenceIds?: unknown };
+  try {
+    body = await request.json() as { evidenceIds?: unknown };
+  } catch {
+    return json({ error: 'Corps JSON invalide.' }, { status: 400 });
+  }
+
+  const evidenceIds = Array.isArray(body.evidenceIds)
+    ? body.evidenceIds
+        .filter((value): value is string => typeof value === 'string')
+        .map((value) => value.trim())
+        .filter(Boolean)
+        .slice(0, 100)
+    : [];
+
+  if (!evidenceIds.length) {
+    return json(
+      { error: 'Au moins un evidence_id est requis.' },
+      { status: 400 },
+    );
+  }
+
+  const impacted = await findImpactedContent(
+    env.LEVOIS_EVIDENCE_DB,
+    evidenceIds,
+  );
+
+  return json({
+    evidenceIds,
+    impacted,
+    artifactCount: new Set(
+      impacted.map((row) => row.artifact_id),
+    ).size,
+  });
+}
+
 async function saveTraceability(request: Request, env: StudioEnv) {
   if (!env.STUDIO_ACCESS_TOKEN) {
     return json(
@@ -1066,6 +1122,11 @@ export default {
       if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
       return editorial(request, env);
     }
+    if (url.pathname === '/api/studio/traceability/impact') {
+      if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
+      return traceabilityImpact(request, env);
+    }
+
     if (url.pathname === '/api/studio/traceability/save') {
       if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
       return saveTraceability(request, env);
