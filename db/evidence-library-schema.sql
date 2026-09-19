@@ -1,4 +1,4 @@
--- LEVOIS Evidence Library V1 — D1 schema
+-- LEVOIS Evidence Library V2.1 — canonical D1 schema
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS evidence_library_meta (
@@ -47,7 +47,28 @@ CREATE TABLE IF NOT EXISTS evidence (
   next_review_date TEXT,
   tags TEXT,
   notes TEXT,
-  library_version TEXT NOT NULL DEFAULT 'V1',
+  library_version TEXT NOT NULL DEFAULT 'V21',
+  origin TEXT,
+  evidence_kind TEXT,
+  source_registry_id TEXT,
+  source_registry_ids_json TEXT,
+  engine_use_class TEXT NOT NULL DEFAULT 'REUSABLE_IMMEDIATELY',
+  engine_policy_version TEXT,
+  verification_required_for_property_application INTEGER NOT NULL DEFAULT 0,
+  verification_required_for_person_application INTEGER NOT NULL DEFAULT 0,
+  verification_required_before_publication INTEGER NOT NULL DEFAULT 0,
+  reuse_modes_json TEXT,
+  future_application_guard TEXT,
+  verification_scope_v21 TEXT,
+  freshness_json TEXT,
+  geographic_precision_json TEXT,
+  temporal_precision_json TEXT,
+  decision_use TEXT,
+  source_exact_url_variants_json TEXT,
+  publication_status TEXT,
+  n_mutations INTEGER,
+  public_price_benchmark_allowed INTEGER,
+  search_text TEXT,
   ingested_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -58,6 +79,68 @@ CREATE INDEX IF NOT EXISTS idx_evidence_time ON evidence(time_period);
 CREATE INDEX IF NOT EXISTS idx_evidence_status ON evidence(status);
 CREATE INDEX IF NOT EXISTS idx_evidence_refresh ON evidence(refresh_policy, next_review_date);
 CREATE INDEX IF NOT EXISTS idx_evidence_source_tier ON evidence(source_tier);
+CREATE INDEX IF NOT EXISTS idx_evidence_engine_use ON evidence(engine_use_class);
+CREATE INDEX IF NOT EXISTS idx_evidence_publish_guard
+  ON evidence(verification_required_before_publication, engine_use_class);
+CREATE INDEX IF NOT EXISTS idx_evidence_origin ON evidence(origin);
+
+CREATE TABLE IF NOT EXISTS evidence_aliases (
+  alias_id TEXT PRIMARY KEY,
+  canonical_id TEXT NOT NULL,
+  reason TEXT,
+  library_version TEXT NOT NULL DEFAULT 'V21'
+);
+
+CREATE TABLE IF NOT EXISTS evidence_sources_v21 (
+  source_id TEXT PRIMARY KEY,
+  publisher TEXT,
+  title TEXT,
+  url TEXT,
+  scope_v21 TEXT,
+  evidence_count_v21 INTEGER,
+  evidence_rechecked_v21 INTEGER,
+  new_evidence_v21 INTEGER,
+  next_review_date_v21 TEXT,
+  validation_statuses_v21 TEXT,
+  v21_archives TEXT,
+  verification_notice TEXT
+);
+
+CREATE TABLE IF NOT EXISTS evidence_refresh_v21 (
+  evidence_id TEXT PRIMARY KEY,
+  domain TEXT,
+  source_registry_id TEXT,
+  status TEXT,
+  source_url TEXT,
+  source_date TEXT,
+  observation_period TEXT,
+  retrieved_at TEXT,
+  last_reverified_v21 TEXT,
+  refresh_policy TEXT,
+  next_review_date TEXT,
+  engine_use_class TEXT,
+  verification_required_before_publication INTEGER,
+  verify_property INTEGER,
+  verify_person INTEGER,
+  future_only INTEGER,
+  verification_scope_v21 TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_refresh_v21_use
+  ON evidence_refresh_v21(engine_use_class, verification_required_before_publication);
+CREATE INDEX IF NOT EXISTS idx_refresh_v21_review
+  ON evidence_refresh_v21(next_review_date, refresh_policy);
+
+CREATE VIRTUAL TABLE IF NOT EXISTS evidence_search USING fts5(
+  evidence_id UNINDEXED,
+  topic,
+  subtopic,
+  geographic_label,
+  period,
+  claim,
+  decision_use,
+  tokenize='unicode61 remove_diacritics 2'
+);
 
 CREATE TABLE IF NOT EXISTS geo_reference (
   geo_id TEXT PRIMARY KEY,
