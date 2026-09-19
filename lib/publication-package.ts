@@ -3,6 +3,7 @@ import { reviewCanon } from './canon-review';
 import { buildTraceabilityManifest } from './content-traceability';
 import { buildStructuralRenderPackage } from './render-package-builder';
 import { reviewCarouselRender } from './carousel-render-contract';
+import { buildVisualAssetPlan } from './visual-asset-plan';
 import type { StudioProject } from './studio-schema';
 import { buildVulgarisationBrief } from './vulgarisation-engine';
 
@@ -25,6 +26,7 @@ export type PublicationPackage = {
   render: {
     package: ReturnType<typeof buildStructuralRenderPackage>;
     review: ReturnType<typeof reviewCarouselRender>;
+    assetPlan: ReturnType<typeof buildVisualAssetPlan>;
   };
   traceability: {
     article: ReturnType<typeof buildTraceabilityManifest>;
@@ -76,6 +78,7 @@ export function buildPublicationPackage(
   const carousel = buildVulgarisationBrief(project);
   const renderPackage = buildStructuralRenderPackage(project);
   const renderReview = reviewCarouselRender(renderPackage);
+  const assetPlan = buildVisualAssetPlan(project, renderPackage);
 
   const blockers: string[] = [];
   const warnings: string[] = [];
@@ -214,6 +217,7 @@ export function buildPublicationPackage(
     render: {
       package: renderPackage,
       review: renderReview,
+      assetPlan,
     },
     traceability: {
       article: articleTrace,
