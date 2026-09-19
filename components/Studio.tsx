@@ -1163,6 +1163,26 @@ function RoadmapView({
   );
 }
 
+type UsageSummary = {
+  days: number;
+  overall: {
+    runs: number;
+    input_tokens: number;
+    output_tokens: number;
+    total_tokens: number;
+    zero_token_runs: number;
+    web_runs: number;
+  };
+  byPipeline: Array<{
+    pipeline: string;
+    runs: number;
+    input_tokens: number;
+    output_tokens: number;
+    total_tokens: number;
+    web_runs: number;
+  }>;
+};
+
 type ImpactedContentItem = {
   artifact_id: string;
   artifact_type: string;
@@ -1199,7 +1219,51 @@ function ReviewQueueView({
   const [impactInput, setImpactInput] = useState('');
   const [impactLoading, setImpactLoading] = useState(false);
   const [impactRows, setImpactRows] = useState<ImpactedContentItem[]>([]);
+  const [usageLoading, setUsageLoading] = useState(false);
+  const [usage, setUsage] = useState<UsageSummary | null>(null);
   const [message, setMessage] = useState('');
+
+  async function loadUsage() {
+    if (!studioKey.trim()) {
+      setMessage('Ajoutez la clé Studio privée pour lire l’usage.');
+      return;
+    }
+
+    setUsageLoading(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/studio/usage/summary', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-studio-key': studioKey.trim(),
+        },
+        body: JSON.stringify({ days: 30 }),
+      });
+
+      const payload = await response.json() as UsageSummary & {
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(
+          payload.error || 'Lecture de l’usage impossible.',
+        );
+      }
+
+      setUsage(payload);
+      setMessage('Usage Studio chargé sur 30 jours.');
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : 'Lecture de l’usage impossible.',
+      );
+    } finally {
+      setUsageLoading(false);
+    }
+  }
 
   async function lookupImpact() {
     if (!studioKey.trim()) {
@@ -1474,6 +1538,14 @@ function ReviewQueueView({
           <button
             type="button"
             className={styles.secondaryButton}
+            onClick={loadUsage}
+            disabled={usageLoading}
+          >
+            {usageLoading ? 'Usage…' : 'Usage 30 j'}
+          </button>
+          <button
+            type="button"
+            className={styles.secondaryButton}
             onClick={clearEditorialCache}
             disabled={clearingCache}
           >
@@ -1537,6 +1609,46 @@ function ReviewQueueView({
           </div>
         ) : null}
       </section>
+
+      {usage ? (
+        <section className={styles.card}>
+          <p className={styles.cardIndex}>Usage · {usage.days} jours</p>
+          <div className={styles.summary}>
+            <SummaryCard
+              label="Générations"
+              value={String(usage.overall.runs)}
+            />
+            <SummaryCard
+              label="Tokens"
+              value={usage.overall.total_tokens.toLocaleString('fr-FR')}
+            />
+            <SummaryCard
+              label="Cache / zéro token"
+              value={String(usage.overall.zero_token_runs)}
+            />
+            <SummaryCard
+              label="Runs avec web"
+              value={String(usage.overall.web_runs)}
+            />
+          </div>
+
+          {usage.byPipeline.length ? (
+            <div className={styles.stack}>
+              {usage.byPipeline.map((item) => (
+                <div className={styles.sourceRow} key={item.pipeline}>
+                  <span>{item.runs}</span>
+                  <div>
+                    <strong>{item.pipeline}</strong>
+                    <p>
+                      {item.total_tokens.toLocaleString('fr-FR')} tokens · {item.web_runs} web
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       {message ? (
         <p className={styles.researchMeta}>{message}</p>
