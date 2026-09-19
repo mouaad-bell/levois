@@ -925,6 +925,7 @@ function PublicationView({
           <p>{publication.article.answerShort}</p>
           <dl className={styles.definitionList}>
             <div><dt>Slug</dt><dd>{publication.article.slug}</dd></div>
+            <div><dt>Route canonique</dt><dd>{publication.article.canonicalPath}</dd></div>
             <div><dt>Scope</dt><dd>{publication.article.targetScope}</dd></div>
             <div><dt>Evidence</dt><dd>{publication.article.evidenceRefs.join(', ') || '—'}</dd></div>
             <div><dt>SEO gate</dt><dd>{publication.seo.ready ? 'PASS' : 'REVIEW'}</dd></div>
