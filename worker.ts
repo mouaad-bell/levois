@@ -155,10 +155,12 @@ const researchSchema = {
               text: { type: 'string' },
               explicitPromise: { type: 'string' },
               implicitPromise: { type: 'string' },
+              evidenceStatus: { type: 'string', enum: ['sourced','pedagogical_scenario','non_numeric'] },
+              qualifier: { type: 'string' },
               claimRefs: { type: 'array', items: { type: 'string' } },
               evidenceRefs: { type: 'array', items: { type: 'string' } },
             },
-            required: ['mode','family','text','explicitPromise','implicitPromise','claimRefs','evidenceRefs'],
+            required: ['mode','family','text','explicitPromise','implicitPromise','evidenceStatus','qualifier','claimRefs','evidenceRefs'],
           },
         },
         selectedHookMode: { type: 'string', enum: ['direct','scene','comparison'] },
@@ -742,7 +744,7 @@ Ensuite seulement, produis exactement trois canon.hookCandidates :
 3. mode=comparison.
 
 Ils doivent promettre la même démonstration. Utilise l’une des familles canoniques : situation, usage, comparison, condition, calendar, scope, unknown, result.
-Pour chacun, explicite la promesse explicite ET la promesse implicite. Ne choisis jamais une formule plus spectaculaire que authorizedConclusion.
+Pour chacun, explicite la promesse explicite ET la promesse implicite. Renseigne evidenceStatus : sourced si l’ouverture dépend de preuves référencées, pedagogical_scenario si les nombres viennent d’un cas fictif, non_numeric sinon. qualifier doit rendre visible le statut nécessaire, par exemple « CAS FICTIF ». Ne choisis jamais une formule plus spectaculaire que authorizedConclusion.
 
 Applique les quatre contrôles d’entrée :
 - Temps : le sujet et l’utilité sont repérables immédiatement ;
