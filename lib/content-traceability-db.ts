@@ -22,6 +22,9 @@ export type GenerationRunRecord = {
   evidenceLibraryVersion: string;
   webUsed: boolean;
   model?: string;
+  inputTokens?: number;
+  outputTokens?: number;
+  totalTokens?: number;
   evidenceIds: string[];
   rejectedEvidenceIds?: string[];
   requestId?: string;
@@ -35,9 +38,9 @@ export async function recordGenerationRun(
   const sql = [
     'INSERT OR REPLACE INTO content_generation_runs (',
     'generation_id, artifact_id, input_hash, pipeline, canon_version,',
-    'evidence_library_version, web_used, model, evidence_ids_json,',
-    'rejected_evidence_ids_json, request_id',
-    ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    'evidence_library_version, web_used, model, input_tokens, output_tokens, total_tokens,',
+    'evidence_ids_json, rejected_evidence_ids_json, request_id',
+    ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
   ].join(' ');
 
   await db
@@ -51,6 +54,9 @@ export async function recordGenerationRun(
       record.evidenceLibraryVersion,
       record.webUsed ? 1 : 0,
       record.model || null,
+      Number.isFinite(record.inputTokens) ? record.inputTokens : null,
+      Number.isFinite(record.outputTokens) ? record.outputTokens : null,
+      Number.isFinite(record.totalTokens) ? record.totalTokens : null,
       JSON.stringify(Array.from(new Set(record.evidenceIds))),
       JSON.stringify(Array.from(new Set(record.rejectedEvidenceIds || []))),
       record.requestId || null,
