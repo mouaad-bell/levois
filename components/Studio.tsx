@@ -905,6 +905,24 @@ function PublicationView({
             : renderReview.issues.length +
               ' point(s) de rendu à traiter, notamment les assets encore manquants.'}
         </p>
+        <dl className={styles.definitionList}>
+          <div>
+            <dt>Assets à produire</dt>
+            <dd>{String(publication.render.assetPlan.summary.todo)}</dd>
+          </div>
+          <div>
+            <dt>Source réelle requise</dt>
+            <dd>{String(publication.render.assetPlan.summary.realSourceRequired)}</dd>
+          </div>
+          <div>
+            <dt>Programmatique</dt>
+            <dd>{String(publication.render.assetPlan.summary.programmatic)}</dd>
+          </div>
+          <div>
+            <dt>Génération explicative autorisée</dt>
+            <dd>{String(publication.render.assetPlan.summary.generatedAllowed)}</dd>
+          </div>
+        </dl>
       </section>
 
       <section className={styles.card}>
