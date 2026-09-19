@@ -213,6 +213,42 @@ def test_traceability_lifecycle():
         raise SystemExit("Traceability snapshot refresh smoke test failed")
 
 
+def test_editorial_cache_schema():
+    db = sqlite3.connect(":memory:")
+    db.executescript(SCHEMA.read_text(encoding="utf-8"))
+    db.executescript(TRACE.read_text(encoding="utf-8"))
+
+    cache = db.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='studio_editorial_cache'"
+    ).fetchone()
+    if not cache:
+        raise SystemExit("studio_editorial_cache table missing")
+
+    generation_columns = table_columns(db, "content_generation_runs")
+    if "input_hash" not in generation_columns:
+        raise SystemExit("content_generation_runs.input_hash missing")
+    if "input_text" in generation_columns:
+        raise SystemExit("raw input_text must not be stored in generation logs")
+
+    db.execute(
+        """
+        INSERT INTO studio_editorial_cache (
+          cache_key, model, canon_version,
+          evidence_library_version, bundle_json, expires_at
+        ) VALUES (
+          'CACHE1','model-test','CONTENT_EXPERIENCE_V1_2026-09-19',
+          'V21','{}',datetime('now','+30 days')
+        )
+        """
+    )
+
+    count = db.execute(
+        "SELECT COUNT(*) FROM studio_editorial_cache WHERE cache_key='CACHE1'"
+    ).fetchone()[0]
+    if count != 1:
+        raise SystemExit("editorial cache insert smoke test failed")
+
+
 def test_legacy_migration():
     db = sqlite3.connect(":memory:")
     db.executescript(
@@ -245,5 +281,6 @@ def test_legacy_migration():
 if __name__ == "__main__":
     test_fresh_schema()
     test_traceability_lifecycle()
+    test_editorial_cache_schema()
     test_legacy_migration()
-    print("D1 schema + traceability smoke test OK")
+    print("D1 schema + traceability + cache smoke test OK")
