@@ -6,9 +6,10 @@ import { buildStudioProjectFromResearch, type ResearchApiResponse } from '@/lib/
 import { buildStudioProjectFromEditorial, type EditorialApiResponse } from '@/lib/studio-editorial';
 import type { StudioProject } from '@/lib/studio-schema';
 import { reviewCanon } from '@/lib/canon-review';
+import { buildPublicationPackage } from '@/lib/publication-package';
 import styles from '@/app/studio/studio.module.css';
 
-type Tab = 'scope' | 'evidence' | 'canon' | 'angles' | 'article' | 'storyboard' | 'json';
+type Tab = 'scope' | 'evidence' | 'canon' | 'angles' | 'article' | 'storyboard' | 'publication' | 'json';
 
 const tabs: Array<[Tab, string]> = [
   ['scope', 'Scope'],
@@ -17,6 +18,7 @@ const tabs: Array<[Tab, string]> = [
   ['angles', 'Angles'],
   ['article', 'Article'],
   ['storyboard', 'Storyboard'],
+  ['publication', 'Publication'],
   ['json', 'JSON'],
 ];
 
@@ -354,6 +356,7 @@ export function Studio() {
         {tab === 'angles' ? <AnglesView project={project} /> : null}
         {tab === 'article' ? <ArticleView project={project} /> : null}
         {tab === 'storyboard' ? <StoryboardView project={project} /> : null}
+        {tab === 'publication' ? <PublicationView project={project} /> : null}
         {tab === 'json' ? <JsonView project={project} /> : null}
       </main>
     </div>
@@ -644,6 +647,73 @@ function StoryboardView({ project }: { project: StudioProject }) {
           </article>
         ))}
       </div>
+    </div>
+  );
+}
+
+function PublicationView({ project }: { project: StudioProject }) {
+  const publication = buildPublicationPackage(project);
+
+  return (
+    <div className={styles.stack}>
+      <section className={styles.evidenceHeader}>
+        <div>
+          <p className={styles.kicker}>Publication Package V1</p>
+          <h2>{publication.status.replaceAll('_', ' ')}</h2>
+        </div>
+        <span data-ready={publication.status === 'ready_for_human_approval' ? 'true' : 'false'}>
+          {publication.status === 'ready_for_human_approval' ? 'HUMAN APPROVAL' : 'NOT READY'}
+        </span>
+      </section>
+
+      {publication.blockers.length ? (
+        <section className={styles.card}>
+          <p className={styles.cardIndex}>Bloqueurs</p>
+          <ul>{publication.blockers.map((item) => <li key={item}>{item}</li>)}</ul>
+        </section>
+      ) : null}
+
+      {publication.warnings.length ? (
+        <section className={styles.card}>
+          <p className={styles.cardIndex}>Points de revue</p>
+          <ul>{publication.warnings.map((item) => <li key={item}>{item}</li>)}</ul>
+        </section>
+      ) : null}
+
+      <section className={styles.twoColumns}>
+        <article className={styles.card}>
+          <p className={styles.cardIndex}>Answers</p>
+          <h3>{publication.article.title}</h3>
+          <p>{publication.article.answerShort}</p>
+          <dl className={styles.definitionList}>
+            <div><dt>Slug</dt><dd>{publication.article.slug}</dd></div>
+            <div><dt>Scope</dt><dd>{publication.article.targetScope}</dd></div>
+            <div><dt>Evidence</dt><dd>{publication.article.evidenceRefs.join(', ') || '—'}</dd></div>
+          </dl>
+        </article>
+
+        <article className={styles.card}>
+          <p className={styles.cardIndex}>Carrousel</p>
+          <h3>{publication.carousel.readerTakeaway}</h3>
+          <p>{publication.carousel.centralIdea}</p>
+          <dl className={styles.definitionList}>
+            <div><dt>Slides</dt><dd>{String(publication.carousel.slides.length)}</dd></div>
+            <div><dt>Canon</dt><dd>{publication.carousel.canonReview.ready ? 'PASS' : 'REVIEW'}</dd></div>
+            <div><dt>CTA</dt><dd>{publication.carousel.ctaLabel ?? 'désactivé'}</dd></div>
+          </dl>
+        </article>
+      </section>
+
+      <section className={styles.card}>
+        <p className={styles.cardIndex}>Traçabilité</p>
+        <p>
+          Article : {publication.traceability.article.dependencies.length} dépendance(s) preuve ·
+          Carrousel : {publication.traceability.carousel.dependencies.length} dépendance(s) preuve.
+        </p>
+        <p className={styles.limitText}>
+          Une modification d’un evidence_id peut déclencher une revue ciblée avant republication.
+        </p>
+      </section>
     </div>
   );
 }
