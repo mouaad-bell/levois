@@ -209,3 +209,20 @@ Quand un ordinateur est disponible :
    - 25 000 € d’écart. Trop chère ?
 7. mesurer combien de preuves viennent de la bibliothèque et si le web a été évité ;
 8. seulement ensuite brancher le moteur de vulgarisation et le renderer.
+
+
+## Import Windows simplifié
+
+Une fois la base D1 créée et le binding configuré, l’import V2.1 peut être lancé depuis PowerShell avec :
+
+`powershell -ExecutionPolicy Bypass -File scripts/import-evidence-v21.ps1 -LibraryPath "C:\chemin\LEVOIS_EVIDENCE_LIBRARY_V2_1"`
+
+Le script :
+
+- applique le schéma D1 ;
+- applique la migration V2.1 ;
+- construit les lots SQL ;
+- importe tous les lots ;
+- vérifie la version, le nombre de preuves, les classes moteur, le registre de fraîcheur et les alias.
+
+Valeur attendue après import : **39 721 preuves actives**.
