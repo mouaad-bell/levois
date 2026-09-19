@@ -245,3 +245,20 @@ Les champs JSON lourds ne sont pas dupliqués dans l’index.
 L’import exclut `DO_NOT_USE` de l’index FTS. Le moteur récupère ensuite les lignes canoniques dans `evidence` pour appliquer tous les garde-fous.
 
 Le ranking ajoute une couche d’intention afin d’éviter des ambiguïtés lexicales : par exemple, une recherche sur les trajets ne doit pas être dominée par la réglementation du « bail mobilité ».
+
+
+## Validation live après déploiement
+
+Après import D1 et déploiement de l’environnement Studio :
+
+node scripts/validate-live-retrieval.mjs "https://levois-studio.<workers-domain>" "<STUDIO_ACCESS_TOKEN>"
+
+Le script teste les trois fixtures canoniques contre content/pilots/RETRIEVAL_EXPECTATIONS_V1.json.
+
+Contrôles obligatoires :
+
+- 80 m² → intention surface_usage + V2-DEF-0029 ;
+- Plus loin → intention mobility + INSEE-f36f351aab7a2171 ;
+- 25 000 € d’écart → intention price_value + METH-0021.
+
+Des preuves méthodologiques supplémentaires sont signalées sans bloquer si leur ordre varie.
