@@ -103,12 +103,40 @@ export function buildTraceabilityManifest(
     .filter((section) => section.type === 'limits')
     .flatMap((section) => section.claimRefs);
 
+  const selectedHook = project.canon
+    ? project.canon.hookCandidates.find(
+        (candidate) =>
+          candidate.mode === project.canon?.selectedHookMode,
+      )
+    : undefined;
+
+  const canonClaimIds = [
+    ...(selectedHook?.claimRefs ?? []),
+    ...(project.canon?.storyBeats.flatMap(
+      (beat) => beat.claimRefs,
+    ) ?? []),
+  ];
+
+  const directHookDependencies: ContentDependency[] =
+    (selectedHook?.evidenceRefs ?? []).map(
+      (evidenceId) => ({
+        evidenceId,
+        role: 'central',
+      }),
+    );
+
   const dependencies = uniqueDependencies([
     ...claimDependencies(
       project,
       centralClaimIds,
       'central',
     ),
+    ...claimDependencies(
+      project,
+      canonClaimIds,
+      'central',
+    ),
+    ...directHookDependencies,
     ...claimDependencies(
       project,
       articleClaimIds,
