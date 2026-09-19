@@ -5,7 +5,11 @@ import path from 'node:path';
 const root = path.resolve(process.argv[2] || 'content/pilots');
 const files = fs
   .readdirSync(root)
-  .filter((name) => name.endsWith('.json'))
+  .filter(
+    (name) =>
+      name.endsWith('_CANON_V1.json') &&
+      !name.includes('_RENDER_CONTRACT_'),
+  )
   .sort();
 
 const requiredModes = ['direct', 'scene', 'comparison'];
