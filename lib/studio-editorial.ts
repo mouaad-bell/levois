@@ -10,6 +10,7 @@ import {
   type StudioFamilyId,
   type StudioProject,
 } from './studio-schema';
+import { evaluateHooks } from './hook-engine';
 
 export type EditorialBundle = {
   familyId: StudioFamilyId;
@@ -178,6 +179,18 @@ export function buildStudioProjectFromEditorial(
     canon.hookCandidates.map((candidate) => candidate.mode),
   );
 
+  const hookReview = evaluateHooks({
+    brief: canon.decisionFrame,
+    candidates: canon.hookCandidates,
+    bodyConclusion: canon.decisionFrame.authorizedConclusion,
+    bodyFinalOperation: canon.autonomousAction || canon.decisionFrame.finalOperation,
+    knownEvidenceIds: evidenceIds,
+    knownClaimIds: claimIds,
+  });
+  const selectedHookValidated = hookReview.accepted.some(
+    (entry) => entry.candidate.mode === canon.selectedHookMode,
+  );
+
   const canonComplete =
     canon.decisionFrame.person.trim().length > 0 &&
     canon.decisionFrame.decision.trim().length > 0 &&
@@ -200,6 +213,7 @@ export function buildStudioProjectFromEditorial(
     evidencePack.summary.canPublish &&
     centralProofSupported &&
     canonComplete &&
+    selectedHookValidated &&
     slides.length >= 3;
 
   return {
@@ -281,7 +295,7 @@ export function buildStudioProjectFromEditorial(
         levoisBridge: slides.some(
           (slide) => slide.narrativeRole === 'bridge',
         ),
-        canonPromise: canonComplete,
+        canonPromise: canonComplete && selectedHookValidated,
         resolution:
           canon.decisionFrame.authorizedConclusion.trim().length > 0,
         autonomy: canon.autonomousAction.trim().length > 0,
