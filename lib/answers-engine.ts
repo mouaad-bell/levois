@@ -1,4 +1,5 @@
 import type { StudioProject } from './studio-schema';
+import { answerCanonicalPath } from './answers-architecture';
 import { LEVOIS_CANON_VERSION } from './content-canon';
 
 export type AnswerPageType =
@@ -14,6 +15,7 @@ export type AnswerPageBrief = {
   decision: string;
   title: string;
   slug: string;
+  canonicalPath: string;
   metaTitle: string;
   metaDescription: string;
   answerShort: string;
@@ -185,6 +187,7 @@ export function buildAnswerPageBrief(
 ): AnswerPageBrief {
   const pageType = inferPageType(project);
   const title = project.articleMaster.workingTitle;
+  const slug = slugify(title);
   const scope =
     project.scope.territory ||
     project.evidencePack.claims[0]?.geographicScope ||
@@ -223,7 +226,8 @@ export function buildAnswerPageBrief(
       project.canon?.decisionFrame.decision ??
       project.scope.decisionQuestion,
     title,
-    slug: slugify(title),
+    slug,
+    canonicalPath: answerCanonicalPath(slug),
     metaTitle: (title + ' — LEVOIS').slice(0, 60),
     metaDescription:
       (
