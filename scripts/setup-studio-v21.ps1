@@ -2,10 +2,9 @@ param(
   [Parameter(Mandatory = $true)]
   [string]$LibraryPath,
 
-  [Parameter(Mandatory = $true)]
-  [string]$DatabaseId,
-
+  [string]$DatabaseId = "",
   [string]$DatabaseName = "levois-evidence",
+  [switch]$CreateDatabase,
   [string]$StudioUrl = "https://levois-studio.mouaad-0f0.workers.dev",
   [switch]$SkipDeploy
 )
@@ -48,6 +47,51 @@ if ((Get-Item $LibraryPath).PSIsContainer -eq $false) {
 $masterPath = Join-Path $resolvedLibraryPath "02_EVIDENCE_LIBRARY_V21.jsonl"
 if (-not (Test-Path $masterPath)) {
   throw "02_EVIDENCE_LIBRARY_V21.jsonl absent du dossier sélectionné."
+}
+
+Step "Résolution de la base D1"
+
+if (-not $DatabaseId) {
+  $listJson = npx wrangler d1 list --json 2>$null
+  if ($LASTEXITCODE -eq 0 -and $listJson) {
+    try {
+      $databases = $listJson | ConvertFrom-Json
+      $match = $databases |
+        Where-Object { $_.name -eq $DatabaseName } |
+        Select-Object -First 1
+
+      if ($match) {
+        $DatabaseId = $match.uuid
+        if (-not $DatabaseId) { $DatabaseId = $match.id }
+        Write-Host "Base D1 existante trouvée : $DatabaseName ($DatabaseId)" -ForegroundColor Green
+      }
+    } catch {
+      Write-Host "Impossible de parser wrangler d1 list --json." -ForegroundColor Yellow
+    }
+  }
+}
+
+if (-not $DatabaseId -and $CreateDatabase) {
+  Step "Création explicite de la base D1"
+  $createOutput = npx wrangler d1 create $DatabaseName 2>&1
+  if ($LASTEXITCODE -ne 0) {
+    throw "Création D1 impossible : $createOutput"
+  }
+
+  $listJson = npx wrangler d1 list --json
+  $databases = $listJson | ConvertFrom-Json
+  $match = $databases |
+    Where-Object { $_.name -eq $DatabaseName } |
+    Select-Object -First 1
+
+  if ($match) {
+    $DatabaseId = $match.uuid
+    if (-not $DatabaseId) { $DatabaseId = $match.id }
+  }
+}
+
+if (-not $DatabaseId) {
+  throw "Base D1 '$DatabaseName' introuvable. Relancez avec -CreateDatabase pour autoriser sa création, ou passez -DatabaseId explicitement."
 }
 
 Step "Configuration du binding D1 Studio"
