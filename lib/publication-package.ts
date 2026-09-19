@@ -1,6 +1,8 @@
 import { buildAnswerPageBrief } from './answers-engine';
 import { reviewCanon } from './canon-review';
 import { buildTraceabilityManifest } from './content-traceability';
+import { buildStructuralRenderPackage } from './render-package-builder';
+import { reviewCarouselRender } from './carousel-render-contract';
 import type { StudioProject } from './studio-schema';
 import { buildVulgarisationBrief } from './vulgarisation-engine';
 
@@ -20,6 +22,10 @@ export type PublicationPackage = {
   canon: ReturnType<typeof reviewCanon>;
   article: ReturnType<typeof buildAnswerPageBrief>;
   carousel: ReturnType<typeof buildVulgarisationBrief>;
+  render: {
+    package: ReturnType<typeof buildStructuralRenderPackage>;
+    review: ReturnType<typeof reviewCarouselRender>;
+  };
   traceability: {
     article: ReturnType<typeof buildTraceabilityManifest>;
     carousel: ReturnType<typeof buildTraceabilityManifest>;
@@ -30,6 +36,7 @@ function deriveStatus(
   project: StudioProject,
   canon: ReturnType<typeof reviewCanon>,
   carousel: ReturnType<typeof buildVulgarisationBrief>,
+  renderReview: ReturnType<typeof reviewCarouselRender>,
   blockers: string[],
 ): PublicationPackageStatus {
   if (
@@ -47,7 +54,8 @@ function deriveStatus(
     carousel.canonReview.items.find(
       (item) => item.id === 'format',
     )?.status !== 'pass' ||
-    carousel.simplifications.length > 0
+    carousel.simplifications.length > 0 ||
+    !renderReview.ready
   ) {
     return 'render_review';
   }
@@ -66,6 +74,8 @@ export function buildPublicationPackage(
   const canon = reviewCanon(project);
   const article = buildAnswerPageBrief(project);
   const carousel = buildVulgarisationBrief(project);
+  const renderPackage = buildStructuralRenderPackage(project);
+  const renderReview = reviewCarouselRender(renderPackage);
 
   const blockers: string[] = [];
   const warnings: string[] = [];
@@ -151,6 +161,17 @@ export function buildPublicationPackage(
     }
   }
 
+  for (const issue of renderReview.issues) {
+    warnings.push(
+      'Rendu slide ' +
+        issue.slideNumber +
+        ' [' +
+        issue.severity +
+        '] : ' +
+        issue.reason,
+    );
+  }
+
   const traceabilityOptions = {
     contentVersion:
       options.contentVersion ?? 'draft-1',
@@ -181,6 +202,7 @@ export function buildPublicationPackage(
       project,
       canon,
       carousel,
+      renderReview,
       uniqueBlockers,
     ),
     generatedAt: project.generatedAt,
@@ -189,6 +211,10 @@ export function buildPublicationPackage(
     canon,
     article,
     carousel,
+    render: {
+      package: renderPackage,
+      review: renderReview,
+    },
     traceability: {
       article: articleTrace,
       carousel: carouselTrace,
