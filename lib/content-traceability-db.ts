@@ -634,3 +634,75 @@ export async function resolveContentReview(
 
   return row?.status === 'RESOLVED';
 }
+
+
+export async function getGenerationUsageSummary(
+  db: EvidenceDb,
+  days = 30,
+) {
+  const safeDays = Math.max(1, Math.min(days, 365));
+  const modifier = '-' + safeDays + ' days';
+
+  const overall = await db
+    .prepare(
+      [
+        'SELECT',
+        'COUNT(*) AS runs,',
+        'COALESCE(SUM(input_tokens),0) AS input_tokens,',
+        'COALESCE(SUM(output_tokens),0) AS output_tokens,',
+        'COALESCE(SUM(total_tokens),0) AS total_tokens,',
+        'COALESCE(SUM(CASE WHEN total_tokens = 0 THEN 1 ELSE 0 END),0) AS zero_token_runs,',
+        'COALESCE(SUM(CASE WHEN web_used = 1 THEN 1 ELSE 0 END),0) AS web_runs',
+        'FROM content_generation_runs',
+        "WHERE generated_at >= datetime('now', ?)",
+      ].join(' '),
+    )
+    .bind(modifier)
+    .first<{
+      runs: number;
+      input_tokens: number;
+      output_tokens: number;
+      total_tokens: number;
+      zero_token_runs: number;
+      web_runs: number;
+    }>();
+
+  const byPipeline = await db
+    .prepare(
+      [
+        'SELECT',
+        'pipeline,',
+        'COUNT(*) AS runs,',
+        'COALESCE(SUM(input_tokens),0) AS input_tokens,',
+        'COALESCE(SUM(output_tokens),0) AS output_tokens,',
+        'COALESCE(SUM(total_tokens),0) AS total_tokens,',
+        'COALESCE(SUM(CASE WHEN web_used = 1 THEN 1 ELSE 0 END),0) AS web_runs',
+        'FROM content_generation_runs',
+        "WHERE generated_at >= datetime('now', ?)",
+        'GROUP BY pipeline',
+        'ORDER BY runs DESC, pipeline ASC',
+      ].join(' '),
+    )
+    .bind(modifier)
+    .all<{
+      pipeline: string;
+      runs: number;
+      input_tokens: number;
+      output_tokens: number;
+      total_tokens: number;
+      web_runs: number;
+    }>();
+
+  return {
+    days: safeDays,
+    overall: overall ?? {
+      runs: 0,
+      input_tokens: 0,
+      output_tokens: 0,
+      total_tokens: 0,
+      zero_token_runs: 0,
+      web_runs: 0,
+    },
+    byPipeline: byPipeline.results ?? [],
+  };
+}
