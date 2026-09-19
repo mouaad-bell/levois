@@ -713,7 +713,10 @@ function diversityBucket(
     topic === 'insee local' &&
     subtopic === 'act'
   ) {
-    return 'mobility:insee-act';
+    return (
+      'mobility:insee-act:' +
+      normalize(hit.geographicScopeLabel || 'unknown')
+    );
   }
   if (intent === 'surface_usage' && topic === 'regulation') {
     return 'surface:regulation';
@@ -731,9 +734,9 @@ function bucketLimit(
   }
   if (
     intent === 'mobility' &&
-    bucket === 'mobility:insee-act'
+    bucket.startsWith('mobility:insee-act:')
   ) {
-    return 10;
+    return 2;
   }
   if (
     intent === 'surface_usage' &&
