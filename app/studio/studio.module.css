@@ -57,3 +57,5 @@
 .researchMeta{margin:12px 2px 0;color:var(--studio-muted);font-size:12px}
 .claimAllowed{border-top:1px solid rgba(7,20,28,.15);margin-top:24px;padding-top:18px}.claimAllowed strong{font-size:12px;text-transform:uppercase}.claimAllowed ul{padding-left:18px;color:#31564a}
 @media(max-width:640px){.accessRow{grid-template-columns:1fr}.actionRow{flex-direction:column}.actionRow .runButton,.secondaryButton{width:100%;flex:auto}}
+
+.evidenceClass{margin:7px 0 12px;color:var(--studio-accent);font-size:10px;font-weight:850;letter-spacing:.055em;text-transform:uppercase}
