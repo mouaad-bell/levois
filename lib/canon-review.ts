@@ -94,7 +94,7 @@ export function reviewCanon(project: StudioProject): CanonReview {
   const hookReview = evaluateHooks({
     brief: canon.decisionFrame,
     candidates: canon.hookCandidates,
-    bodyConclusion: bundle.articleMaster.centralThesis,
+    bodyConclusion: project.articleMaster.centralThesis,
     bodyFinalOperation:
       canon.autonomousAction ||
       canon.decisionFrame.finalOperation,
