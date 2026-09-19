@@ -18,7 +18,36 @@ function Step([string]$Message) {
 }
 
 if (-not (Test-Path $LibraryPath)) {
-  throw "Dossier V2.1 introuvable : $LibraryPath"
+  throw "Bibliothèque V2.1 introuvable : $LibraryPath"
+}
+
+$resolvedLibraryPath = $LibraryPath
+
+if ((Get-Item $LibraryPath).PSIsContainer -eq $false) {
+  if ([IO.Path]::GetExtension($LibraryPath).ToLowerInvariant() -ne ".zip") {
+    throw "LibraryPath doit pointer vers le dossier V2.1 extrait ou vers LEVOIS_EVIDENCE_LIBRARY_V2_1.zip"
+  }
+
+  Step "Extraction de la bibliothèque V2.1"
+  $extractRoot = Join-Path (Get-Location) ".levois-v21-extracted"
+  if (Test-Path $extractRoot) {
+    Remove-Item $extractRoot -Recurse -Force
+  }
+  New-Item -ItemType Directory -Path $extractRoot | Out-Null
+  Expand-Archive -Path $LibraryPath -DestinationPath $extractRoot -Force
+
+  $master = Get-ChildItem $extractRoot -Recurse -Filter "02_EVIDENCE_LIBRARY_V21.jsonl" | Select-Object -First 1
+  if (-not $master) {
+    throw "02_EVIDENCE_LIBRARY_V21.jsonl introuvable dans l archive."
+  }
+
+  $resolvedLibraryPath = $master.Directory.FullName
+  Write-Host "Bibliothèque extraite : $resolvedLibraryPath" -ForegroundColor Green
+}
+
+$masterPath = Join-Path $resolvedLibraryPath "02_EVIDENCE_LIBRARY_V21.jsonl"
+if (-not (Test-Path $masterPath)) {
+  throw "02_EVIDENCE_LIBRARY_V21.jsonl absent du dossier sélectionné."
 }
 
 Step "Configuration du binding D1 Studio"
@@ -43,7 +72,7 @@ $config | ConvertTo-Json -Depth 30 | Set-Content $wranglerPath -Encoding UTF8
 Write-Host "Binding LEVOIS_EVIDENCE_DB configuré pour env.studio." -ForegroundColor Green
 
 Step "Import V2.1"
-& powershell -ExecutionPolicy Bypass -File scripts/import-evidence-v21.ps1 -LibraryPath $LibraryPath -DatabaseName $DatabaseName
+& powershell -ExecutionPolicy Bypass -File scripts/import-evidence-v21.ps1 -LibraryPath $resolvedLibraryPath -DatabaseName $DatabaseName
 
 if (-not $SkipDeploy) {
   Step "Build"
