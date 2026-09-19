@@ -122,6 +122,7 @@ export type ResearchApiResponse = {
       candidateForWebSkip: boolean;
     };
     webSkipped?: boolean;
+    retrievalIntent?: string;
     traceabilityLogged?: boolean;
   };
 };
