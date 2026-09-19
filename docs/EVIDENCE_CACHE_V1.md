@@ -1,126 +1,203 @@
-# LEVOIS Evidence Cache V1
+# LEVOIS Evidence Cache — V2.1
 
-## Objectif
+## Source de vérité
 
-Le Studio doit devenir library first :
+La source active unique est :
+
+`02_EVIDENCE_LIBRARY_V21.jsonl`
+
+Ne jamais concaténer V2 + V2.1.
+
+Les deltas, fichiers V2, audits et fichiers bruts restent des artefacts de traçabilité, pas une seconde source active.
+
+## Taille validée
+
+La V2.1 contient 39 721 preuves actives.
+
+Répartition moteur observée :
+
+- REUSABLE_IMMEDIATELY : 6 709
+- HISTORICAL_ONLY : 28 148
+- VERIFY_PROPERTY : 3 316
+- VERIFY_PERSON : 174
+- REFRESH_REQUIRED : 584
+- DO_NOT_USE : 790
+
+Les 18 éléments encore en quarantaine ne sont pas présents dans la source active.
+
+## Objectif du cache
+
+Le Studio devient library first :
 
 SUJET
 → bibliothèque LEVOIS
-→ filtrage fraîcheur / territoire / période
-→ preuves suffisantes ?
-→ oui : aucune recherche web pour les faits déjà couverts
-→ non : recherche externe ciblée uniquement sur les trous
-→ nouvelles preuves validées
-→ ajout à la bibliothèque
+→ filtrage territoire / période / garde-fous
+→ preuves directement publiables suffisantes ?
+→ oui : pas de web
+→ non : web uniquement pour les lacunes réellement nécessaires
+→ Evidence Pack
 → vulgarisation
-→ storyboard
+→ article / storyboard
 → Remotion
 
-Cette couche est volontairement séparée du renderer.
+## Contrat d’usage V2.1
 
-## Schéma D1
+Le moteur respecte `engine_use_class` avant tout autre raccourci.
 
-Le fichier db/evidence-library-schema.sql prépare :
+### REUSABLE_IMMEDIATELY
 
-- evidence : preuves atomiques ;
-- evidence_sources : registre des sources ;
-- geo_reference et geo_membership ;
-- insee_cells ;
-- dvf_simple_transactions et dvf_aggregates ;
-- dpe_records et dpe_aggregates ;
-- risk_evidence ;
-- regulations ;
-- methodology ;
-- definitions ;
-- refresh_registry ;
-- evidence_ingest_runs.
+Peut soutenir une explication dans le périmètre documenté.
 
-La V2 pourra réutiliser le même mécanisme. Les imports utilisent INSERT OR REPLACE afin qu’un identifiant stable mette à jour une preuve au lieu de la dupliquer.
+### HISTORICAL_ONLY
 
-## Import V1 / V2
+Réutilisable uniquement avec période/millésime explicite.
+Ne doit jamais devenir silencieusement une information actuelle.
 
-Quand un ordinateur est disponible :
+### REFRESH_REQUIRED
 
-1. Extraire le ZIP dans un dossier local.
-2. Créer la base D1 une seule fois avec : npx wrangler d1 create levois-evidence
-3. Ajouter ensuite le binding LEVOIS_EVIDENCE_DB uniquement à l’environnement studio.
-4. Appliquer le schéma avec : npx wrangler d1 execute levois-evidence --remote --file=db/evidence-library-schema.sql
-5. Générer les lots SQL avec : node scripts/build-evidence-d1.mjs --input "C:\chemin\LEVOIS_EVIDENCE_LIBRARY_V2" --version V2
+Doit être revérifié avant assertion actuelle.
 
-Le script écrit les lots dans .levois-evidence-sql/ et crée RUN_ME_AFTER_SCHEMA.txt avec les commandes d’import.
+### VERIFY_PROPERTY
+
+La connaissance générale peut être utilisée.
+Une conclusion sur un bien exige une vérification du bien.
+
+### VERIFY_PERSON
+
+La connaissance générale peut être utilisée.
+Une conclusion sur une personne, son financement ou sa fiscalité exige ses paramètres.
+
+### DO_NOT_USE
+
+Jamais récupéré automatiquement comme preuve publiable.
+
+Le moteur conserve également :
+
+- allowed_uses ;
+- forbidden_inferences ;
+- decision_use ;
+- verification_required_before_publication ;
+- verification_required_for_property_application ;
+- verification_required_for_person_application ;
+- freshness ;
+- geographic_precision ;
+- temporal_precision ;
+- source exacte.
+
+## Garde-fous importants
+
+- DVF : n<5 n’est pas un repère public de prix.
+- DVF : 5≤n<15 doit être signalé comme fortement fragile.
+- DPE : un numéro de diagnostic n’est pas un logement unique.
+- DPE : le corpus ne représente pas automatiquement le parc.
+- Commune ≠ parcelle.
+- Risque communal ≠ exposition du bien.
+- Inventaire d’équipement ≠ disponibilité réelle.
+- Déclaration Acceslibre ≠ constat physique.
+- Valeur censurée `<x` ≠ zéro.
+- Règle future ≠ règle actuelle.
+- Une preuve locale ≠ estimation d’un bien.
+
+## D1
+
+Créer la base une seule fois :
+
+`npx wrangler d1 create levois-evidence`
+
+Appliquer ensuite :
+
+`npx wrangler d1 execute levois-evidence --remote --file=db/evidence-library-schema.sql`
+
+puis :
+
+`npx wrangler d1 execute levois-evidence --remote --file=db/evidence-library-v21-migration.sql`
+
+Ajouter le binding `LEVOIS_EVIDENCE_DB` uniquement à l’environnement Studio avant le test.
+
+## Import V2.1
+
+Extraire le ZIP V2.1.
+
+Puis :
+
+`node scripts/build-evidence-d1.mjs --input "C:\chemin\LEVOIS_EVIDENCE_LIBRARY_V2_1" --version V21 --database levois-evidence`
+
+Le script détecte directement `02_EVIDENCE_LIBRARY_V21.jsonl`.
+
+Il importe :
+
+- la source active V2.1 ;
+- V21_SOURCE_REGISTRY.csv ;
+- V21_REFRESH_REGISTRY.csv ;
+- V21_EVIDENCE_ALIASES.csv.
+
+Il n’ingère pas les anciens fichiers V2 comme une seconde bibliothèque.
+
+Le script génère les lots SQL dans `.levois-evidence-sql/` ainsi qu’un fichier `RUN_ME_AFTER_SCHEMA.txt`.
 
 ## Recherche locale
 
-lib/evidence-library.ts fournit la première baseline déterministe :
+`lib/evidence-library.ts` :
 
-- extraction de mots-clés ;
-- reconnaissance des sept communes LEVOIS ;
-- filtres topic / sous-topic / géographie ;
-- statut de preuve ;
-- niveau de source ;
-- politique de fraîcheur ;
-- date de révision ;
-- score de pertinence simple.
+- exclut DO_NOT_USE ;
+- applique les classes V2.1 ;
+- détecte les sept communes LEVOIS ;
+- utilise une recherche lexicale normalisée ;
+- pondère le niveau de source ;
+- pondère la fraîcheur ;
+- distingue preuve directement publiable, historique, à rafraîchir, à vérifier sur le bien et à vérifier sur la personne.
 
-V1 n’utilise volontairement aucun embedding. À ce volume, les filtres structurés et une recherche lexicale donnent une baseline mesurable. Le vectoriel ne sera ajouté que si les tests montrent un manque réel.
+Le moteur ne décide de sauter le web que lorsqu’il dispose d’un noyau suffisant de preuves directement réutilisables et fraîches.
 
-## Fraîcheur
+## Traçabilité
 
-Le retrieval distingue :
+Les claims générés depuis la bibliothèque doivent conserver les `evidence_id` exacts dans `evidenceRefs`.
 
-- STATIC : réutilisable ;
-- PERIODIC : réutilisable jusqu’à la prochaine revue ;
-- DYNAMIC : à revérifier selon sa date ;
-- EVENT_DRIVEN : à revérifier lors d’un changement pertinent.
+Cela permet ensuite :
 
-Une donnée historique peut rester dans la bibliothèque sans être utilisée comme état actuel.
+preuve corrigée
+→ contenus dépendants identifiables
+→ revue ciblée
+→ pas de republication aveugle.
 
-## Contrat de vérité
+## Worker
 
-Le moteur doit toujours conserver :
+Deux routes sont prévues :
 
-- la source ;
-- le périmètre exact ;
-- la période ;
-- allowed_uses ;
-- forbidden_inferences ;
-- la politique de fraîcheur.
+- `POST /api/studio/library/search`
+- `POST /api/studio/research`
 
-Une preuve expirée ne doit pas être silencieusement utilisée comme information actuelle.
+`/library/search` expose la récupération locale protégée par la clé Studio.
 
-## Intégration Worker cible
+`/research` :
 
-Le Worker recevra un binding optionnel LEVOIS_EVIDENCE_DB.
+1. interroge D1 ;
+2. transmet un Evidence Pack court au modèle ;
+3. saute la recherche web si la couverture directement publiable est suffisante ;
+4. sinon autorise le web uniquement pour les trous ;
+5. conserve les `evidenceRefs`.
 
-Le chemin cible est :
+Sans binding D1, le Studio garde son comportement actuel de recherche distante.
 
-1. searchEvidenceLibrary()
-2. récupérer les meilleures preuves locales ;
-3. identifier les gaps ;
-4. décider si le web est réellement nécessaire ;
-5. si oui, rechercher seulement les gaps ;
-6. persister les nouvelles preuves acceptées ;
-7. envoyer ensuite un Evidence Pack court au moteur de vulgarisation.
+## Ce qui n’est pas encore fait
 
-Tant que le binding D1 n’existe pas, levois-studio doit continuer à fonctionner comme aujourd’hui.
+- la base D1 n’est pas encore créée sur le compte Cloudflare ;
+- la V2.1 n’est donc pas encore chargée dans le Worker déployé ;
+- aucun changement n’est appliqué à la production levois.fr ;
+- aucune publication automatique n’est autorisée.
 
-## V2
+## Étape de mise en service
 
-Quand Astra livre la V2 :
+Quand un ordinateur est disponible :
 
-- ne pas refaire le code ;
-- importer V2 avec --version V2 ;
-- vérifier les nouveaux fichiers / colonnes ;
-- compléter les mappings uniquement pour les nouveaux domaines ;
-- conserver les mêmes IDs lorsqu’une preuve V1 est simplement enrichie ;
-- utiliser le fichier delta V1→V2 pour contrôler la croissance réelle.
-
-## Étape suivante
-
-Après ingestion réelle dans D1 :
-
-- exposer POST /api/studio/library/search ;
-- afficher dans le Studio combien de preuves viennent de la bibliothèque ;
-- afficher combien nécessitent un rafraîchissement ;
-- mesurer le taux de sujets résolus sans web ;
-- séparer enfin Research, Vulgarisation et Render.
+1. créer D1 ;
+2. appliquer schéma + migration V2.1 ;
+3. lancer l’import ;
+4. ajouter le binding Studio ;
+5. déployer `levois-studio` ;
+6. tester les trois fixtures :
+   - 80 m². Où passe la place ?
+   - Plus loin. De quoi ?
+   - 25 000 € d’écart. Trop chère ?
+7. mesurer combien de preuves viennent de la bibliothèque et si le web a été évité ;
+8. seulement ensuite brancher le moteur de vulgarisation et le renderer.
