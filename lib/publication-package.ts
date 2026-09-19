@@ -7,6 +7,7 @@ import { buildTraceabilityManifest } from './content-traceability';
 import { buildStructuralRenderPackage } from './render-package-builder';
 import { reviewCarouselRender } from './carousel-render-contract';
 import { buildVisualAssetPlan } from './visual-asset-plan';
+import { buildImageGenerationBrief } from './image-generation-brief';
 import type { StudioProject } from './studio-schema';
 import { buildVulgarisationBrief } from './vulgarisation-engine';
 
@@ -33,6 +34,7 @@ export type PublicationPackage = {
     package: ReturnType<typeof buildStructuralRenderPackage>;
     review: ReturnType<typeof reviewCarouselRender>;
     assetPlan: ReturnType<typeof buildVisualAssetPlan>;
+    imageBriefs: ReturnType<typeof buildImageGenerationBrief>[];
   };
   traceability: {
     article: ReturnType<typeof buildTraceabilityManifest>;
@@ -88,6 +90,9 @@ export function buildPublicationPackage(
   const renderPackage = buildStructuralRenderPackage(project);
   const renderReview = reviewCarouselRender(renderPackage);
   const assetPlan = buildVisualAssetPlan(project, renderPackage);
+  const imageBriefs = assetPlan.tasks.map((task) =>
+    buildImageGenerationBrief(task, project.family),
+  );
 
   const blockers: string[] = [];
   const warnings: string[] = [];
@@ -238,6 +243,7 @@ export function buildPublicationPackage(
       package: renderPackage,
       review: renderReview,
       assetPlan,
+      imageBriefs,
     },
     traceability: {
       article: articleTrace,
