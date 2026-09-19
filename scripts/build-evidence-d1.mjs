@@ -159,12 +159,7 @@ function writeBatch(table, columns, rows, prefix, transformValue) {
       );
     }
 
-    const sql = [
-      'BEGIN TRANSACTION;',
-      statement,
-      'COMMIT;',
-      '',
-    ].join('\n');
+    const sql = statement + '\n';
 
     const filename =
       String(sequence++).padStart(4, '0') +
@@ -411,12 +406,10 @@ const metaRows = [
 ];
 
 const metaSql = [
-  'BEGIN TRANSACTION;',
   'INSERT OR REPLACE INTO evidence_library_meta (key,value,updated_at) VALUES',
   metaRows
     .map(([key, value]) => '(' + sqlValue(key) + ',' + sqlValue(value) + ',CURRENT_TIMESTAMP)')
     .join(',\n') + ';',
-  'COMMIT;',
   '',
 ].join('\n');
 
