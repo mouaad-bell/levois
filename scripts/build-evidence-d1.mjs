@@ -133,6 +133,7 @@ let evidenceRows = 0;
 let sourceRows = 0;
 let refreshRows = 0;
 let aliasRows = 0;
+let ftsRows = 0;
 const engineClassCounts = {};
 
 function writeBatch(table, columns, rows, prefix, transformValue) {
@@ -252,9 +253,27 @@ async function importV21() {
     'search_text'
   ];
 
+  const ftsResetFile =
+    String(sequence++).padStart(4, '0') + '_fts_reset.sql';
+  fs.writeFileSync(
+    path.join(outputDir, ftsResetFile),
+    'DELETE FROM evidence_search;\n',
+  );
+  commandFiles.push(ftsResetFile);
+
   const stream = fs.createReadStream(evidencePath, { encoding: 'utf8' });
   const lines = readline.createInterface({ input: stream, crlfDelay: Infinity });
   const batch = [];
+  const ftsBatch = [];
+  const ftsColumns = [
+    'evidence_id',
+    'topic',
+    'subtopic',
+    'geographic_label',
+    'period',
+    'claim',
+    'decision_use',
+  ];
 
   for await (const line of lines) {
     if (!line.trim()) continue;
@@ -289,17 +308,50 @@ async function importV21() {
     };
 
     const engineClass = raw.engine_use_class || 'UNKNOWN';
-    engineClassCounts[engineClass] = (engineClassCounts[engineClass] || 0) + 1;
+    engineClassCounts[engineClass] =
+      (engineClassCounts[engineClass] || 0) + 1;
 
     batch.push(row);
     evidenceRows += 1;
 
+    if (engineClass !== 'DO_NOT_USE') {
+      ftsBatch.push({
+        evidence_id: raw.evidence_id,
+        topic: raw.topic,
+        subtopic: raw.subtopic,
+        geographic_label: raw.geographic_scope_label,
+        period: raw.time_period,
+        claim: raw.claim,
+        decision_use: raw.decision_use,
+      });
+      ftsRows += 1;
+    }
+
     if (batch.length >= batchRows) {
-      writeBatch('evidence', evidenceColumns, batch.splice(0, batch.length), 'evidence');
+      writeBatch(
+        'evidence',
+        evidenceColumns,
+        batch.splice(0, batch.length),
+        'evidence',
+      );
+    }
+
+    if (ftsBatch.length >= batchRows) {
+      writeBatch(
+        'evidence_search',
+        ftsColumns,
+        ftsBatch.splice(0, ftsBatch.length),
+        'fts',
+      );
     }
   }
 
-  if (batch.length) writeBatch('evidence', evidenceColumns, batch, 'evidence');
+  if (batch.length) {
+    writeBatch('evidence', evidenceColumns, batch, 'evidence');
+  }
+  if (ftsBatch.length) {
+    writeBatch('evidence_search', ftsColumns, ftsBatch, 'fts');
+  }
 
   const sources = readCsv('V21_SOURCE_REGISTRY.csv');
   if (sources.length) {
@@ -402,6 +454,7 @@ const metaRows = [
   ['source_rows', String(sourceRows)],
   ['refresh_rows', String(refreshRows)],
   ['alias_rows', String(aliasRows)],
+  ['fts_rows', String(ftsRows)],
   ['engine_class_counts', JSON.stringify(engineClassCounts)],
 ];
 
@@ -428,6 +481,7 @@ const manifest = {
   sourceRows,
   refreshRows,
   aliasRows,
+  ftsRows,
   engineClassCounts,
   sqlFiles: commandFiles,
 };
@@ -462,6 +516,8 @@ console.log(
     ', refresh=' +
     refreshRows +
     ', aliases=' +
-    aliasRows,
+    aliasRows +
+    ', fts=' +
+    ftsRows,
 );
 console.log('Engine classes:', engineClassCounts);
