@@ -335,6 +335,41 @@ function sanitizeBundle(
   };
 }
 
+async function librarySearch(request: Request, env: StudioEnv) {
+  if (!env.STUDIO_ACCESS_TOKEN) {
+    return json({ error: 'Studio non configuré : STUDIO_ACCESS_TOKEN requis.' }, { status: 503 });
+  }
+
+  const provided = request.headers.get('x-studio-key') ?? '';
+  if (!provided || !safeEqual(provided, env.STUDIO_ACCESS_TOKEN)) {
+    return json({ error: 'Accès Studio refusé.' }, { status: 401 });
+  }
+
+  if (!env.LEVOIS_EVIDENCE_DB) {
+    return json({ error: 'Bibliothèque LEVOIS non connectée.' }, { status: 503 });
+  }
+
+  let body: { input?: unknown; limit?: unknown };
+  try {
+    body = await request.json() as { input?: unknown; limit?: unknown };
+  } catch {
+    return json({ error: 'Corps JSON invalide.' }, { status: 400 });
+  }
+
+  const input = typeof body.input === 'string' ? body.input.replace(/\s+/g, ' ').trim() : '';
+  if (!input || input.length > 5000) {
+    return json({ error: 'Le sujet doit contenir entre 1 et 5 000 caractères.' }, { status: 400 });
+  }
+
+  const limit = typeof body.limit === 'number' ? body.limit : 24;
+  const hits = await searchEvidenceLibrary(env.LEVOIS_EVIDENCE_DB, { text: input, limit });
+
+  return json({
+    hits,
+    coverage: libraryCoverageSummary(hits),
+  });
+}
+
 async function research(request: Request, env: StudioEnv) {
   if (!env.STUDIO_ACCESS_TOKEN || !env.OPENAI_API_KEY) {
     return json(
@@ -359,6 +394,37 @@ async function research(request: Request, env: StudioEnv) {
   if (!input || input.length > 5000) {
     return json({ error: 'Le sujet doit contenir entre 1 et 5 000 caractères.' }, { status: 400 });
   }
+
+  const libraryHits = env.LEVOIS_EVIDENCE_DB
+    ? await searchEvidenceLibrary(env.LEVOIS_EVIDENCE_DB, { text: input, limit: 24 })
+    : [];
+  const libraryCoverage = libraryCoverageSummary(libraryHits);
+  const allowedEvidenceIds = new Set(libraryHits.map((hit) => hit.evidenceId));
+
+  const libraryContext = libraryHits.slice(0, 18).map((hit) => ({
+    evidence_id: hit.evidenceId,
+    claim: hit.claim,
+    value: hit.value,
+    unit: hit.unit,
+    population: hit.population,
+    geographic_scope_type: hit.geographicScopeType,
+    geographic_scope_label: hit.geographicScopeLabel,
+    geographic_code: hit.geographicCode,
+    time_period: hit.timePeriod,
+    source_publisher: hit.sourcePublisher,
+    source_title: hit.sourceTitle,
+    source_url: hit.sourceUrl,
+    source_tier: hit.sourceTier,
+    engine_use_class: hit.engineUseClass,
+    publication_readiness: hit.publicationReadiness,
+    verification_required_before_publication: hit.verificationRequiredBeforePublication,
+    verification_required_for_property_application: hit.verificationRequiredForPropertyApplication,
+    verification_required_for_person_application: hit.verificationRequiredForPersonApplication,
+    freshness: hit.freshness,
+    allowed_uses: hit.allowedUses,
+    forbidden_inferences: hit.forbiddenInferences,
+    decision_use: hit.decisionUse,
+  }));
 
   const model = env.STUDIO_RESEARCH_MODEL || 'chat-latest';
   const instructions = `Tu es la cellule de recherche du Studio éditorial LEVOIS, consacré à la décision immobilière à Chartres et alentours.
