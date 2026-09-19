@@ -2,7 +2,8 @@ import type { ResearchBundle } from './lib/studio-research';
 import { searchEvidenceLibrary, libraryCoverageSummary, inferRetrievalIntent, type EvidenceDb } from './lib/evidence-library';
 import { buildEvidencePackFromLibrary } from './lib/evidence-pack';
 import type { EditorialBundle } from './lib/studio-editorial';
-import { recordGenerationRun } from './lib/content-traceability-db';
+import { recordGenerationRun, persistTraceabilityManifest } from './lib/content-traceability-db';
+import type { ContentTraceabilityManifest } from './lib/content-traceability';
 
 type AssetsBinding = { fetch(request: Request): Promise<Response> };
 
@@ -682,6 +683,109 @@ async function editorial(request: Request, env: StudioEnv) {
     },
   });
 }
+async function saveTraceability(request: Request, env: StudioEnv) {
+  if (!env.STUDIO_ACCESS_TOKEN) {
+    return json(
+      { error: 'Studio non configuré : STUDIO_ACCESS_TOKEN requis.' },
+      { status: 503 },
+    );
+  }
+
+  const provided = request.headers.get('x-studio-key') ?? '';
+  if (!provided || !safeEqual(provided, env.STUDIO_ACCESS_TOKEN)) {
+    return json({ error: 'Accès Studio refusé.' }, { status: 401 });
+  }
+
+  if (!env.LEVOIS_EVIDENCE_DB) {
+    return json(
+      { error: 'Bibliothèque LEVOIS non connectée.' },
+      { status: 503 },
+    );
+  }
+
+  let body: {
+    manifest?: ContentTraceabilityManifest;
+    slug?: unknown;
+    route?: unknown;
+    status?: unknown;
+    notes?: unknown;
+  };
+
+  try {
+    body = await request.json() as typeof body;
+  } catch {
+    return json({ error: 'Corps JSON invalide.' }, { status: 400 });
+  }
+
+  const manifest = body.manifest;
+
+  if (
+    !manifest ||
+    manifest.canonVersion !== 'CONTENT_EXPERIENCE_V1_2026-09-19' ||
+    manifest.evidenceLibraryVersion !== 'V21' ||
+    !['article', 'carousel', 'video', 'site_experience'].includes(
+      manifest.artifactType,
+    ) ||
+    !manifest.artifactId ||
+    !manifest.title ||
+    !Array.isArray(manifest.dependencies) ||
+    manifest.dependencies.length > 200
+  ) {
+    return json(
+      { error: 'Manifest de traçabilité invalide.' },
+      { status: 400 },
+    );
+  }
+
+  for (const dependency of manifest.dependencies) {
+    if (
+      !dependency.evidenceId ||
+      ![
+        'central',
+        'context',
+        'limit',
+        'method',
+        'visual',
+        'other',
+      ].includes(dependency.role)
+    ) {
+      return json(
+        { error: 'Dépendance de preuve invalide.' },
+        { status: 400 },
+      );
+    }
+  }
+
+  await persistTraceabilityManifest(
+    env.LEVOIS_EVIDENCE_DB,
+    manifest,
+    {
+      status:
+        typeof body.status === 'string'
+          ? body.status.slice(0, 64)
+          : 'DRAFT_REVIEWED',
+      slug:
+        typeof body.slug === 'string'
+          ? body.slug.slice(0, 180)
+          : undefined,
+      route:
+        typeof body.route === 'string'
+          ? body.route.slice(0, 300)
+          : undefined,
+      notes:
+        typeof body.notes === 'string'
+          ? body.notes.slice(0, 1000)
+          : undefined,
+    },
+  );
+
+  return json({
+    saved: true,
+    artifactId: manifest.artifactId,
+    dependencies: manifest.dependencies.length,
+  });
+}
+
 async function research(request: Request, env: StudioEnv) {
   if (!env.STUDIO_ACCESS_TOKEN || !env.OPENAI_API_KEY) {
     return json(
@@ -962,6 +1066,11 @@ export default {
       if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
       return editorial(request, env);
     }
+    if (url.pathname === '/api/studio/traceability/save') {
+      if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
+      return saveTraceability(request, env);
+    }
+
     if (url.pathname === '/api/studio/research') {
       if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
       return research(request, env);
