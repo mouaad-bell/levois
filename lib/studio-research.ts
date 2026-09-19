@@ -12,6 +12,7 @@ import {
   type StudioFamilyId,
   type StudioProject,
 } from './studio-schema';
+import { evaluateHooks } from './hook-engine';
 
 export type ResearchBundle = {
   familyId: StudioFamilyId;
@@ -216,6 +217,23 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
   const canonDecisionComplete = Object.values(bundle.canon.decisionFrame).every(
     (value) => typeof value === 'string' && value.trim().length > 0,
   );
+  const knownEvidenceIds = new Set(
+    claims.flatMap((claim) => claim.evidenceRefs ?? []),
+  );
+  const hookReview = evaluateHooks({
+    brief: bundle.canon.decisionFrame,
+    candidates: bundle.canon.hookCandidates,
+    bodyConclusion: bundle.canon.decisionFrame.authorizedConclusion,
+    bodyFinalOperation:
+      bundle.canon.autonomousAction ||
+      bundle.canon.decisionFrame.finalOperation,
+    knownEvidenceIds,
+    knownClaimIds: claimIds,
+  });
+  const selectedHookValidated = hookReview.accepted.some(
+    (entry) => entry.candidate.mode === bundle.canon.selectedHookMode,
+  );
+
   const canonComplete =
     bundle.canon.canonVersion === 'CONTENT_EXPERIENCE_V1_2026-09-19' &&
     canonDecisionComplete &&
@@ -242,7 +260,8 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
     slides.length >= 3 &&
     proofSupported &&
     centralProofSupported &&
-    canonComplete;
+    canonComplete &&
+    selectedHookValidated;
 
   return {
     schemaVersion: STUDIO_SCHEMA_VERSION,
@@ -325,11 +344,7 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
         levoisBridge:
           slides.some((slide) => slide.narrativeRole === 'bridge'),
         canonPromise:
-          Boolean(
-            bundle.canon.hookCandidates.find(
-              (candidate) => candidate.mode === bundle.canon.selectedHookMode,
-            ),
-          ) &&
+          selectedHookValidated &&
           bundle.canon.decisionFrame.authorizedConclusion.trim().length > 0,
         resolution:
           bundle.canon.decisionFrame.authorizedConclusion.trim().length > 0,
