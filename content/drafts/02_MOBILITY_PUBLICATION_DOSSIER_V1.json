@@ -1,0 +1,115 @@
+{
+  "dossierId": "LEV-PUB-MOBILITY-002",
+  "status": "READY_FOR_RENDER_REVIEW",
+  "canonVersion": "CONTENT_EXPERIENCE_V1_2026-09-19",
+  "evidenceLibraryVersion": "V21-2026-09-19",
+  "decision": "Vérifier si l’économie recherchée reste compatible avec le moment le plus contraint du quotidien lorsque le logement est plus éloigné.",
+  "authorizedConclusion": "Un temps de trajet supplémentaire ne suffit pas à condamner l’éloignement, mais il peut rendre une organisation précise impossible telle quelle lorsqu’il dépasse une marge contrainte.",
+  "autonomousAction": "Prendre le moment le plus contraint de la semaine, refaire l’enchaînement depuis le logement envisagé et identifier l’adaptation nécessaire si la marge disparaît.",
+  "primaryEvidenceSnapshot": {
+    "evidenceId": "INSEE-f36f351aab7a2171",
+    "role": "historical_local_context",
+    "engineUseClass": "HISTORICAL_ONLY",
+    "sourceTier": 1,
+    "status": "VERIFIED_AT_RETRIEVAL",
+    "claim": "En 2023, 73,7 % des actifs de 15 ans ou plus ayant un emploi et résidant dans le Bassin de vie 2022 de Chartres travaillaient dans une commune autre que leur commune de résidence.",
+    "sourcePublisher": "INSEE",
+    "sourceTitle": "ACT T4 - Lieu de travail des actifs de 15 ans ou plus ayant un emploi qui résident dans la zone",
+    "sourceUrl": "https://www.insee.fr/fr/statistiques/2011101?geo=BV2022-28085#ancre-ACT_T4",
+    "retrievedAt": "2026-09-18",
+    "nextReviewDate": "2027-09-01",
+    "timePeriod": "2023",
+    "geographicScope": "Bassin de vie 2022 de Chartres",
+    "allowedUse": "Décrire le lieu de travail des actifs résidents dans le périmètre exact et l’année affichée.",
+    "forbiddenInference": "Ne permet pas d’inférer distance, durée, coût, difficulté de trajet ni situation d’un ménage particulier.",
+    "verificationRequiredBeforePublication": false
+  },
+  "caseStatus": {
+    "type": "pedagogical_fiction",
+    "visibleQualifier": "CAS FICTIF",
+    "fictiveNumbers": [
+      "17 h 30",
+      "18 h 15",
+      "45 min",
+      "35 min",
+      "50 min",
+      "15 min",
+      "10 min"
+    ],
+    "rule": "Ces valeurs servent uniquement à expliquer le mécanisme marge horaire → adaptation. Elles ne décrivent aucun trajet réel."
+  },
+  "assets": {
+    "article": "content/drafts/02_MOBILITY_ARTICLE_V1.md",
+    "editorialPilot": "content/pilots/PILOT_02_MOBILITE_CANON_V1.json",
+    "renderContract": "content/pilots/PILOT_02_RENDER_CONTRACT_V1.json"
+  },
+  "hook": {
+    "mode": "direct",
+    "text": "MOINS CHÈRE, PLUS LOIN : VOTRE SOIRÉE FONCTIONNE-T-ELLE ENCORE ?",
+    "numericStatus": "non_numeric",
+    "promise": "Tester le compromis prix / éloignement sur un moment concret puis transmettre une méthode réutilisable."
+  },
+  "essentialLimit": "Les horaires et durées du récit sont fictifs. Le cas montre un mécanisme de décision, pas la durée réelle des trajets autour de Chartres ni une règle générale contre l’éloignement.",
+  "prepublicationChecks": [
+    {
+      "id": "subject",
+      "status": "PASS"
+    },
+    {
+      "id": "understanding",
+      "status": "PASS"
+    },
+    {
+      "id": "recognition",
+      "status": "PASS"
+    },
+    {
+      "id": "interest",
+      "status": "PASS"
+    },
+    {
+      "id": "promise",
+      "status": "PASS"
+    },
+    {
+      "id": "progression",
+      "status": "PASS"
+    },
+    {
+      "id": "mechanism",
+      "status": "PASS"
+    },
+    {
+      "id": "limits",
+      "status": "PASS"
+    },
+    {
+      "id": "resolution",
+      "status": "PASS"
+    },
+    {
+      "id": "autonomy",
+      "status": "PASS"
+    },
+    {
+      "id": "format",
+      "status": "REVIEW",
+      "reason": "Recette réelle 1080×1350 sur smartphone encore nécessaire."
+    },
+    {
+      "id": "continuity",
+      "status": "PASS",
+      "reason": "Aucun CTA commercial n’est requis dans la version autonome."
+    }
+  ],
+  "absoluteVetos": {
+    "fabricatedFact": false,
+    "unjustifiedFear": false,
+    "commercialGate": false
+  },
+  "remainingBlockers": [
+    "Rendre les slides dans la DA finale et effectuer la recette mobile.",
+    "Maintenir CAS FICTIF sur les horaires et durées pédagogiques.",
+    "Si le contexte INSEE est publié, afficher exactement Bassin de vie 2022 de Chartres · 2023."
+  ]
+}
