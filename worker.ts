@@ -1053,6 +1053,104 @@ async function traceabilityImpact(request: Request, env: StudioEnv) {
   });
 }
 
+async function studioHealth(request: Request, env: StudioEnv) {
+  if (!env.STUDIO_ACCESS_TOKEN) {
+    return json(
+      { error: 'Studio non configuré : STUDIO_ACCESS_TOKEN requis.' },
+      { status: 503 },
+    );
+  }
+
+  const provided = request.headers.get('x-studio-key') ?? '';
+  if (!provided || !safeEqual(provided, env.STUDIO_ACCESS_TOKEN)) {
+    return json({ error: 'Accès Studio refusé.' }, { status: 401 });
+  }
+
+  if (!env.LEVOIS_EVIDENCE_DB) {
+    return json({
+      ok: false,
+      databaseConnected: false,
+      error: 'Binding LEVOIS_EVIDENCE_DB absent.',
+    }, { status: 503 });
+  }
+
+  const scalar = async (sql: string) => {
+    const row = await env.LEVOIS_EVIDENCE_DB!.prepare(sql).first<Record<string, unknown>>();
+    return row ?? {};
+  };
+
+  try {
+    const [
+      versionRow,
+      evidenceRow,
+      ftsRow,
+      forbiddenRow,
+      sourcesRow,
+      traceRow,
+      cacheRow,
+    ] = await Promise.all([
+      scalar("SELECT value FROM evidence_library_meta WHERE key='library_version'"),
+      scalar('SELECT COUNT(*) AS n FROM evidence'),
+      scalar('SELECT COUNT(*) AS n FROM evidence_search'),
+      scalar("SELECT COUNT(*) AS n FROM evidence WHERE engine_use_class='DO_NOT_USE'"),
+      scalar('SELECT COUNT(*) AS n FROM evidence_sources_v21'),
+      scalar('SELECT COUNT(*) AS n FROM content_artifacts'),
+      scalar('SELECT COUNT(*) AS n FROM studio_editorial_cache'),
+    ]);
+
+    const libraryVersion = String(versionRow.value ?? '');
+    const evidenceCount = Number(evidenceRow.n ?? 0);
+    const ftsCount = Number(ftsRow.n ?? 0);
+    const forbiddenCount = Number(forbiddenRow.n ?? 0);
+    const sourceCount = Number(sourcesRow.n ?? 0);
+    const artifactCount = Number(traceRow.n ?? 0);
+    const cacheEntries = Number(cacheRow.n ?? 0);
+
+    const expected = {
+      libraryVersion: 'V21',
+      evidenceCount: 39721,
+      ftsCount: 38931,
+      forbiddenCount: 790,
+    };
+
+    const checks = {
+      libraryVersion: libraryVersion === expected.libraryVersion,
+      evidenceCount: evidenceCount === expected.evidenceCount,
+      ftsCount: ftsCount === expected.ftsCount,
+      forbiddenExcludedFromFts:
+        evidenceCount - forbiddenCount === ftsCount,
+      sourcesLoaded: sourceCount > 0,
+      traceabilitySchema: Number.isFinite(artifactCount),
+      cacheSchema: Number.isFinite(cacheEntries),
+    };
+
+    const ok = Object.values(checks).every(Boolean);
+
+    return json({
+      ok,
+      databaseConnected: true,
+      libraryVersion,
+      evidenceCount,
+      ftsCount,
+      forbiddenCount,
+      sourceCount,
+      artifactCount,
+      cacheEntries,
+      expected,
+      checks,
+    }, { status: ok ? 200 : 409 });
+  } catch (error) {
+    return json({
+      ok: false,
+      databaseConnected: true,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Contrôle D1 impossible.',
+    }, { status: 503 });
+  }
+}
+
 async function usageSummary(request: Request, env: StudioEnv) {
   if (!env.STUDIO_ACCESS_TOKEN) {
     return json(
@@ -1508,6 +1606,11 @@ export default {
     if (url.pathname === '/api/studio/traceability/impact') {
       if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
       return traceabilityImpact(request, env);
+    }
+
+    if (url.pathname === '/api/studio/health') {
+      if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
+      return studioHealth(request, env);
     }
 
     if (url.pathname === '/api/studio/usage/summary') {
