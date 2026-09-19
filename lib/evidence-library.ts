@@ -615,6 +615,162 @@ async function queryWithLike(
   return raw.results || [];
 }
 
+
+async function queryIntentAnchors(
+  db: EvidenceDb,
+  intent: RetrievalIntent,
+) {
+  let predicate = '';
+
+  if (intent === 'surface_usage') {
+    predicate =
+      "(LOWER(topic) IN ('definitions','methodology','regulation') " +
+      "AND (LOWER(COALESCE(subtopic,'')) LIKE '%surface%' " +
+      "OR LOWER(claim) LIKE '%surface habitable%' " +
+      "OR LOWER(claim) LIKE '%surface du logement%'))";
+  } else if (intent === 'mobility') {
+    predicate =
+      "((LOWER(topic)='insee local' AND LOWER(COALESCE(subtopic,''))='act') " +
+      "OR (LOWER(topic)='localisation' AND (" +
+      "LOWER(claim) LIKE '%gare%' OR LOWER(claim) LIKE '%transport%' " +
+      "OR LOWER(claim) LIKE '%arrêt%' OR LOWER(claim) LIKE '%arret%')))";
+  } else if (intent === 'price_value') {
+    predicate =
+      "(LOWER(topic) IN ('methodology','definitions') AND (" +
+      "LOWER(COALESCE(subtopic,'')) LIKE '%price%' " +
+      "OR LOWER(COALESCE(subtopic,'')) LIKE '%prix%' " +
+      "OR LOWER(COALESCE(subtopic,'')) LIKE '%mutation%' " +
+      "OR LOWER(COALESCE(subtopic,'')) LIKE '%valeur%' " +
+      "OR LOWER(claim) LIKE '%prix affiché%' " +
+      "OR LOWER(claim) LIKE '%prix affiche%' " +
+      "OR LOWER(claim) LIKE '%prix vendu%' " +
+      "OR LOWER(claim) LIKE '%valeur foncière%' " +
+      "OR LOWER(claim) LIKE '%valeur fonciere%' " +
+      "OR LOWER(claim) LIKE '%prix au m²%' " +
+      "OR LOWER(claim) LIKE '%prix au m2%'))";
+  } else {
+    return [] as Record<string, unknown>[];
+  }
+
+  const sql =
+    'SELECT ' +
+    selectColumns('evidence') +
+    ', NULL AS fts_rank ' +
+    'FROM evidence WHERE ' +
+    "COALESCE(engine_use_class,'REUSABLE_IMMEDIATELY') <> 'DO_NOT_USE' AND " +
+    predicate +
+    ' LIMIT 180';
+
+  const raw = await db
+    .prepare(sql)
+    .all<Record<string, unknown>>();
+
+  return raw.results || [];
+}
+
+function mergeRows(
+  ...groups: Record<string, unknown>[][]
+) {
+  const byId = new Map<string, Record<string, unknown>>();
+
+  for (const group of groups) {
+    for (const row of group) {
+      const id = String(row.evidence_id || '');
+      if (!id) continue;
+
+      const current = byId.get(id);
+      if (!current) {
+        byId.set(id, row);
+        continue;
+      }
+
+      const currentRank = Number(current.fts_rank);
+      const nextRank = Number(row.fts_rank);
+      if (
+        Number.isFinite(nextRank) &&
+        (!Number.isFinite(currentRank) || nextRank < currentRank)
+      ) {
+        byId.set(id, row);
+      }
+    }
+  }
+
+  return [...byId.values()];
+}
+
+function diversityBucket(
+  hit: LibraryEvidence,
+  intent: RetrievalIntent,
+) {
+  const topic = normalize(hit.topic);
+  const subtopic = normalize(hit.subtopic);
+
+  if (intent === 'price_value' && topic === 'dvf') {
+    return 'price:dvf';
+  }
+  if (
+    intent === 'mobility' &&
+    topic === 'insee local' &&
+    subtopic === 'act'
+  ) {
+    return 'mobility:insee-act';
+  }
+  if (intent === 'surface_usage' && topic === 'regulation') {
+    return 'surface:regulation';
+  }
+
+  return topic + ':' + subtopic;
+}
+
+function bucketLimit(
+  bucket: string,
+  intent: RetrievalIntent,
+) {
+  if (intent === 'price_value' && bucket === 'price:dvf') {
+    return 8;
+  }
+  if (
+    intent === 'mobility' &&
+    bucket === 'mobility:insee-act'
+  ) {
+    return 10;
+  }
+  if (
+    intent === 'surface_usage' &&
+    bucket === 'surface:regulation'
+  ) {
+    return 5;
+  }
+
+  return 6;
+}
+
+function diversifyHits(
+  hits: LibraryEvidence[],
+  limit: number,
+  intent: RetrievalIntent,
+) {
+  const selected: LibraryEvidence[] = [];
+  const counts = new Map<string, number>();
+
+  for (const hit of hits) {
+    const bucket = diversityBucket(hit, intent);
+    const count = counts.get(bucket) || 0;
+    const cap = bucketLimit(bucket, intent);
+
+    if (count >= cap) continue;
+
+    selected.push(hit);
+    counts.set(bucket, count + 1);
+
+    if (selected.length >= limit) break;
+  }
+
+  // Do not refill every duplicate bucket. A smaller, more diverse Evidence
+  // Pack is preferable to a nominally full list dominated by one dataset.
+  return selected;
+}
+
 export async function searchEvidenceLibrary(
   db: EvidenceDb,
   query: EvidenceLibraryQuery,
@@ -645,15 +801,24 @@ export async function searchEvidenceLibrary(
   );
   const historicalIntent = isHistoricalIntent(text);
 
-  let rows: Record<string, unknown>[] = [];
+  let broadRows: Record<string, unknown>[] = [];
 
   try {
-    rows = await queryWithFts(db, tokens, topics);
+    broadRows = await queryWithFts(db, tokens, topics);
   } catch {
-    rows = await queryWithLike(db, tokens, topics);
+    broadRows = await queryWithLike(db, tokens, topics);
   }
 
-  return rows
+  let anchorRows: Record<string, unknown>[] = [];
+  try {
+    anchorRows = await queryIntentAnchors(db, intent);
+  } catch {
+    anchorRows = [];
+  }
+
+  const rows = mergeRows(broadRows, anchorRows);
+
+  const ranked = rows
     .map((row) => {
       const useClass = engineClass(
         row.engine_use_class,
@@ -795,8 +960,9 @@ export async function searchEvidenceLibrary(
         row.score > 0 &&
         row.publicationReadiness !== 'forbidden',
     )
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit);
+    .sort((a, b) => b.score - a.score);
+
+  return diversifyHits(ranked, limit, intent);
 }
 
 export function libraryCoverageSummary(
