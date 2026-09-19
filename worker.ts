@@ -22,6 +22,11 @@ type OpenAIResponse = {
   model?: string;
   output_text?: string;
   output?: unknown[];
+  usage?: {
+    input_tokens?: number;
+    output_tokens?: number;
+    total_tokens?: number;
+  };
   error?: { message?: string };
 };
 
@@ -764,6 +769,9 @@ async function editorial(request: Request, env: StudioEnv) {
       evidenceLibraryVersion: 'V21',
       webUsed: false,
       model: payload.model || model,
+      inputTokens: payload.usage?.input_tokens,
+      outputTokens: payload.usage?.output_tokens,
+      totalTokens: payload.usage?.total_tokens,
       evidenceIds: built.evidenceIds,
       rejectedEvidenceIds: Array.from(
         new Set([
@@ -790,6 +798,9 @@ async function editorial(request: Request, env: StudioEnv) {
       requestId: payload.id || '',
       webUsed: false,
       retrievalIntent,
+      inputTokens: payload.usage?.input_tokens ?? null,
+      outputTokens: payload.usage?.output_tokens ?? null,
+      totalTokens: payload.usage?.total_tokens ?? null,
       traceabilityLogged,
       cacheHit: false,
     },
@@ -1438,6 +1449,9 @@ Tu dois respecter strictement le schéma JSON de sortie.`;
         evidenceLibraryVersion: 'V21',
         webUsed: !canSkipWeb,
         model: payload.model || model,
+        inputTokens: payload.usage?.input_tokens,
+        outputTokens: payload.usage?.output_tokens,
+        totalTokens: payload.usage?.total_tokens,
         evidenceIds: Array.from(allowedEvidenceIds),
         rejectedEvidenceIds: [],
         requestId: payload.id || undefined,
@@ -1460,6 +1474,9 @@ Tu dois respecter strictement le schéma JSON de sortie.`;
       libraryCoverage,
       webSkipped: canSkipWeb,
       retrievalIntent,
+      inputTokens: payload.usage?.input_tokens ?? null,
+      outputTokens: payload.usage?.output_tokens ?? null,
+      totalTokens: payload.usage?.total_tokens ?? null,
       traceabilityLogged,
     },
   });
