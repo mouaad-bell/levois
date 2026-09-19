@@ -57,6 +57,23 @@ export type StudioSource = {
 export type ClaimType = 'fact' | 'calculation' | 'declaration' | 'observation' | 'scenario' | 'unknown';
 export type ClaimStatus = 'verified' | 'qualified' | 'insufficient' | 'rejected';
 
+export type StudioEvidenceUseClass =
+  | 'REUSABLE_IMMEDIATELY'
+  | 'HISTORICAL_ONLY'
+  | 'REFRESH_REQUIRED'
+  | 'VERIFY_PROPERTY'
+  | 'VERIFY_PERSON'
+  | 'DO_NOT_USE'
+  | 'UNKNOWN';
+
+export type StudioPublicationReadiness =
+  | 'direct'
+  | 'historical_only'
+  | 'refresh_required'
+  | 'property_check'
+  | 'person_check'
+  | 'forbidden';
+
 export type StudioClaim = {
   claimId: string;
   claim: string;
@@ -68,6 +85,9 @@ export type StudioClaim = {
   timeScope?: string;
   sourceRefs: string[];
   evidenceRefs?: string[];
+  evidenceUseClass?: StudioEvidenceUseClass;
+  publicationReadiness?: StudioPublicationReadiness;
+  verificationRequiredBeforePublication?: boolean;
   evidenceStrength: 'strong' | 'medium' | 'weak' | 'none';
   status: ClaimStatus;
   allowedUses: string[];
