@@ -100,7 +100,13 @@ for (const item of manifest.contents || []) {
   const used = new Set();
 
   for (const evidence of canon.evidence || []) {
-    if (evidence.evidenceId) {
+    const optional =
+      String(evidence.role || '')
+        .toLowerCase()
+        .includes('optional') ||
+      evidence.optionalOnly === true;
+
+    if (evidence.evidenceId && !optional) {
       used.add(evidence.evidenceId);
     }
   }
