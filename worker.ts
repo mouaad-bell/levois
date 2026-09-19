@@ -4,6 +4,7 @@ import { buildEvidencePackFromLibrary } from './lib/evidence-pack';
 import type { EditorialBundle } from './lib/studio-editorial';
 import { recordGenerationRun, persistTraceabilityManifest, findImpactedContent, findStaleContentDependencies, syncStaleContentReviews, listOpenContentReviews, resolveContentReview } from './lib/content-traceability-db';
 import type { ContentTraceabilityManifest } from './lib/content-traceability';
+import { buildEditorialCacheKey, getEditorialCache, putEditorialCache } from './lib/studio-cache';
 
 type AssetsBinding = { fetch(request: Request): Promise<Response> };
 
@@ -568,9 +569,9 @@ async function editorial(request: Request, env: StudioEnv) {
     return json({ error: 'Bibliothèque LEVOIS non connectée.' }, { status: 503 });
   }
 
-  let body: { input?: unknown };
+  let body: { input?: unknown; force?: unknown };
   try {
-    body = await request.json() as { input?: unknown };
+    body = await request.json() as { input?: unknown; force?: unknown };
   } catch {
     return json({ error: 'Corps JSON invalide.' }, { status: 400 });
   }
@@ -599,6 +600,75 @@ async function editorial(request: Request, env: StudioEnv) {
     unknowns: built.pack.unknowns,
     limitations: built.pack.summary.limitations,
   };
+
+  const claimIds = new Set(
+    built.pack.claims.map((claim) => claim.claimId),
+  );
+  const evidenceIds = new Set(built.evidenceIds);
+  const cacheKey = await buildEditorialCacheKey({
+    rawInput: input,
+    model,
+    canonVersion: 'CONTENT_EXPERIENCE_V1_2026-09-19',
+    evidenceLibraryVersion: 'V21',
+    evidencePack: compactPack,
+  });
+  const forceGeneration = body.force === true;
+
+  if (!forceGeneration) {
+    const cached = await getEditorialCache<EditorialBundle>(
+      env.LEVOIS_EVIDENCE_DB,
+      cacheKey,
+    );
+
+    if (cached) {
+      const sanitized = sanitizeEditorialBundle(
+        cached,
+        claimIds,
+        evidenceIds,
+      );
+
+      let traceabilityLogged = false;
+      try {
+        await recordGenerationRun(env.LEVOIS_EVIDENCE_DB, {
+          generationId: crypto.randomUUID(),
+          inputText: input,
+          pipeline: 'library_only_editorial_cache_hit',
+          canonVersion: 'CONTENT_EXPERIENCE_V1_2026-09-19',
+          evidenceLibraryVersion: 'V21',
+          webUsed: false,
+          model,
+          evidenceIds: built.evidenceIds,
+          rejectedEvidenceIds: Array.from(
+            new Set([
+              ...built.excludedEvidenceIds,
+              ...sanitized.evidenceSelection.rejectedEvidenceRefs,
+            ]),
+          ),
+        });
+        traceabilityLogged = true;
+      } catch {
+        traceabilityLogged = false;
+      }
+
+      return json({
+        bundle: sanitized,
+        evidencePack: built.pack,
+        meta: {
+          model,
+          libraryHits: hits.length,
+          directEvidence: built.directEvidenceIds.length,
+          conditionalEvidence: built.conditionalEvidenceIds.length,
+          rejectedEvidence: built.excludedEvidenceIds.length,
+          requestId: '',
+          webUsed: false,
+          retrievalIntent,
+          traceabilityLogged,
+          cacheHit: true,
+        },
+      });
+    }
+  }
+
   const instructions = "Tu es la cellule éditoriale LEVOIS. Tu ne fais AUCUNE recherche web dans cette étape.\n\nSOURCE DE VÉRITÉ\nTu utilises uniquement le Evidence Pack fourni. Tu n'inventes aucun chiffre, règle, expérience client, citation, caractéristique locale ou fonction du site.\n\nCANON\nApplique CONTENT_EXPERIENCE_V1_2026-09-19.\n\nAvant les hooks, remplis canon.decisionFrame :\n- person : qui décide, dans quel moment concret ;\n- decision : ce que cette personne doit réellement décider ou vérifier ;\n- spontaneousReading : la première lecture plausible ;\n- pressureTest : l'information qui oblige à préciser cette lecture ;\n- authorizedConclusion : la conclusion maximale réellement soutenue ;\n- finalOperation : l'opération que le lecteur peut refaire sans contacter LEVOIS.\n\nPuis produis exactement trois hooks :\n- direct ;\n- scene ;\n- comparison.\nIls doivent promettre la même démonstration. Utilise les familles : situation, usage, comparison, condition, calendar, scope, unknown, result.\n\nContrôles d'entrée : Temps, Sens, Miroir, Écart.\nLa formulation la plus forte n'est jamais retenue si elle agrandit la conclusion.\n\nSTORYTELLING\nProduis exactement six storyBeats : situation, initial_reading, friction, demonstration, rereading, practical_take.\nPour chacun : ce que le lecteur sait avant, ce qu'il sait après, et la copie utile.\nSi un cas est inventé pour expliquer un mécanisme, rends-le explicitement fictif.\n\nPREUVE\nTous les faits proviennent des claimId fournis.\nTous les evidenceRefs proviennent des evidence_id fournis.\nUne preuve historique conserve sa période.\nUne règle VERIFY_PROPERTY ou VERIFY_PERSON ne devient pas une conclusion individuelle.\nRespecte allowedUses et forbiddenInferences.\n\nÉDITION\nRéponds assez tôt. Ne cache pas une réponse courte pour créer du suspense.\nLe carrousel contient seulement le nombre de slides nécessaire, maximum technique 10.\nChaque slide doit faire avancer la compréhension.\nLa résolution principale et l'action autonome précèdent tout CTA.\nUn CTA n'est ajouté que s'il prolonge réellement la valeur ; la destination est considérée comme non vérifiée à ce stade.\n\nARTICLE\nL'Article Master comporte au maximum 8 sections utiles. Les intertitres portent une réponse ou une opération.\nLa limite essentielle apparaît au moment où elle change la lecture.\n\nVETOS ABSOLUS\n- fait fabriqué présenté comme réel ;\n- peur non justifiée ;\n- résolution retenue contre un contact.\n\nSÉLECTION DE PREUVES\nevidenceSelection.centralEvidenceRefs = preuves nécessaires au raisonnement.\ncontextEvidenceRefs = contexte utile mais non décisif.\nrejectedEvidenceRefs = preuves disponibles volontairement écartées parce qu'elles n'aident pas la décision.\nExplique ce choix dans rationale.\n\nTu dois respecter strictement le schéma JSON.";
 
   const response = await fetch('https://api.openai.com/v1/responses', {
@@ -639,9 +709,19 @@ async function editorial(request: Request, env: StudioEnv) {
     return json({ error: 'La réponse éditoriale n’est pas un JSON exploitable.' }, { status: 502 });
   }
 
-  const claimIds = new Set(built.pack.claims.map((claim) => claim.claimId));
-  const evidenceIds = new Set(built.evidenceIds);
   const sanitized = sanitizeEditorialBundle(bundle, claimIds, evidenceIds);
+
+  try {
+    await putEditorialCache(env.LEVOIS_EVIDENCE_DB, {
+      cacheKey,
+      model: payload.model || model,
+      canonVersion: 'CONTENT_EXPERIENCE_V1_2026-09-19',
+      evidenceLibraryVersion: 'V21',
+      bundle: sanitized,
+    });
+  } catch {
+    // Cache failure must never block a valid editorial result.
+  }
 
   let traceabilityLogged = false;
   try {
@@ -680,6 +760,7 @@ async function editorial(request: Request, env: StudioEnv) {
       webUsed: false,
       retrievalIntent,
       traceabilityLogged,
+      cacheHit: false,
     },
   });
 }
