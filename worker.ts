@@ -1,6 +1,7 @@
 import type { ResearchBundle } from './lib/studio-research';
 import { searchEvidenceLibrary, libraryCoverageSummary, type EvidenceDb } from './lib/evidence-library';
 import { buildEvidencePackFromLibrary } from './lib/evidence-pack';
+import type { EditorialBundle } from './lib/studio-editorial';
 
 type AssetsBinding = { fetch(request: Request): Promise<Response> };
 
@@ -9,6 +10,7 @@ type StudioEnv = {
   OPENAI_API_KEY?: string;
   STUDIO_ACCESS_TOKEN?: string;
   STUDIO_RESEARCH_MODEL?: string;
+  STUDIO_EDITORIAL_MODEL?: string;
   LEVOIS_EVIDENCE_DB?: EvidenceDb;
 };
 
@@ -240,6 +242,30 @@ const researchSchema = {
   required: ['familyId', 'scope', 'sources', 'claims', 'unknowns', 'limitations', 'angles', 'canon', 'articleMaster', 'storyboard'],
 } as const;
 
+const editorialSchema = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    familyId: researchSchema.properties.familyId,
+    scope: researchSchema.properties.scope,
+    evidenceSelection: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        centralEvidenceRefs: { type: 'array', items: { type: 'string' } },
+        contextEvidenceRefs: { type: 'array', items: { type: 'string' } },
+        rejectedEvidenceRefs: { type: 'array', items: { type: 'string' } },
+        rationale: { type: 'string' },
+      },
+      required: ['centralEvidenceRefs','contextEvidenceRefs','rejectedEvidenceRefs','rationale'],
+    },
+    angles: researchSchema.properties.angles,
+    canon: researchSchema.properties.canon,
+    articleMaster: researchSchema.properties.articleMaster,
+    storyboard: researchSchema.properties.storyboard,
+  },
+  required: ['familyId','scope','evidenceSelection','angles','canon','articleMaster','storyboard'],
+} as const;
 function json(data: unknown, init: ResponseInit = {}) {
   const headers = new Headers(init.headers);
   headers.set('content-type', 'application/json; charset=utf-8');
