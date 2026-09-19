@@ -135,6 +135,14 @@ Il n’ingère pas les anciens fichiers V2 comme une seconde bibliothèque.
 
 Le script génère les lots SQL dans `.levois-evidence-sql/` ainsi qu’un fichier `RUN_ME_AFTER_SCHEMA.txt`.
 
+### Sécurité d’import D1
+
+D1 limite actuellement chaque instruction SQL à 100 KB. L’importeur V2.1 plafonne donc les instructions générées à 80 KB par défaut et découpe dynamiquement les INSERT au lieu d’utiliser un nombre fixe de lignes.
+
+Les valeurs structurées très volumineuses (par exemple certaines géométries/metadata GPU conservées dans `value`) ne sont pas copiées intégralement dans le cache de retrieval lorsqu’elles dépassent 8 KB. La donnée source reste intacte dans l’archive canonique V2.1 ; D1 conserve la preuve, son claim, sa provenance, ses garde-fous et son lien vers la source.
+
+Le cache D1 n’est donc pas une copie bit-à-bit de l’archive : c’est un index opérationnel de publication.
+
 ## Recherche locale
 
 `lib/evidence-library.ts` :
