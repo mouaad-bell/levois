@@ -69,7 +69,7 @@ function summarizeEvidence(pack: Omit<EvidencePack, 'summary'>, canPublish: bool
 }
 
 function distanceFixture(rawInput: string): StudioProject {
-  const family = STUDIO_FAMILIES.decider_arbitrer;
+  const family = STUDIO_FAMILIES.lieu_mobilite;
 
   const scope: EditorialScope = {
     rawTopic: rawInput,
