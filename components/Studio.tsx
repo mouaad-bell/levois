@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { buildStudioProject, STUDIO_FIXTURES } from '@/lib/studio-engine';
 import { buildStudioProjectFromResearch, type ResearchApiResponse } from '@/lib/studio-research';
+import { buildStudioProjectFromEditorial, type EditorialApiResponse } from '@/lib/studio-editorial';
 import type { StudioProject } from '@/lib/studio-schema';
 import { reviewCanon } from '@/lib/canon-review';
 import styles from '@/app/studio/studio.module.css';
@@ -44,6 +45,8 @@ export function Studio() {
   const [studioKey, setStudioKey] = useState('');
   const [researching, setResearching] = useState(false);
   const [libraryTesting, setLibraryTesting] = useState(false);
+  const [editorialBuilding, setEditorialBuilding] = useState(false);
+  const [editorialMeta, setEditorialMeta] = useState<EditorialApiResponse['meta'] | null>(null);
   const [libraryCoverage, setLibraryCoverage] = useState<LibraryCoveragePreview | null>(null);
   const [researchMeta, setResearchMeta] = useState<ResearchApiResponse['meta'] | null>(null);
 
@@ -70,6 +73,7 @@ export function Studio() {
     try {
       setProject(buildStudioProject(input));
       setResearchMeta(null);
+      setEditorialMeta(null);
       setLibraryCoverage(null);
       setTab('scope');
       setError('');
@@ -119,6 +123,57 @@ export function Studio() {
     }
   }
 
+  async function runEditorial() {
+    if (!studioKey.trim()) {
+      setError('Ajoutez la clé Studio privée pour construire depuis la bibliothèque.');
+      return;
+    }
+
+    setEditorialBuilding(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/studio/editorial', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-studio-key': studioKey.trim(),
+        },
+        body: JSON.stringify({ input }),
+      });
+
+      const payload = await response.json() as Partial<EditorialApiResponse> & {
+        error?: string;
+      };
+
+      if (!response.ok || !payload.bundle || !payload.evidencePack || !payload.meta) {
+        throw new Error(
+          payload.error ||
+            'La bibliothèque ne permet pas encore de construire ce contenu sans complément.',
+        );
+      }
+
+      setProject(
+        buildStudioProjectFromEditorial(
+          input,
+          payload.evidencePack,
+          payload.bundle,
+        ),
+      );
+      setEditorialMeta(payload.meta);
+      setResearchMeta(null);
+      setTab('canon');
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'La construction éditoriale a échoué.',
+      );
+    } finally {
+      setEditorialBuilding(false);
+    }
+  }
+
   async function runResearch() {
     if (!studioKey.trim()) {
       setError('Ajoutez la clé Studio privée pour lancer la recherche.');
@@ -126,6 +181,7 @@ export function Studio() {
     }
 
     setResearching(true);
+    setEditorialMeta(null);
     setError('');
 
     try {
@@ -214,7 +270,7 @@ export function Studio() {
               className={styles.secondaryButton}
               type="button"
               onClick={runLocal}
-              disabled={researching || libraryTesting}
+              disabled={researching || libraryTesting || editorialBuilding}
             >
               Structure seule
             </button>
@@ -222,17 +278,25 @@ export function Studio() {
               className={styles.secondaryButton}
               type="button"
               onClick={runLibrarySearch}
-              disabled={researching || libraryTesting}
+              disabled={researching || libraryTesting || editorialBuilding}
             >
               {libraryTesting ? 'Bibliothèque…' : 'Tester bibliothèque'}
             </button>
             <button
               className={styles.runButton}
               type="button"
-              onClick={runResearch}
-              disabled={researching || libraryTesting}
+              onClick={runEditorial}
+              disabled={researching || libraryTesting || editorialBuilding}
             >
-              {researching ? 'Recherche en cours…' : 'Construire le contenu'}
+              {editorialBuilding ? 'Construction…' : 'Construire depuis V2.1'}
+            </button>
+            <button
+              className={styles.secondaryButton}
+              type="button"
+              onClick={runResearch}
+              disabled={researching || libraryTesting || editorialBuilding}
+            >
+              {researching ? 'Recherche web…' : 'Compléter par le web'}
             </button>
           </div>
 
@@ -241,6 +305,14 @@ export function Studio() {
               Bibliothèque : {libraryCoverage.hits} résultat(s) · {libraryCoverage.direct} direct(s) ·{' '}
               {libraryCoverage.strongDirect} fort(s) · {libraryCoverage.historical} historique(s) · {libraryCoverage.refreshRequired} à rafraîchir ·{' '}
               {libraryCoverage.candidateForWebSkip ? 'couverture suffisante pour tenter sans web' : 'complément potentiellement nécessaire'}
+            </p>
+          ) : null}
+          {editorialMeta ? (
+            <p className={styles.researchMeta}>
+              V2.1 → {editorialMeta.libraryHits} preuve(s) récupérée(s) ·{' '}
+              {editorialMeta.directEvidence} directe(s) ·{' '}
+              {editorialMeta.conditionalEvidence} conditionnelle(s) · web non utilisé ·{' '}
+              {editorialMeta.model}
             </p>
           ) : null}
           {researchMeta ? (
