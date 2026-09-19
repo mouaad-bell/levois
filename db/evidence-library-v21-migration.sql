@@ -1,5 +1,6 @@
--- LEVOIS Evidence Library V2.1 migration
--- Apply after db/evidence-library-schema.sql.
+-- LEVOIS Evidence Library V2.1 migration — LEGACY ONLY
+-- Use only to upgrade a D1 database created with the pre-V2.1 prototype schema.
+-- Fresh databases must use db/evidence-library-schema.sql directly.
 
 ALTER TABLE evidence ADD COLUMN origin TEXT;
 ALTER TABLE evidence ADD COLUMN evidence_kind TEXT;
