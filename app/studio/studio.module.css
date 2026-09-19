@@ -67,3 +67,10 @@
 .previewNav button[data-active="true"]{border-color:var(--studio-accent);color:var(--studio-accent);background:color-mix(in srgb,var(--studio-accent) 10%,transparent)}
 
 .publicationHeaderActions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+.reviewTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.reviewTop span{display:inline-flex;align-items:center;min-height:24px;padding:0 8px;border:1px solid var(--studio-line);border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.06em}
+.reviewTop span[data-severity="BLOCKING"]{border-color:#ff5f57;color:#ff8b86;background:rgba(255,95,87,.08)}
+.reviewTop span[data-severity="HIGH"]{border-color:#ffb347;color:#ffca7a;background:rgba(255,179,71,.08)}
+.reviewTop span[data-severity="MEDIUM"]{border-color:var(--studio-accent);color:var(--studio-accent);background:color-mix(in srgb,var(--studio-accent) 8%,transparent)}
+.reviewTop small{color:var(--studio-muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
