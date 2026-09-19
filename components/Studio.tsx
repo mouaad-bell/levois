@@ -128,7 +128,7 @@ export function Studio() {
     }
   }
 
-  async function runEditorial() {
+  async function runEditorial(force = false) {
     if (!studioKey.trim()) {
       setError('Ajoutez la clé Studio privée pour construire depuis la bibliothèque.');
       return;
@@ -144,7 +144,7 @@ export function Studio() {
           'content-type': 'application/json',
           'x-studio-key': studioKey.trim(),
         },
-        body: JSON.stringify({ input }),
+        body: JSON.stringify({ input, force }),
       });
 
       const payload = await response.json() as Partial<EditorialApiResponse> & {
@@ -293,10 +293,19 @@ export function Studio() {
             <button
               className={styles.runButton}
               type="button"
-              onClick={runEditorial}
+              onClick={() => runEditorial(false)}
               disabled={researching || libraryTesting || editorialBuilding}
             >
               {editorialBuilding ? 'Construction…' : 'Construire depuis V2.1'}
+            </button>
+            <button
+              className={styles.secondaryButton}
+              type="button"
+              onClick={() => runEditorial(true)}
+              disabled={researching || libraryTesting || editorialBuilding}
+              title="Ignore le cache éditorial pour produire une nouvelle version avec le même Evidence Pack."
+            >
+              Régénérer
             </button>
             <button
               className={styles.secondaryButton}
@@ -321,6 +330,7 @@ export function Studio() {
               {editorialMeta.directEvidence} directe(s) ·{' '}
               {editorialMeta.conditionalEvidence} conditionnelle(s) · web non utilisé ·{' '}
               {editorialMeta.model}
+              {editorialMeta.cacheHit ? ' · cache éditorial réutilisé' : ''}
               {editorialMeta.traceabilityLogged ? ' · trace D1 enregistrée' : ''}
             </p>
           ) : null}
