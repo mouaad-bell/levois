@@ -745,7 +745,7 @@ function bucketLimit(
     intent === 'surface_usage' &&
     bucket === 'surface:regulation'
   ) {
-    return 5;
+    return 2;
   }
 
   return 6;
@@ -758,16 +758,32 @@ function diversifyHits(
 ) {
   const selected: LibraryEvidence[] = [];
   const counts = new Map<string, number>();
+  let mobilityActTotal = 0;
 
   for (const hit of hits) {
     const bucket = diversityBucket(hit, intent);
     const count = counts.get(bucket) || 0;
     const cap = bucketLimit(bucket, intent);
 
+    if (
+      intent === 'mobility' &&
+      bucket.startsWith('mobility:insee-act:') &&
+      mobilityActTotal >= 6
+    ) {
+      continue;
+    }
+
     if (count >= cap) continue;
 
     selected.push(hit);
     counts.set(bucket, count + 1);
+
+    if (
+      intent === 'mobility' &&
+      bucket.startsWith('mobility:insee-act:')
+    ) {
+      mobilityActTotal += 1;
+    }
 
     if (selected.length >= limit) break;
   }
