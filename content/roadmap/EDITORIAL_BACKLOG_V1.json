@@ -1,0 +1,271 @@
+{
+  "version": "EDITORIAL_BACKLOG_V1",
+  "evidenceLibraryVersion": "V2.1",
+  "canonVersion": "CONTENT_EXPERIENCE_V1_2026-09-19",
+  "status": "INTERNAL_PRIORITY_NOT_SEO_DEMAND",
+  "note": "Cette priorité exprime l’utilité décisionnelle et la préparation documentaire LEVOIS. Elle ne mesure ni le volume Google, ni la concurrence SEO, ni un potentiel de trafic garanti.",
+  "afterCanonicalPilots": [
+    {
+      "order": 1,
+      "question": "Que mesure un DPE et garantit-il ma facture ?",
+      "domain": "DPE",
+      "familyId": "bien_technique",
+      "evidenceRefs": [
+        "REG-0012"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Question fréquente dans une décision d’achat, forte confusion entre mesure conventionnelle et facture personnelle, preuve générale déjà prête.",
+      "autonomousTake": "Distinguer ce que le DPE décrit de ce qu’il ne peut pas prédire pour votre usage personnel."
+    },
+    {
+      "order": 2,
+      "question": "Quels documents de copropriété demander avant d’acheter ?",
+      "domain": "copropriete",
+      "familyId": "verifier_transaction",
+      "evidenceRefs": [
+        "V2-CFF-0150",
+        "V2-CFF-0151",
+        "V2-CFF-0152"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Très directement actionnable avant achat et naturellement relié à une future vérification de dossier.",
+      "autonomousTake": "Construire une liste de documents à obtenir puis vérifier ce que chacun permet réellement de savoir."
+    },
+    {
+      "order": 3,
+      "question": "Pourquoi le TAEG est-il plus utile que le seul taux nominal pour comparer des offres ?",
+      "domain": "financement",
+      "familyId": "budget_financement",
+      "evidenceRefs": [
+        "V2-CFF-0121",
+        "V2-CFF-0122"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Permet de transformer un chiffre bancaire séduisant en comparaison plus complète sans calculer la situation personnelle.",
+      "autonomousTake": "Comparer les offres sur un périmètre cohérent plutôt que sur le seul taux nominal."
+    },
+    {
+      "order": 4,
+      "question": "Une vente de maison classée E nécessite-t-elle un audit énergétique ?",
+      "domain": "transaction",
+      "familyId": "verifier_transaction",
+      "evidenceRefs": [
+        "REG-0014",
+        "REG-0015"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Question transactionnelle précise avec réponse conditionnelle documentable, utile aux acheteurs comme aux vendeurs.",
+      "autonomousTake": "Identifier le champ exact de l’obligation avant d’interpréter la lettre DPE seule."
+    },
+    {
+      "order": 5,
+      "question": "Un risque communal d’inondation prouve-t-il l’exposition de mon logement ?",
+      "domain": "risques",
+      "familyId": "bien_technique",
+      "evidenceRefs": [
+        "V2-UER-0007",
+        "V2-UER-0008"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Excellent sujet LEVOIS : distingue contexte territorial et conclusion parcellaire, limite les raccourcis anxiogènes.",
+      "autonomousTake": "Séparer présence d’un risque dans la commune et exposition réelle du bien."
+    },
+    {
+      "order": 6,
+      "question": "La surface habitable, Carrez et la surface de plancher sont-elles interchangeables ?",
+      "domain": "surfaces",
+      "familyId": "espace_usage",
+      "evidenceRefs": [
+        "REG-0035",
+        "REG-0036",
+        "METH-0025",
+        "V2-UER-224dd394706974"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Prolonge naturellement le pilote 80 m² et renforce la compréhension des chiffres de surface.",
+      "autonomousTake": "Toujours demander quelle définition de surface est utilisée avant de comparer deux nombres."
+    },
+    {
+      "order": 7,
+      "question": "Pourquoi quatre ventes ne suffisent-elles pas à publier un prix de référence LEVOIS ?",
+      "domain": "statistique",
+      "familyId": "decider_arbitrer",
+      "evidenceRefs": [
+        "METH-0006",
+        "METH-0007"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Montre la discipline méthodologique LEVOIS et explique pourquoi une donnée locale rare peut rester volontairement inutilisable.",
+      "autonomousTake": "Regarder l’effectif et la dispersion avant de traiter une médiane comme un repère."
+    },
+    {
+      "order": 8,
+      "question": "Quel repère historique de prix des maisons à Chartres trouve-t-on dans DVF 2025 ?",
+      "domain": "prix",
+      "familyId": "prix_valeur",
+      "evidenceRefs": [
+        "V2-DVF-REPAIR-d8d331f536c0aa49",
+        "V2-DVF-REPAIR-3ba6ff6546c2e136",
+        "METH-0022"
+      ],
+      "formats": [
+        "answer_article",
+        "local_answer_candidate",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Premier vrai contenu local prix possible avec effectif et limites explicites, sans transformer le repère historique en estimation.",
+      "autonomousTake": "Lire un repère de marché comme une observation datée, pas comme le prix d’un bien."
+    },
+    {
+      "order": 9,
+      "question": "Le plan de zonage suffit-il pour savoir ce qu’un PLU impose ?",
+      "domain": "urbanisme",
+      "familyId": "verifier_transaction",
+      "evidenceRefs": [
+        "V2-UER-0101",
+        "V2-UER-0102"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Très bon exemple de distinction carte / règle / document opposable, réutilisable dans de nombreux projets.",
+      "autonomousTake": "Ne jamais lire le zonage sans le règlement et les autres pièces applicables."
+    },
+    {
+      "order": 10,
+      "question": "Qu’est-ce que le fonds travaux et est-il remboursé par la copropriété au vendeur ?",
+      "domain": "copropriete",
+      "familyId": "verifier_transaction",
+      "evidenceRefs": [
+        "V2-CFF-0140",
+        "V2-CFF-0141"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Question concrète avec conséquence financière et forte valeur de vérification avant compromis.",
+      "autonomousTake": "Distinguer montant attaché au lot, règle générale et négociation éventuelle entre parties."
+    },
+    {
+      "order": 11,
+      "question": "Pourquoi remplacer la chaudière peut-il ne pas résoudre un chauffage inefficace ?",
+      "domain": "chauffage",
+      "familyId": "bien_technique",
+      "evidenceRefs": [
+        "V21-BAT-1a004a",
+        "V21-BAT-1a004b"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Sujet travaux qui montre un mécanisme plutôt qu’un conseil de marque ou un coût universel.",
+      "autonomousTake": "Examiner le système complet : besoin, distribution, régulation et enveloppe avant de réduire le problème au générateur."
+    },
+    {
+      "order": 12,
+      "question": "Les cartes de bruit routier décrivent-elles le niveau sonore dans ma chambre ?",
+      "domain": "bruit",
+      "familyId": "lieu_mobilite",
+      "evidenceRefs": [
+        "V2-NOISE-673777d98705bc2edfc25381"
+      ],
+      "formats": [
+        "answer_article"
+      ],
+      "priorityReason": "Question locale/environnementale idéale pour expliquer différence entre modèle territorial et expérience intérieure réelle.",
+      "autonomousTake": "Utiliser la carte comme contexte puis vérifier le bien aux conditions qui comptent pour l’usage."
+    },
+    {
+      "order": 13,
+      "question": "Quel délai de rétractation protège en général un acquéreur non professionnel ?",
+      "domain": "transaction",
+      "familyId": "verifier_transaction",
+      "evidenceRefs": [
+        "REG-0006",
+        "REG-0007"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Question à forte utilité immédiate mais qui doit conserver date, champ et relecture réglementaire.",
+      "autonomousTake": "Identifier le point de départ du délai et le type d’acquéreur avant d’appliquer la règle."
+    },
+    {
+      "order": 14,
+      "question": "Une zone sans argile sur la carte garantit-elle l’absence de sol sensible ?",
+      "domain": "risques",
+      "familyId": "bien_technique",
+      "evidenceRefs": [
+        "V2-UER-2af494c4f26729",
+        "V2-UER-82b11a6ca22ae5",
+        "V2-UER-ce8f220d9a5fb2"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Excellent sujet de limite cartographique : évite un faux sentiment de sécurité comme un alarmisme excessif.",
+      "autonomousTake": "Lire l’échelle et la résolution de la carte puis compléter par les vérifications propres au terrain si nécessaire."
+    },
+    {
+      "order": 15,
+      "question": "Peut-on confondre frais d’acquisition et rémunération du notaire ?",
+      "domain": "transaction",
+      "familyId": "verifier_transaction",
+      "evidenceRefs": [
+        "V2-TXC-0040",
+        "V2-TXC-0041",
+        "V2-TXC-0042"
+      ],
+      "formats": [
+        "answer_article",
+        "carousel_candidate"
+      ],
+      "priorityReason": "Vulgarisation utile pour le budget d’achat, avec distinction claire entre composantes sans calcul personnalisé.",
+      "autonomousTake": "Décomposer les frais plutôt que traiter tout le montant comme la rémunération du notaire."
+    }
+  ],
+  "parked": [
+    {
+      "question": "Quels trains directs Chartres–Paris sont prévus du 21 au 27 septembre 2026 ?",
+      "reason": "Contenu rapidement périssable ; mieux servi par un outil ou une vérification live que par un article durable."
+    },
+    {
+      "question": "La fibre sera-t-elle disponible à mon adresse et à quel débit réel ?",
+      "reason": "Nécessite un test adresse/opérateur ; la bibliothèque communale ne suffit pas."
+    },
+    {
+      "question": "Cette parcelle est-elle constructible et grevée d’une servitude ?",
+      "reason": "Cas parcellaire : nécessite lecture opposable et vérifications propres au terrain."
+    },
+    {
+      "question": "Quel taux ma banque m’accordera-t-elle et combien puis-je emprunter personnellement ?",
+      "reason": "Cas personne : dépend de paramètres individuels et de conditions de marché à jour."
+    }
+  ]
+}
