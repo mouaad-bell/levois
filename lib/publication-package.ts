@@ -44,7 +44,9 @@ function deriveStatus(
 
   if (
     !carousel.qualityGate.mobileReadability ||
-    !carousel.qualityGate.format ||
+    carousel.canonReview.items.find(
+      (item) => item.id === 'format',
+    )?.status !== 'pass' ||
     carousel.simplifications.length > 0
   ) {
     return 'render_review';
