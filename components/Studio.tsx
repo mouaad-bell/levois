@@ -1182,6 +1182,19 @@ function RoadmapView({
   );
 }
 
+type StudioHealth = {
+  ok: boolean;
+  libraryVersion?: string;
+  evidenceCount?: number;
+  ftsCount?: number;
+  forbiddenCount?: number;
+  sourceCount?: number;
+  artifactCount?: number;
+  cacheEntries?: number;
+  checks?: Record<string, boolean>;
+  error?: string;
+};
+
 type UsageSummary = {
   days: number;
   overall: {
@@ -1240,7 +1253,51 @@ function ReviewQueueView({
   const [impactRows, setImpactRows] = useState<ImpactedContentItem[]>([]);
   const [usageLoading, setUsageLoading] = useState(false);
   const [usage, setUsage] = useState<UsageSummary | null>(null);
+  const [healthLoading, setHealthLoading] = useState(false);
+  const [health, setHealth] = useState<StudioHealth | null>(null);
   const [message, setMessage] = useState('');
+
+  async function loadHealth() {
+    if (!studioKey.trim()) {
+      setMessage('Ajoutez la clé Studio privée pour vérifier la santé D1.');
+      return;
+    }
+
+    setHealthLoading(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/studio/health', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-studio-key': studioKey.trim(),
+        },
+        body: '{}',
+      });
+
+      const payload = await response.json() as StudioHealth;
+
+      setHealth(payload);
+
+      if (!response.ok || !payload.ok) {
+        throw new Error(
+          payload.error ||
+            'Le Studio répond mais le contrôle V2.1 n’est pas vert.',
+        );
+      }
+
+      setMessage('Santé Studio V2.1 : PASS.');
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : 'Contrôle santé impossible.',
+      );
+    } finally {
+      setHealthLoading(false);
+    }
+  }
 
   async function loadUsage() {
     if (!studioKey.trim()) {
@@ -1557,6 +1614,14 @@ function ReviewQueueView({
           <button
             type="button"
             className={styles.secondaryButton}
+            onClick={loadHealth}
+            disabled={healthLoading}
+          >
+            {healthLoading ? 'Santé…' : 'Santé V2.1'}
+          </button>
+          <button
+            type="button"
+            className={styles.secondaryButton}
             onClick={loadUsage}
             disabled={usageLoading}
           >
@@ -1628,6 +1693,41 @@ function ReviewQueueView({
           </div>
         ) : null}
       </section>
+
+      {health ? (
+        <section className={styles.card}>
+          <p className={styles.cardIndex}>Santé bibliothèque</p>
+          <h3>{health.ok ? 'V2.1 opérationnelle' : 'Contrôle à corriger'}</h3>
+          <div className={styles.summary}>
+            <SummaryCard
+              label="Version"
+              value={health.libraryVersion ?? '—'}
+            />
+            <SummaryCard
+              label="Preuves"
+              value={String(health.evidenceCount ?? 0)}
+            />
+            <SummaryCard
+              label="FTS"
+              value={String(health.ftsCount ?? 0)}
+            />
+            <SummaryCard
+              label="DO_NOT_USE"
+              value={String(health.forbiddenCount ?? 0)}
+            />
+          </div>
+          {health.checks ? (
+            <div className={styles.stack}>
+              {Object.entries(health.checks).map(([key, passed]) => (
+                <div className={styles.unknownRow} key={key}>
+                  <span>{passed ? 'PASS' : 'FAIL'}</span>
+                  <div><strong>{key}</strong></div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       {usage ? (
         <section className={styles.card}>
