@@ -45,6 +45,44 @@ export async function recordGenerationRun(
     .run();
 }
 
+type EvidenceSnapshot = {
+  evidence_id: string;
+  status: string | null;
+  engine_use_class: string | null;
+  next_review_date: string | null;
+  verification_required_before_publication: number | null;
+};
+
+async function evidenceSnapshots(
+  db: EvidenceDb,
+  evidenceIds: string[],
+) {
+  const ids = Array.from(
+    new Set(evidenceIds.filter(Boolean)),
+  ).slice(0, 200);
+
+  const map = new Map<string, EvidenceSnapshot>();
+  if (!ids.length) return map;
+
+  const placeholders = ids.map(() => '?').join(',');
+  const rows = await db
+    .prepare(
+      [
+        'SELECT evidence_id, status, engine_use_class, next_review_date,',
+        'verification_required_before_publication',
+        'FROM evidence WHERE evidence_id IN (' + placeholders + ')',
+      ].join(' '),
+    )
+    .bind(...ids)
+    .all<EvidenceSnapshot>();
+
+  for (const row of rows.results || []) {
+    map.set(row.evidence_id, row);
+  }
+
+  return map;
+}
+
 export async function persistTraceabilityManifest(
   db: EvidenceDb,
   manifest: ContentTraceabilityManifest,
@@ -86,12 +124,25 @@ export async function persistTraceabilityManifest(
     .bind(manifest.artifactId)
     .run();
 
+  const snapshots = await evidenceSnapshots(
+    db,
+    manifest.dependencies.map(
+      (dependency) => dependency.evidenceId,
+    ),
+  );
+
   for (const dependency of manifest.dependencies) {
+    const snapshot = snapshots.get(
+      dependency.evidenceId,
+    );
+
     const dependencySql = [
       'INSERT OR REPLACE INTO content_evidence_dependencies (',
       'artifact_id, evidence_id, claim_id, dependency_role,',
-      'evidence_library_version, recorded_at',
-      ') VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)',
+      'evidence_library_version, evidence_status_snapshot,',
+      'engine_use_class_snapshot, next_review_date_snapshot,',
+      'verification_required_before_publication_snapshot, recorded_at',
+      ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)',
     ].join(' ');
 
     await db
@@ -102,6 +153,10 @@ export async function persistTraceabilityManifest(
         dependency.claimId || null,
         dependency.role,
         manifest.evidenceLibraryVersion,
+        snapshot?.status || null,
+        snapshot?.engine_use_class || null,
+        snapshot?.next_review_date || null,
+        snapshot?.verification_required_before_publication || 0,
       )
       .run();
   }
@@ -181,6 +236,61 @@ export async function findImpactedContent(
       status: string;
       evidence_id: string;
       dependency_role: string;
+    }>();
+
+  return rows.results || [];
+}
+
+
+export async function findStaleContentDependencies(
+  db: EvidenceDb,
+  limit = 500,
+) {
+  const safeLimit = Math.max(1, Math.min(limit, 1000));
+
+  const sql = [
+    'SELECT',
+    'a.artifact_id, a.artifact_type, a.title, a.status AS artifact_status,',
+    'd.evidence_id, d.dependency_role,',
+    'd.evidence_status_snapshot, e.status AS current_evidence_status,',
+    'd.engine_use_class_snapshot, e.engine_use_class AS current_engine_use_class,',
+    'd.next_review_date_snapshot, e.next_review_date AS current_next_review_date,',
+    'd.verification_required_before_publication_snapshot,',
+    'e.verification_required_before_publication AS current_verification_required_before_publication,',
+    'CASE WHEN e.evidence_id IS NULL THEN 1 ELSE 0 END AS evidence_missing',
+    'FROM content_evidence_dependencies d',
+    'JOIN content_artifacts a ON a.artifact_id = d.artifact_id',
+    'LEFT JOIN evidence e ON e.evidence_id = d.evidence_id',
+    'WHERE',
+    'e.evidence_id IS NULL',
+    'OR COALESCE(d.evidence_status_snapshot, \'\') <> COALESCE(e.status, \'\')',
+    'OR COALESCE(d.engine_use_class_snapshot, \'\') <> COALESCE(e.engine_use_class, \'\')',
+    'OR COALESCE(d.next_review_date_snapshot, \'\') <> COALESCE(e.next_review_date, \'\')',
+    'OR COALESCE(d.verification_required_before_publication_snapshot, 0)',
+    '   <> COALESCE(e.verification_required_before_publication, 0)',
+    'ORDER BY a.artifact_id, d.evidence_id',
+    'LIMIT ?',
+  ].join(' ');
+
+  const rows = await db
+    .prepare(sql)
+    .bind(safeLimit)
+    .all<{
+      artifact_id: string;
+      artifact_type: string;
+      title: string;
+      artifact_status: string;
+      evidence_id: string;
+      dependency_role: string;
+      evidence_status_snapshot: string | null;
+      current_evidence_status: string | null;
+      engine_use_class_snapshot: string | null;
+      current_engine_use_class: string | null;
+      next_review_date_snapshot: string | null;
+      current_next_review_date: string | null;
+      verification_required_before_publication_snapshot: number;
+      current_verification_required_before_publication: number | null;
+      evidence_missing: number;
     }>();
 
   return rows.results || [];
