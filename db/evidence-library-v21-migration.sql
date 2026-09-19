@@ -74,3 +74,17 @@ CREATE INDEX IF NOT EXISTS idx_refresh_v21_use
   ON evidence_refresh_v21(engine_use_class, verification_required_before_publication);
 CREATE INDEX IF NOT EXISTS idx_refresh_v21_review
   ON evidence_refresh_v21(next_review_date, refresh_policy);
+
+
+-- FTS5 index used by the Studio retrieval layer.
+-- It deliberately excludes large JSON fields and stores only search-relevant text.
+CREATE VIRTUAL TABLE IF NOT EXISTS evidence_search USING fts5(
+  evidence_id UNINDEXED,
+  topic,
+  subtopic,
+  geographic_label,
+  period,
+  claim,
+  decision_use,
+  tokenize='unicode61 remove_diacritics 2'
+);
