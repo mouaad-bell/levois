@@ -196,6 +196,8 @@ export function buildVulgarisationBrief(
     );
   }
 
+  const canonicalStoryBeats = project.canon?.storyBeats ?? [];
+
   const qualityGate: VulgarisationQualityGate = {
     canonPresent:
       project.canon?.canonVersion === LEVOIS_CANON_VERSION,
@@ -205,8 +207,8 @@ export function buildVulgarisationBrief(
     promiseHeld: promiseHeld(project),
     progression:
       Boolean(project.canon) &&
-      project.canon.storyBeats.length >= 6 &&
-      project.canon.storyBeats.every(
+      canonicalStoryBeats.length >= 6 &&
+      canonicalStoryBeats.every(
         (beat) =>
           beat.copy.trim().length > 0 &&
           normalized(beat.before) !== normalized(beat.after),
