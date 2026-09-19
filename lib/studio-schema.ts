@@ -67,6 +67,7 @@ export type StudioClaim = {
   geographicScope?: string;
   timeScope?: string;
   sourceRefs: string[];
+  evidenceRefs?: string[];
   evidenceStrength: 'strong' | 'medium' | 'weak' | 'none';
   status: ClaimStatus;
   allowedUses: string[];
