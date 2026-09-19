@@ -1,274 +1,187 @@
-# LEVOIS — ANSWERS ENGINE V1
+# LEVOIS — ANSWERS ENGINE V1 — Canon Contenu & Expérience
 
 ## Mission
 
-Créer des pages éditoriales capables de répondre à de vraies questions immobilières recherchées sur Google tout en restant utiles même si le lecteur n’a pas de projet immédiat.
+Créer des pages qui répondent à de vraies questions immobilières, donnent la réponse assez tôt, rendent le raisonnement inspectable et laissent au lecteur une opération autonome.
 
-Le moteur SEO ne doit pas produire des articles « pour Google ».
-Il doit produire des réponses de référence que Google peut comprendre.
+Le référencement est une conséquence de l’utilité et de la clarté, pas la raison d’allonger artificiellement une page.
 
-## Chaîne cible
+## Chaîne
 
-QUESTION
-→ INTENTION
-→ PREUVES LEVOIS
+QUESTION RÉELLE
+→ DÉCISION
+→ PREUVES QUALIFIÉES
+→ CONCLUSION AUTORISÉE
 → RÉPONSE COURTE
-→ EXPLICATION
-→ DONNÉES
+→ MÉCANISME
+→ EXEMPLE
 → MÉTHODE
-→ LIMITES
-→ APPLICATION PERSONNELLE
-→ MAILLAGE
-→ CTA
+→ LIMITE
+→ APPLICATION
+→ SUITE ÉVENTUELLE
+
+## Règle d’entrée
+
+Un visiteur venant de Google arrive souvent avec une question déjà formulée.
+
+Le titre et l’introduction doivent donc nommer cette question et livrer l’idée essentielle sans organiser un suspense artificiel.
+
+Le développement sert ensuite à :
+
+- expliquer pourquoi la réponse tient ;
+- montrer la preuve ;
+- distinguer les cas ;
+- rendre la méthode réutilisable ;
+- rendre les limites retrouvables.
 
 ## Deux familles de pages
 
-### A. Réponses locales
+### Réponses locales
 
-Exemples :
+Une page locale n’existe que si le lieu change réellement la réponse ou apporte une donnée utile.
 
-- prix et transactions à Lèves ;
-- surfaces et parc de logements à Chartres ;
-- mobilité autour de la gare ;
-- risques à vérifier dans une commune ;
-- DPE observés localement ;
-- différences entre communes de l’agglomération.
+Ajouter « Chartres » à une page nationale interchangeable ne crée pas une preuve locale.
 
-### B. Réponses nationales pédagogiques
+### Réponses nationales pédagogiques
 
-Exemples :
+Elles expliquent une notion ou une méthode réutilisable partout, tout en laissant l’accompagnement humain dans le périmètre réel de Mouaad.
 
-- médiane ou moyenne ;
-- DPE : ce qu’il permet réellement de conclure ;
-- prix affiché vs prix vendu ;
-- comment comparer deux biens ;
-- surface totale vs usage ;
-- charges de copropriété : ce qu’elles financent.
+## Structure cible
 
-## Règle anti-content-farm
+1. Titre descriptif / question précise.
+2. Réponse courte et limite essentielle.
+3. Lecture spontanée à préciser.
+4. Preuves ou définitions utiles.
+5. Mécanisme : pourquoi l’information change la décision.
+6. Cas réel ou explicitement pédagogique.
+7. Méthode / opération autonome.
+8. Ce que cette réponse ne permet pas de conclure.
+9. Application personnelle.
+10. Sources, période et périmètre.
+11. Suite LEVOIS uniquement si elle ajoute une valeur réelle.
 
-Une page ne doit exister que si elle apporte au moins un élément distinctif parmi :
+Cette structure est adaptable. Elle ne sert pas à fabriquer dix sections obligatoires si cinq suffisent.
 
-- donnée locale ;
-- calcul original reproductible ;
-- méthode LEVOIS ;
-- définition institutionnelle utile ;
-- comparaison ;
-- limite souvent oubliée ;
-- outil ou exercice.
+## Intertitres
 
-Ne pas créer 50 pages identiques en remplaçant uniquement le nom de la commune.
+Les intertitres portent une réponse ou une opération.
 
-## Structure d’un article
+Préférer :
 
-### 1. Réponse courte
-
-40 à 120 mots.
-
-Le lecteur doit comprendre la réponse sans scroller.
-
-### 2. Pourquoi la question mérite d’être posée
-
-Clarifier l’intuition ou l’erreur fréquente.
-
-### 3. Ce que montrent les données
-
-Utiliser uniquement les preuves réellement utiles.
-
-### 4. Le mécanisme
-
-Expliquer simplement ce qui change la décision.
-
-### 5. Exemple concret
-
-Réel ou pédagogique.
-
-### 6. Méthode LEVOIS
-
-3 étapes préférées.
-
-### 7. Ce que ces données ne permettent pas de conclure
-
-Bloc obligatoire sur les sujets quantitatifs.
-
-### 8. Appliquer à son cas
-
-Questions que le lecteur peut se poser seul.
-
-### 9. Sources
-
-Sources officielles, périmètre et période.
-
-### 10. Continuer
-
-CTA contextuel vers un outil LEVOIS.
-
-## Longueur
-
-Aucune longueur SEO artificielle.
-
-Référence :
-
-- réponse locale simple : 700–1 200 mots ;
-- sujet explicatif : 1 000–1 800 mots ;
-- dossier profond : 1 800–3 000 mots.
-
-Le moteur choisit selon la complexité.
-
-## Titres
-
-Préférer une vraie question ou une formulation décisionnelle.
-
-Exemples :
-
-- 80 m² à Chartres : est-ce vraiment grand ?
-- À Lèves, que peut vraiment vous apprendre le prix au m² ?
-- DPE C : qu’est-ce que cela change vraiment pour un acheteur ?
+- `Repérez l’horaire qui ne bouge pas`
+- `Vérifiez si les deux usages doivent coexister`
+- `Comparez le même périmètre`
 
 Éviter :
 
-- Guide complet 2026
-- Tout savoir
-- 10 astuces
-- Secrets immobiliers
+- `Un point important`
+- `Ce qu’il faut savoir`
+- `À retenir` comme unique information.
+
+## Preuve
+
+Chaque affirmation centrale conserve :
+
+- claim ;
+- evidence_id ;
+- source ;
+- statut ;
+- période ;
+- périmètre ;
+- conclusion permise ;
+- forbidden_inferences ;
+- date de contrôle.
+
+Une entrée de la bibliothèque n’est pas automatiquement publiable : `engine_use_class`, fraîcheur et vérifications requises restent prioritaires.
 
 ## Données locales
 
-Chaque chiffre local affiche :
+Chaque chiffre local indique :
 
 - territoire exact ;
 - période ;
+- population / effectif lorsque pertinent ;
 - source ;
-- taille d’échantillon si pertinent.
+- limite principale.
 
-Le moteur ne doit jamais transformer :
+Commune, EPCI, unité urbaine, bassin de vie et aire d’attraction ne sont jamais traités comme synonymes.
 
-- commune ;
-- EPCI ;
-- aire d’attraction ;
-- bassin de vie ;
-- unité urbaine
+## SEO
 
-en synonymes.
+Le moteur prépare :
 
-## Fraîcheur
-
-Avant publication, chaque preuve est classée :
-
-- réutilisable ;
-- à rafraîchir ;
-- historique seulement ;
-- bloquante.
-
-Une page peut rester en ligne avec une donnée historique si elle est clairement datée.
-
-## SEO local
-
-Le moteur génère :
-
+- slug ;
 - title ;
 - meta description ;
 - H1 ;
 - H2 ;
-- slug ;
-- FAQ éventuelle ;
-- liens internes ;
-- entités locales citées ;
+- maillage interne ;
+- auteur ;
+- date de dernière vérification ;
 - sources ;
-- date de dernière vérification.
+- plan de données structurées.
 
-## Maillage interne
-
-Chaque article doit proposer 2 à 5 liens cohérents vers :
-
-- article parent ;
-- article enfant ;
-- article de comparaison ;
-- outil LEVOIS ;
-- parcours acheteur ou vendeur.
-
-Le maillage doit suivre le raisonnement du lecteur, pas uniquement des mots-clés.
-
-## Pages locales
-
-Architecture cible possible :
-
-- /ressources/
-- /ressources/chartres/
-- /ressources/leves/
-- /ressources/prix/
-- /ressources/espace/
-- /ressources/mobilite/
-- /ressources/dpe/
-
-Ne pas figer cette arborescence avant audit SEO technique final.
-
-## Données structurées
-
-Préparer quand pertinent :
+Les données structurées de base visent :
 
 - Article ;
 - BreadcrumbList ;
-- Organization / Person ;
-- FAQPage seulement si les conditions d’éligibilité et d’usage le justifient.
+- Person (Mouaad) ;
+- WebSite.
 
-Les données structurées doivent refléter le contenu réel de la page.
+Ne pas présenter LEVOIS comme une agence indépendante du cadre SAFTI.
 
-## CTA
+## Anti-content-farm
 
-Le CTA doit être la prochaine étape logique.
+Une page doit apporter au moins une valeur distincte :
 
-Exemples :
+- donnée locale pertinente ;
+- calcul reproductible ;
+- méthode LEVOIS ;
+- définition institutionnelle qui change la lecture ;
+- comparaison utile ;
+- limite souvent oubliée ;
+- exercice ou outil.
 
-- Voir ce que cette réponse change dans ma situation
-- Comparer mes deux scénarios
-- Mettre ma recherche au clair
-- Voir les ventes autour de ma rue
+Ne jamais créer une série de pages identiques en ne changeant que le nom de la commune.
 
-## Réutilisation multiformat
+## Continuité
 
-Un article validé devient une source interne pour :
+Le CTA n’est pas obligatoire.
 
-- carrousel ;
-- LinkedIn ;
-- Facebook ;
-- Pinterest ;
-- vidéo courte ;
-- newsletter éventuelle.
+S’il existe :
 
-Mais chaque format est réécrit pour son usage.
+- il vient après la résolution ;
+- son libellé décrit une action réelle ;
+- la destination tient la promesse ;
+- il ne transforme pas une réponse gratuite en réponse retenue contre des coordonnées.
+
+Une route `pending` ne peut pas être présentée comme une fonction existante.
+
+## Article et autres formats
+
+L’article est le format d’explication inspectable.
+
+Le carrousel ne consiste pas à couper l’article en slides.
+
+La vidéo ne consiste pas à lire l’article plus vite.
+
+Chaque format repart du même dossier source : situation, faits, mécanisme, conclusion, limites et action.
 
 ## Quality Gate
 
-Une page ne passe pas en publication si :
+Une page n’est prête que si :
 
-- la réponse courte est floue ;
-- la preuve principale est trop faible ;
-- la page ne contient aucune valeur distincte ;
-- le titre promet plus que les preuves ;
-- la page duplique une autre ressource ;
-- la géographie est ambiguë ;
-- la donnée dynamique n’a pas été rafraîchie ;
-- le CTA n’est pas cohérent.
+- le canon V1 est présent ;
+- la décision est identifiable ;
+- la réponse courte contient la conclusion autorisée ;
+- la preuve centrale est qualifiée ;
+- le mécanisme est explicite ;
+- la limite essentielle est visible ;
+- une action autonome existe ;
+- les faits à rafraîchir l’ont été ;
+- la destination éventuelle tient sa promesse ;
+- aucune des trois interdictions absolues n’est violée.
 
-## Sortie attendue
+## Définition de terminé
 
-Le moteur produit :
-
-- query_intent
-- target_scope
-- title
-- slug
-- meta_title
-- meta_description
-- answer_short
-- outline
-- evidence_refs
-- freshness_check
-- article_body
-- limitations
-- internal_links
-- structured_data_plan
-- next_personal_question
-- cta
-- derivative_content_opportunities
+Le lecteur peut comprendre rapidement la réponse, retrouver pourquoi elle tient, voir ce qu’elle ne permet pas de conclure et refaire au moins une opération utile sans contacter LEVOIS.
