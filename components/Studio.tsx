@@ -318,6 +318,7 @@ export function Studio() {
               {editorialMeta.directEvidence} directe(s) ·{' '}
               {editorialMeta.conditionalEvidence} conditionnelle(s) · web non utilisé ·{' '}
               {editorialMeta.model}
+              {editorialMeta.traceabilityLogged ? ' · trace D1 enregistrée' : ''}
             </p>
           ) : null}
           {researchMeta ? (
@@ -328,6 +329,7 @@ export function Studio() {
                 : `${researchMeta.searchedSources} source(s) web observée(s)`} ·{' '}
               {researchMeta.acceptedSources} source(s) retenue(s) ·{' '}
               {researchMeta.downgradedClaims} claim(s) déclassé(s)
+              {researchMeta.traceabilityLogged ? ' · trace D1 enregistrée' : ''}
             </p>
           ) : null}
           {error ? <p className={styles.error}>{error}</p> : null}
