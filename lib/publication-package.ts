@@ -1,6 +1,7 @@
 import { buildAnswerPageBrief } from './answers-engine';
 import { buildDistributionBrief } from './distribution-brief';
 import { runSeoPublicationGate } from './seo-publication-gate';
+import { buildContentAnalyticsPlan } from './content-analytics-plan';
 import { reviewCanon } from './canon-review';
 import { buildTraceabilityManifest } from './content-traceability';
 import { buildStructuralRenderPackage } from './render-package-builder';
@@ -81,6 +82,7 @@ export function buildPublicationPackage(
   const carousel = buildVulgarisationBrief(project);
   const distribution = buildDistributionBrief(project);
   const seo = runSeoPublicationGate(project, article);
+  const analytics = buildContentAnalyticsPlan(project, article);
   const renderPackage = buildStructuralRenderPackage(project);
   const renderReview = reviewCarouselRender(renderPackage);
   const assetPlan = buildVisualAssetPlan(project, renderPackage);
