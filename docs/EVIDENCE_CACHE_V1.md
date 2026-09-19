@@ -268,10 +268,12 @@ Des preuves méthodologiques supplémentaires sont signalées sans bloquer si le
 
 Quand la base D1 `levois-evidence` a été créée et que son `database_id` est connu :
 
-`powershell -ExecutionPolicy Bypass -File scripts/setup-studio-v21.ps1 -LibraryPath "C:\chemin\LEVOIS_EVIDENCE_LIBRARY_V2_1" -DatabaseId "<DATABASE_ID>"`
+`powershell -ExecutionPolicy Bypass -File scripts/setup-studio-v21.ps1 -LibraryPath "C:\chemin\LEVOIS_EVIDENCE_LIBRARY_V2_1.zip" -DatabaseId "<DATABASE_ID>"`
 
 Le script :
 
+- accepte directement le ZIP V2.1 ou le dossier déjà extrait ;
+- extrait automatiquement le ZIP dans un dossier de travail si nécessaire ;
 - ajoute uniquement le binding D1 non secret à `env.studio` ;
 - importe V2.1 ;
 - applique les tables de traçabilité ;
