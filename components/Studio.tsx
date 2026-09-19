@@ -411,7 +411,17 @@ function EvidenceView({ project }: { project: StudioProject }) {
         <div className={styles.claimGrid}>
           {pack.claims.map((claim) => (
             <article className={styles.claimCard} key={claim.claimId}>
-              <div className={styles.claimMeta}><span>{claim.claimId}</span><b>{claim.status}</b></div>
+              <div className={styles.claimMeta}>
+                <span>{claim.claimId}</span>
+                <b>{claim.status}</b>
+              </div>
+              {claim.evidenceUseClass || claim.publicationReadiness ? (
+                <p className={styles.evidenceClass}>
+                  {claim.evidenceUseClass ?? 'WEB'}
+                  {claim.publicationReadiness ? ' · ' + claim.publicationReadiness : ''}
+                  {claim.verificationRequiredBeforePublication ? ' · REVUE AVANT PUBLICATION' : ''}
+                </p>
+              ) : null}
               <h3>{claim.value !== undefined ? `${String(claim.value).replace('.', ',')}${claim.unit ? ' ' + claim.unit : ''}` : claim.claim}</h3>
               <p>{claim.claim}</p>
               {claim.allowedUses.length ? (
