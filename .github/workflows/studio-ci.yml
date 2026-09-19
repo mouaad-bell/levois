@@ -31,6 +31,8 @@ jobs:
         run: npm run validate:render
       - name: Content dependency validation
         run: npm run validate:dependencies
+      - name: Answers pilot validation
+        run: npm run validate:answers
       - name: D1 import safety
         run: npm run test:evidence-import
       - name: Build
