@@ -1,5 +1,6 @@
 import { buildAnswerPageBrief } from './answers-engine';
 import { buildDistributionBrief } from './distribution-brief';
+import { runSeoPublicationGate } from './seo-publication-gate';
 import { reviewCanon } from './canon-review';
 import { buildTraceabilityManifest } from './content-traceability';
 import { buildStructuralRenderPackage } from './render-package-builder';
@@ -79,6 +80,7 @@ export function buildPublicationPackage(
   const article = buildAnswerPageBrief(project);
   const carousel = buildVulgarisationBrief(project);
   const distribution = buildDistributionBrief(project);
+  const seo = runSeoPublicationGate(project, article);
   const renderPackage = buildStructuralRenderPackage(project);
   const renderReview = reviewCarouselRender(renderPackage);
   const assetPlan = buildVisualAssetPlan(project, renderPackage);
@@ -151,6 +153,14 @@ export function buildPublicationPackage(
     warnings.push(
       'CTA désactivé tant que la destination publique n’est pas recettée.',
     );
+  }
+
+  for (const check of seo.checks) {
+    if (check.status === 'block') {
+      blockers.push('SEO ' + check.id + ' : ' + check.reason);
+    } else if (check.status === 'review') {
+      warnings.push('SEO ' + check.id + ' : ' + check.reason);
+    }
   }
 
   if (!canon.ready) {
