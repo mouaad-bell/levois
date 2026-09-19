@@ -434,6 +434,64 @@ function sanitizeBundle(
   };
 }
 
+function sanitizeEditorialBundle(
+  bundle: EditorialBundle,
+  claimIds: Set<string>,
+  evidenceIds: Set<string>,
+): EditorialBundle {
+  const cleanClaimRefs = (refs: string[]) =>
+    refs.filter((ref, index) => claimIds.has(ref) && refs.indexOf(ref) === index);
+
+  const cleanEvidenceRefs = (refs: string[]) =>
+    refs.filter((ref, index) => evidenceIds.has(ref) && refs.indexOf(ref) === index);
+
+  const angles = bundle.angles.slice(0, 3).map((angle) => ({
+    ...angle,
+    claimRefs: cleanClaimRefs(angle.claimRefs ?? []),
+  }));
+  if (angles.length && !angles.some((angle) => angle.selected)) {
+    angles[0] = { ...angles[0], selected: true };
+  }
+
+  return {
+    ...bundle,
+    evidenceSelection: {
+      ...bundle.evidenceSelection,
+      centralEvidenceRefs: cleanEvidenceRefs(bundle.evidenceSelection.centralEvidenceRefs ?? []),
+      contextEvidenceRefs: cleanEvidenceRefs(bundle.evidenceSelection.contextEvidenceRefs ?? []),
+      rejectedEvidenceRefs: cleanEvidenceRefs(bundle.evidenceSelection.rejectedEvidenceRefs ?? []),
+    },
+    angles,
+    canon: {
+      ...bundle.canon,
+      canonVersion: 'CONTENT_EXPERIENCE_V1_2026-09-19',
+      hookCandidates: bundle.canon.hookCandidates.slice(0, 3).map((candidate) => ({
+        ...candidate,
+        claimRefs: cleanClaimRefs(candidate.claimRefs ?? []),
+        evidenceRefs: cleanEvidenceRefs(candidate.evidenceRefs ?? []),
+      })),
+      storyBeats: bundle.canon.storyBeats.slice(0, 6).map((beat) => ({
+        ...beat,
+        claimRefs: cleanClaimRefs(beat.claimRefs ?? []),
+      })),
+    },
+    articleMaster: {
+      ...bundle.articleMaster,
+      sections: bundle.articleMaster.sections.slice(0, 8).map((section, index) => ({
+        ...section,
+        sectionId: 'SEC' + String(index + 1).padStart(2, '0'),
+        claimRefs: cleanClaimRefs(section.claimRefs ?? []),
+      })),
+    },
+    storyboard: {
+      slides: bundle.storyboard.slides.slice(0, 10).map((slide, index) => ({
+        ...slide,
+        slideNumber: index + 1,
+        claimRefs: cleanClaimRefs(slide.claimRefs ?? []),
+      })),
+    },
+  };
+}
 async function librarySearch(request: Request, env: StudioEnv) {
   if (!env.STUDIO_ACCESS_TOKEN) {
     return json({ error: 'Studio non configuré : STUDIO_ACCESS_TOKEN requis.' }, { status: 503 });
