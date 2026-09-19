@@ -2,7 +2,7 @@ import type { ResearchBundle } from './lib/studio-research';
 import { searchEvidenceLibrary, libraryCoverageSummary, inferRetrievalIntent, type EvidenceDb } from './lib/evidence-library';
 import { buildEvidencePackFromLibrary } from './lib/evidence-pack';
 import type { EditorialBundle } from './lib/studio-editorial';
-import { recordGenerationRun, persistTraceabilityManifest, findImpactedContent, findStaleContentDependencies, syncStaleContentReviews } from './lib/content-traceability-db';
+import { recordGenerationRun, persistTraceabilityManifest, findImpactedContent, findStaleContentDependencies, syncStaleContentReviews, listOpenContentReviews, resolveContentReview } from './lib/content-traceability-db';
 import type { ContentTraceabilityManifest } from './lib/content-traceability';
 
 type AssetsBinding = { fetch(request: Request): Promise<Response> };
@@ -683,6 +683,103 @@ async function editorial(request: Request, env: StudioEnv) {
     },
   });
 }
+async function traceabilityReviews(request: Request, env: StudioEnv) {
+  if (!env.STUDIO_ACCESS_TOKEN) {
+    return json(
+      { error: 'Studio non configuré : STUDIO_ACCESS_TOKEN requis.' },
+      { status: 503 },
+    );
+  }
+
+  const provided = request.headers.get('x-studio-key') ?? '';
+  if (!provided || !safeEqual(provided, env.STUDIO_ACCESS_TOKEN)) {
+    return json({ error: 'Accès Studio refusé.' }, { status: 401 });
+  }
+
+  if (!env.LEVOIS_EVIDENCE_DB) {
+    return json(
+      { error: 'Bibliothèque LEVOIS non connectée.' },
+      { status: 503 },
+    );
+  }
+
+  let limit = 100;
+
+  if (request.method === 'POST') {
+    try {
+      const body = await request.json() as { limit?: unknown };
+      if (typeof body.limit === 'number') limit = body.limit;
+    } catch {
+      return json({ error: 'Corps JSON invalide.' }, { status: 400 });
+    }
+  }
+
+  const reviews = await listOpenContentReviews(
+    env.LEVOIS_EVIDENCE_DB,
+    limit,
+  );
+
+  return json({
+    reviews,
+    count: reviews.length,
+  });
+}
+
+async function traceabilityResolve(request: Request, env: StudioEnv) {
+  if (!env.STUDIO_ACCESS_TOKEN) {
+    return json(
+      { error: 'Studio non configuré : STUDIO_ACCESS_TOKEN requis.' },
+      { status: 503 },
+    );
+  }
+
+  const provided = request.headers.get('x-studio-key') ?? '';
+  if (!provided || !safeEqual(provided, env.STUDIO_ACCESS_TOKEN)) {
+    return json({ error: 'Accès Studio refusé.' }, { status: 401 });
+  }
+
+  if (!env.LEVOIS_EVIDENCE_DB) {
+    return json(
+      { error: 'Bibliothèque LEVOIS non connectée.' },
+      { status: 503 },
+    );
+  }
+
+  let body: { reviewId?: unknown; resolution?: unknown };
+  try {
+    body = await request.json() as typeof body;
+  } catch {
+    return json({ error: 'Corps JSON invalide.' }, { status: 400 });
+  }
+
+  const reviewId =
+    typeof body.reviewId === 'string'
+      ? body.reviewId.trim()
+      : '';
+  const resolution =
+    typeof body.resolution === 'string'
+      ? body.resolution.trim()
+      : '';
+
+  if (!reviewId || !resolution) {
+    return json(
+      { error: 'reviewId et resolution sont requis.' },
+      { status: 400 },
+    );
+  }
+
+  const resolved = await resolveContentReview(
+    env.LEVOIS_EVIDENCE_DB,
+    reviewId,
+    resolution,
+  );
+
+  return json(
+    { resolved, reviewId },
+    { status: resolved ? 200 : 404 },
+  );
+}
+
 async function traceabilitySync(request: Request, env: StudioEnv) {
   if (!env.STUDIO_ACCESS_TOKEN) {
     return json(
@@ -1210,6 +1307,16 @@ export default {
       if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
       return editorial(request, env);
     }
+    if (url.pathname === '/api/studio/traceability/reviews') {
+      if (request.method !== 'GET' && request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'GET, POST' } });
+      return traceabilityReviews(request, env);
+    }
+
+    if (url.pathname === '/api/studio/traceability/resolve') {
+      if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
+      return traceabilityResolve(request, env);
+    }
+
     if (url.pathname === '/api/studio/traceability/sync') {
       if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
       return traceabilitySync(request, env);
