@@ -369,7 +369,7 @@ function surfaceFixture(rawInput: string): StudioProject {
     centralQuestion:
       'Deux logements de surface proche peuvent-ils répondre différemment aux mêmes usages ?',
     centralThesis:
-      'Oui : la surface totale décrit une quantité, mais elle ne suffit pas à confirmer que les usages nécessaires peuvent fonctionner ensemble au même moment.',
+      'La surface totale et le nombre de pièces ne suffisent pas, à eux seuls, à confirmer que les usages nécessaires peuvent fonctionner en même temps.',
     family: family.id,
     sections: [
       {
