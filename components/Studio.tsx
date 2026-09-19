@@ -1060,7 +1060,58 @@ function ReviewQueueView({
   const [reviews, setReviews] = useState<ReviewQueueItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  const [clearingCache, setClearingCache] = useState(false);
   const [message, setMessage] = useState('');
+
+  async function clearEditorialCache() {
+    if (!studioKey.trim()) {
+      setMessage('Ajoutez la clé Studio privée avant de vider le cache.');
+      return;
+    }
+
+    if (
+      !window.confirm(
+        'Vider le cache éditorial V2.1 ? Les preuves et les traces ne seront pas supprimées.',
+      )
+    ) {
+      return;
+    }
+
+    setClearingCache(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/studio/cache/clear', {
+        method: 'POST',
+        headers: {
+          'x-studio-key': studioKey.trim(),
+        },
+      });
+
+      const payload = await response.json() as {
+        cleared?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || !payload.cleared) {
+        throw new Error(
+          payload.error || 'Impossible de vider le cache éditorial.',
+        );
+      }
+
+      setMessage(
+        'Cache éditorial vidé. Les prochaines constructions seront régénérées.',
+      );
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : 'Suppression du cache impossible.',
+      );
+    } finally {
+      setClearingCache(false);
+    }
+  }
 
   async function loadReviews() {
     if (!studioKey.trim()) {
@@ -1225,6 +1276,14 @@ function ReviewQueueView({
             disabled={syncing}
           >
             {syncing ? 'Synchronisation…' : 'Synchroniser V2.1'}
+          </button>
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={clearEditorialCache}
+            disabled={clearingCache}
+          >
+            {clearingCache ? 'Suppression…' : 'Vider cache éditorial'}
           </button>
         </div>
       </section>
