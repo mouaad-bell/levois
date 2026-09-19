@@ -1,4 +1,4 @@
-import { runCanonGate, type CanonGateResult } from './editorial-canon-gate';
+import { reviewCanon, type CanonReview } from './canon-review';
 import type { StudioProject, StoryboardSlide } from './studio-schema';
 
 export type VulgarisationQualityGate = {
@@ -23,7 +23,7 @@ export type VulgarisationBrief = {
   nextPersonalQuestion: string;
   ctaLabel?: string;
   slides: StoryboardSlide[];
-  canonGate: CanonGateResult;
+  canonReview: CanonReview;
   qualityGate: VulgarisationQualityGate;
 };
 
@@ -77,7 +77,7 @@ export function buildVulgarisationBrief(project: StudioProject): VulgarisationBr
     .map((claim) => claim.claimId);
 
   const slides = project.storyboard.slides;
-  const canonGate = runCanonGate(project);
+  const canonReview = reviewCanon(project);
 
   const simplifications: string[] = [];
 
@@ -108,9 +108,9 @@ export function buildVulgarisationBrief(project: StudioProject): VulgarisationBr
     );
   }
 
-  for (const [name, control] of Object.entries(canonGate.controls)) {
-    if (!control.pass && control.correction) {
-      simplifications.push(name + ' : ' + control.correction);
+  for (const item of canonReview.items) {
+    if (item.status !== 'pass') {
+      simplifications.push(item.id + ' : ' + item.correction);
     }
   }
 
@@ -131,14 +131,15 @@ export function buildVulgarisationBrief(project: StudioProject): VulgarisationBr
         slide.narrativeRole === 'exercise',
     ),
     transferValue: hasPracticalTake(slides),
-    continuity: canonGate.controls.continuity.pass,
+    continuity:
+      canonReview.items.find((item) => item.id === 'continuity')?.status === 'pass',
     collegienTest:
       project.articleMaster.keyTakeaway
         .split(/[.!?]/)
         .filter(Boolean).length <= 3 &&
       wordCount(project.articleMaster.keyTakeaway) <= 32,
     noNewTopicLate: !hasLateTopicDrift(slides),
-    canonReady: canonGate.ready,
+    canonReady: canonReview.ready,
   };
 
   return {
@@ -153,7 +154,7 @@ export function buildVulgarisationBrief(project: StudioProject): VulgarisationBr
         ? project.articleMaster.recommendedLevoisPath.label
         : undefined,
     slides,
-    canonGate,
+    canonReview,
     qualityGate,
   };
 }
