@@ -416,6 +416,9 @@ function surfaceFixture(rawInput: string): StudioProject {
           timeScope: 'Définition consultée le 18 septembre 2026',
           sourceRefs: ['S001'],
           evidenceRefs: ['V2-DEF-0029'],
+          evidenceUseClass: 'REUSABLE_IMMEDIATELY',
+          publicationReadiness: 'direct',
+          verificationRequiredBeforePublication: false,
           evidenceStrength: 'strong',
           status: 'verified',
           allowedUses: [
