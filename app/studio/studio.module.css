@@ -59,3 +59,9 @@
 @media(max-width:640px){.accessRow{grid-template-columns:1fr}.actionRow{flex-direction:column}.actionRow .runButton,.secondaryButton{width:100%;flex:auto}}
 
 .evidenceClass{margin:7px 0 12px;color:var(--studio-accent);font-size:10px;font-weight:850;letter-spacing:.055em;text-transform:uppercase}
+
+.renderPreview{display:grid;place-items:center;padding:18px 0 10px}
+.renderPreview>article{width:min(100%,480px)}
+.previewNav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.previewNav button{width:34px;height:30px;border:1px solid var(--studio-line);background:rgba(255,255,255,.03);color:var(--studio-text);font-size:10px;font-weight:800;cursor:pointer}
+.previewNav button[data-active="true"]{border-color:var(--studio-accent);color:var(--studio-accent);background:color-mix(in srgb,var(--studio-accent) 10%,transparent)}
