@@ -8,14 +8,15 @@
     "build": "npm run clean && next build",
     "typecheck": "tsc --noEmit",
     "security:audit": "npm audit --audit-level=high",
-    "check": "npm run typecheck && npm run validate:editorial && npm run validate:render && npm run validate:dependencies && npm run validate:pilot-evidence && npm run validate:answers && npm run test:evidence-import && npm run build && npm run security:audit",
+    "check": "npm run typecheck && npm run validate:editorial && npm run validate:render && npm run validate:dependencies && npm run validate:pilot-evidence && npm run validate:answers && npm run test:evidence-import && npm run test:d1-schema && npm run build && npm run security:audit",
     "deploy": "wrangler deploy",
     "validate:editorial": "node scripts/validate-editorial-pilots.mjs",
     "validate:render": "node scripts/validate-render-packages.mjs",
     "test:evidence-import": "node scripts/test-evidence-import-limits.mjs",
     "validate:dependencies": "node scripts/validate-content-dependencies.mjs",
     "validate:answers": "node scripts/validate-answers-pilots.mjs",
-    "validate:pilot-evidence": "node scripts/validate-pilot-evidence-snapshot.mjs"
+    "validate:pilot-evidence": "node scripts/validate-pilot-evidence-snapshot.mjs",
+    "test:d1-schema": "python3 scripts/test-d1-schema.py"
   },
   "dependencies": {
     "next": "16.3.5",
