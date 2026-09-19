@@ -992,6 +992,39 @@ function PublicationView({
       </section>
 
       <section className={styles.card}>
+        <p className={styles.cardIndex}>Distribution</p>
+        <h3>Un dossier, plusieurs formats — sans refaire la recherche</h3>
+        <p className={styles.limitText}>
+          Ces briefs ne sont pas des légendes finales : ils transmettent la même
+          preuve, la même limite et la même opération à une future couche de
+          rédaction moins coûteuse.
+        </p>
+        <div className={styles.roadmapGrid}>
+          {publication.distribution.channels.map((channel) => (
+            <article className={styles.channelCard} key={channel.channel}>
+              <div className={styles.roadmapTop}>
+                <span>{channel.channel.slice(0, 2).toUpperCase()}</span>
+                <small>{channel.channel}</small>
+              </div>
+              <h4>{channel.opening}</h4>
+              <p>{channel.objective}</p>
+              <p className={styles.limitText}>
+                → {channel.practicalTake}
+              </p>
+              <details>
+                <summary>Contraintes</summary>
+                <ul>
+                  {channel.writingConstraints.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </details>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.card}>
         <p className={styles.cardIndex}>Traçabilité</p>
         <p>
           Article : {publication.traceability.article.dependencies.length} dépendance(s) preuve ·
