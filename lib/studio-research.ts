@@ -105,6 +105,20 @@ export type ResearchApiResponse = {
     acceptedSources: number;
     downgradedClaims: number;
     requestId: string;
+    libraryHits?: number;
+    libraryCoverage?: {
+      hits: number;
+      direct: number;
+      historical: number;
+      refreshRequired: number;
+      propertyCheck: number;
+      personCheck: number;
+      freshDirect: number;
+      primaryDirect: number;
+      uniqueTopics: number;
+      candidateForWebSkip: boolean;
+    };
+    webSkipped?: boolean;
   };
 };
 
