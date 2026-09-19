@@ -83,6 +83,7 @@ export type EditorialApiResponse = {
     webUsed: false;
     retrievalIntent?: string;
     traceabilityLogged?: boolean;
+    cacheHit?: boolean;
   };
 };
 
