@@ -1053,6 +1053,44 @@ async function traceabilityImpact(request: Request, env: StudioEnv) {
   });
 }
 
+async function usageSummary(request: Request, env: StudioEnv) {
+  if (!env.STUDIO_ACCESS_TOKEN) {
+    return json(
+      { error: 'Studio non configuré : STUDIO_ACCESS_TOKEN requis.' },
+      { status: 503 },
+    );
+  }
+
+  const provided = request.headers.get('x-studio-key') ?? '';
+  if (!provided || !safeEqual(provided, env.STUDIO_ACCESS_TOKEN)) {
+    return json({ error: 'Accès Studio refusé.' }, { status: 401 });
+  }
+
+  if (!env.LEVOIS_EVIDENCE_DB) {
+    return json(
+      { error: 'Bibliothèque LEVOIS non connectée.' },
+      { status: 503 },
+    );
+  }
+
+  let body: { days?: unknown } = {};
+  try {
+    body = await request.json() as { days?: unknown };
+  } catch {}
+
+  const days =
+    typeof body.days === 'number'
+      ? body.days
+      : 30;
+
+  const summary = await getGenerationUsageSummary(
+    env.LEVOIS_EVIDENCE_DB,
+    days,
+  );
+
+  return json(summary);
+}
+
 async function traceImpact(request: Request, env: StudioEnv) {
   if (!env.STUDIO_ACCESS_TOKEN) {
     return json(
@@ -1523,6 +1561,11 @@ export default {
     if (url.pathname === '/api/studio/traceability/impact') {
       if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
       return traceabilityImpact(request, env);
+    }
+
+    if (url.pathname === '/api/studio/usage/summary') {
+      if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
+      return usageSummary(request, env);
     }
 
     if (url.pathname === '/api/studio/traceability/impact') {
