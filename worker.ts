@@ -365,6 +365,21 @@ function sanitizeBundle(
     })),
   };
 
+  const canon = {
+    ...bundle.canon,
+    canonVersion: 'CONTENT_EXPERIENCE_V1_2026-09-19',
+    hookCandidates: bundle.canon.hookCandidates.slice(0, 3).map((candidate) => ({
+      ...candidate,
+      claimRefs: remapClaimRefs(candidate.claimRefs ?? []),
+      evidenceRefs: (candidate.evidenceRefs ?? [])
+        .filter((ref, index, refs) => allowedEvidenceIds.has(ref) && refs.indexOf(ref) === index),
+    })),
+    storyBeats: bundle.canon.storyBeats.slice(0, 6).map((beat) => ({
+      ...beat,
+      claimRefs: remapClaimRefs(beat.claimRefs ?? []),
+    })),
+  };
+
   const storyboard = {
     slides: bundle.storyboard.slides.slice(0, 10).map((slide, index) => ({
       ...slide,
@@ -384,6 +399,7 @@ function sanitizeBundle(
         ...angle,
         claimRefs: remapClaimRefs(angle.claimRefs ?? []),
       })),
+      canon,
       articleMaster,
       storyboard,
     },
