@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { buildStudioProject, STUDIO_FIXTURES } from '@/lib/studio-engine';
 import { buildStudioProjectFromResearch, type ResearchApiResponse } from '@/lib/studio-research';
 import type { StudioProject } from '@/lib/studio-schema';
+import { reviewCanon } from '@/lib/canon-review';
 import styles from '@/app/studio/studio.module.css';
 
 type Tab = 'scope' | 'evidence' | 'canon' | 'angles' | 'article' | 'storyboard' | 'json';
@@ -307,6 +308,7 @@ function EvidenceView({ project }: { project: StudioProject }) {
 
 function CanonView({ project }: { project: StudioProject }) {
   const canon = project.canon;
+  const review = reviewCanon(project);
 
   if (!canon) {
     return (
@@ -379,6 +381,21 @@ function CanonView({ project }: { project: StudioProject }) {
         <p>{canon.essentialLimit}</p>
         <h3>Action autonome</h3>
         <p>{canon.autonomousAction}</p>
+      </section>
+
+      <section className={styles.card}>
+        <p className={styles.cardIndex}>Contrôle avant diffusion</p>
+        <h2>{review.ready ? 'Prêt éditorialement' : 'À reprendre avant diffusion'}</h2>
+        {review.items.map((entry) => (
+          <div className={styles.unknownRow} key={entry.id}>
+            <span>{entry.status.toUpperCase()}</span>
+            <div>
+              <strong>{entry.question}</strong>
+              <p>{entry.note}</p>
+              {entry.status !== 'pass' ? <small>Correction : {entry.correction}</small> : null}
+            </div>
+          </div>
+        ))}
       </section>
     </div>
   );
