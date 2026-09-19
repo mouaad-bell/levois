@@ -6,6 +6,7 @@ import {
   type ClaimType,
   type ReaderEffect,
   type SlideLayout,
+  type CanonEditorialRecord,
   type SlideRole,
   type SourceReliability,
   type StudioFamilyId,
@@ -65,6 +66,7 @@ export type ResearchBundle = {
     claimRefs: string[];
     selected: boolean;
   }>;
+  canon: CanonEditorialRecord;
   articleMaster: {
     workingTitle: string;
     centralQuestion: string;
@@ -250,6 +252,18 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
       },
     },
     angles: selectedAngles,
+    canon: {
+      ...bundle.canon,
+      hookCandidates: bundle.canon.hookCandidates.map((candidate) => ({
+        ...candidate,
+        claimRefs: cleanRefs(candidate.claimRefs ?? [], claimIds),
+        evidenceRefs: Array.from(new Set(candidate.evidenceRefs ?? [])),
+      })),
+      storyBeats: bundle.canon.storyBeats.map((beat) => ({
+        ...beat,
+        claimRefs: cleanRefs(beat.claimRefs ?? [], claimIds),
+      })),
+    },
     articleMaster: {
       workingTitle: bundle.articleMaster.workingTitle,
       centralQuestion: bundle.articleMaster.centralQuestion,
