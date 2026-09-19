@@ -109,6 +109,63 @@ export type EditorialAngle = {
   selected?: boolean;
 };
 
+export type CanonHookFamily =
+  | 'situation'
+  | 'usage'
+  | 'comparison'
+  | 'condition'
+  | 'calendar'
+  | 'scope'
+  | 'unknown'
+  | 'result';
+
+export type CanonHookMode = 'direct' | 'scene' | 'comparison';
+
+export type CanonDecisionFrame = {
+  person: string;
+  decision: string;
+  spontaneousReading: string;
+  pressureTest: string;
+  authorizedConclusion: string;
+  finalOperation: string;
+};
+
+export type CanonHookCandidate = {
+  mode: CanonHookMode;
+  family: CanonHookFamily;
+  text: string;
+  explicitPromise: string;
+  implicitPromise: string;
+  claimRefs: string[];
+  evidenceRefs: string[];
+};
+
+export type CanonStoryFunction =
+  | 'situation'
+  | 'initial_reading'
+  | 'friction'
+  | 'demonstration'
+  | 'rereading'
+  | 'practical_take';
+
+export type CanonStoryBeat = {
+  function: CanonStoryFunction;
+  before: string;
+  after: string;
+  copy: string;
+  claimRefs: string[];
+};
+
+export type CanonEditorialRecord = {
+  canonVersion: string;
+  decisionFrame: CanonDecisionFrame;
+  hookCandidates: CanonHookCandidate[];
+  selectedHookMode: CanonHookMode;
+  storyBeats: CanonStoryBeat[];
+  essentialLimit: string;
+  autonomousAction: string;
+};
+
 export type ArticleSectionType =
   | 'question'
   | 'intuition'
@@ -203,6 +260,7 @@ export type StudioProject = {
   scope: EditorialScope;
   evidencePack: EvidencePack;
   angles: EditorialAngle[];
+  canon?: CanonEditorialRecord;
   articleMaster: ArticleMaster;
   storyboard: Storyboard;
   generatedAt: string;
