@@ -219,9 +219,12 @@ export function Studio() {
             {researchMeta ? ` · ${researchMeta.model}` : ''}
           </p>
         </div>
-        <div className={styles.familyBadge}>
-          <span>{project.family.code}</span>
-          <strong>{project.family.label}</strong>
+        <div className={styles.topbarActions}>
+          <a className={styles.renderLink} href="/studio/render/">Aperçu rendu</a>
+          <div className={styles.familyBadge}>
+            <span>{project.family.code}</span>
+            <strong>{project.family.label}</strong>
+          </div>
         </div>
       </header>
 
