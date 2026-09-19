@@ -211,13 +211,38 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
       return status === 'verified' || status === 'qualified';
     });
 
+  const hookModes = new Set(bundle.canon.hookCandidates.map((candidate) => candidate.mode));
+  const storyFunctions = new Set(bundle.canon.storyBeats.map((beat) => beat.function));
+  const canonDecisionComplete = Object.values(bundle.canon.decisionFrame).every(
+    (value) => typeof value === 'string' && value.trim().length > 0,
+  );
+  const canonComplete =
+    bundle.canon.canonVersion === 'CONTENT_EXPERIENCE_V1_2026-09-19' &&
+    canonDecisionComplete &&
+    bundle.canon.hookCandidates.length === 3 &&
+    hookModes.has('direct') &&
+    hookModes.has('scene') &&
+    hookModes.has('comparison') &&
+    bundle.canon.hookCandidates.some(
+      (candidate) => candidate.mode === bundle.canon.selectedHookMode,
+    ) &&
+    storyFunctions.has('situation') &&
+    storyFunctions.has('initial_reading') &&
+    storyFunctions.has('friction') &&
+    storyFunctions.has('demonstration') &&
+    storyFunctions.has('rereading') &&
+    storyFunctions.has('practical_take') &&
+    bundle.canon.autonomousAction.trim().length > 0 &&
+    bundle.canon.essentialLimit.trim().length > 0;
+
   const canPublish =
     !blockingUnknown &&
     verifiedClaims > 0 &&
     bundle.sources.length > 0 &&
-    slides.length >= 7 &&
+    slides.length >= 3 &&
     proofSupported &&
-    centralProofSupported;
+    centralProofSupported &&
+    canonComplete;
 
   return {
     schemaVersion: STUDIO_SCHEMA_VERSION,
@@ -289,11 +314,17 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
       qualityGate: {
         hook: slides[0]?.narrativeRole === 'hook',
         factuality: canPublish,
-        narrative: slides.length >= 7,
+        narrative: canonComplete,
         mobileDensity: slides.every((slide) => slide.headline.length <= 90 && slide.body.length <= 360),
-        transferValue: slides.some((slide) => slide.narrativeRole === 'transfer'),
+        transferValue:
+          bundle.canon.autonomousAction.trim().length > 0 &&
+          slides.some((slide) =>
+            ['method', 'transfer', 'exercise', 'bridge'].includes(slide.narrativeRole),
+          ),
         saveValue: selectedAngles.some((angle) => angle.saveValue.trim().length > 20),
-        levoisBridge: slides.at(-1)?.narrativeRole === 'bridge',
+        levoisBridge:
+          slides.some((slide) => slide.narrativeRole === 'bridge') ||
+          bundle.canon.autonomousAction.trim().length > 0,
       },
     },
     generatedAt: new Date().toISOString(),
