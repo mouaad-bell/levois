@@ -245,6 +245,10 @@ export type Storyboard = {
     transferValue: boolean;
     saveValue: boolean;
     levoisBridge: boolean;
+    canonPromise?: boolean;
+    resolution?: boolean;
+    autonomy?: boolean;
+    limitsVisible?: boolean;
   };
 };
 
