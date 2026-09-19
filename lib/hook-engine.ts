@@ -113,7 +113,8 @@ function promiseHeld(
 }
 
 function evidenceTraceable(candidate: CanonHookCandidate, input: HookEngineInput) {
-  const numericOrLocal = /\d|chartres|lèves|leves|lucé|luce|mainvilliers|luisant|coudray|champhol/i.test(
+  const hasNumber = /\d/.test(candidate.text);
+  const hasLocalAnchor = /chartres|lèves|leves|lucé|luce|mainvilliers|luisant|coudray|champhol/i.test(
     candidate.text,
   );
 
@@ -125,10 +126,30 @@ function evidenceTraceable(candidate: CanonHookCandidate, input: HookEngineInput
   );
 
   if (!evidenceOk || !claimsOk) return false;
-  if (numericOrLocal && candidate.evidenceRefs.length === 0 && candidate.claimRefs.length === 0) {
+
+  if (hasLocalAnchor && candidate.evidenceRefs.length === 0 && candidate.claimRefs.length === 0) {
     return false;
   }
-  return true;
+
+  if (hasNumber) {
+    if (
+      candidate.evidenceStatus === 'pedagogical_scenario' &&
+      /cas fictif|cas pédagogique|cas pedagogique|simulation/i.test(candidate.qualifier)
+    ) {
+      return true;
+    }
+
+    if (
+      candidate.evidenceStatus === 'sourced' &&
+      (candidate.evidenceRefs.length > 0 || candidate.claimRefs.length > 0)
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  return candidate.evidenceStatus === 'non_numeric' || candidate.evidenceStatus === 'sourced';
 }
 
 function candidateModesComplete(candidates: CanonHookCandidate[]) {
