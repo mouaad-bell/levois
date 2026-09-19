@@ -40,6 +40,7 @@ export type ResearchBundle = {
     geographicScope: string;
     timeScope: string;
     sourceRefs: string[];
+    evidenceRefs: string[];
     evidenceStrength: 'strong' | 'medium' | 'weak' | 'none';
     status: ClaimStatus;
     allowedUses: string[];
@@ -126,10 +127,15 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
 
   const claims = bundle.claims.map((claim) => {
     const sourceRefs = cleanRefs(claim.sourceRefs, sourceIds);
+    const evidenceRefs = Array.from(new Set(claim.evidenceRefs ?? []));
     const needsSource = claim.claimType === 'fact' || claim.claimType === 'calculation';
-    const status: ClaimStatus = needsSource && sourceRefs.length === 0 ? 'insufficient' : claim.status;
+    const status: ClaimStatus =
+      needsSource && sourceRefs.length === 0 && evidenceRefs.length === 0
+        ? 'insufficient'
+        : claim.status;
     return {
       ...claim,
+      evidenceRefs,
       value: claim.value || undefined,
       unit: claim.unit || undefined,
       population: claim.population || undefined,
