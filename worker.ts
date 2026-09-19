@@ -1,5 +1,6 @@
 import type { ResearchBundle } from './lib/studio-research';
 import { searchEvidenceLibrary, libraryCoverageSummary, type EvidenceDb } from './lib/evidence-library';
+import { buildEvidencePackFromLibrary } from './lib/evidence-pack';
 
 type AssetsBinding = { fetch(request: Request): Promise<Response> };
 
@@ -436,9 +437,19 @@ async function librarySearch(request: Request, env: StudioEnv) {
   const limit = typeof body.limit === 'number' ? body.limit : 24;
   const hits = await searchEvidenceLibrary(env.LEVOIS_EVIDENCE_DB, { text: input, limit });
 
+  const coverage = libraryCoverageSummary(hits);
+  const evidencePack = buildEvidencePackFromLibrary(hits);
+
   return json({
     hits,
-    coverage: libraryCoverageSummary(hits),
+    coverage,
+    evidencePack: evidencePack.pack,
+    traceability: {
+      evidenceIds: evidencePack.evidenceIds,
+      directEvidenceIds: evidencePack.directEvidenceIds,
+      conditionalEvidenceIds: evidencePack.conditionalEvidenceIds,
+      excludedEvidenceIds: evidencePack.excludedEvidenceIds,
+    },
   });
 }
 
