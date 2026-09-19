@@ -314,7 +314,7 @@ export function Studio() {
           ) : null}
           {editorialMeta ? (
             <p className={styles.researchMeta}>
-              V2.1 → {editorialMeta.libraryHits} preuve(s) récupérée(s) ·{' '}
+              V2.1{editorialMeta.retrievalIntent ? ' · ' + editorialMeta.retrievalIntent : ''} → {editorialMeta.libraryHits} preuve(s) récupérée(s) ·{' '}
               {editorialMeta.directEvidence} directe(s) ·{' '}
               {editorialMeta.conditionalEvidence} conditionnelle(s) · web non utilisé ·{' '}
               {editorialMeta.model}
@@ -323,6 +323,7 @@ export function Studio() {
           ) : null}
           {researchMeta ? (
             <p className={styles.researchMeta}>
+              {researchMeta.retrievalIntent ? researchMeta.retrievalIntent + ' · ' : ''}
               {researchMeta.libraryHits ?? 0} preuve(s) bibliothèque ·{' '}
               {researchMeta.webSkipped
                 ? 'web évité'
