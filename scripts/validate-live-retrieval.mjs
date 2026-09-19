@@ -11,7 +11,7 @@ const expectationsFile = path.resolve(
 
 if (!baseUrl || !token) {
   console.error(
-    'Usage: node scripts/validate-live-retrieval.mjs <studio-base-url> <studio-access-token> [expectations.json]',
+    'Usage: node scripts/validate-live-retrieval.mjs <studio-base-url> [studio-access-token] [expectations.json] ou définir STUDIO_BASE_URL / STUDIO_ACCESS_TOKEN.',
   );
   process.exit(2);
 }
