@@ -33,6 +33,8 @@ jobs:
         run: npm run validate:dependencies
       - name: Pilot evidence snapshot validation
         run: npm run validate:pilot-evidence
+      - name: Pilot package export
+        run: npm run validate:pilot-packages
       - name: Answers pilot validation
         run: npm run validate:answers
       - name: D1 import safety
