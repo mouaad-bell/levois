@@ -182,7 +182,7 @@ export function buildStudioProjectFromEditorial(
   const hookReview = evaluateHooks({
     brief: canon.decisionFrame,
     candidates: canon.hookCandidates,
-    bodyConclusion: canon.decisionFrame.authorizedConclusion,
+    bodyConclusion: bundle.articleMaster.centralThesis,
     bodyFinalOperation: canon.autonomousAction || canon.decisionFrame.finalOperation,
     knownEvidenceIds: evidenceIds,
     knownClaimIds: claimIds,
