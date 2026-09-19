@@ -270,7 +270,9 @@ function intentScore(
 
   if (intent === 'mobility') {
     let score = 0;
+    const geoType = normalize(String(row.geographic_scope_type || ''));
     if (subtopic === 'act') score += 16;
+    if (geoType === 'bv2022' || geoType === 'aav2020') score += 5;
     if (topic.includes('insee') && claim.includes('lieu de travail')) score += 14;
     if (claim.includes('commune autre que') || claim.includes('commune de residence')) score += 10;
     if (topic.includes('localisation') && /(gare|transport|filibus|arret)/.test(haystack)) score += 8;
@@ -324,6 +326,25 @@ function intentScore(
   return 0;
 }
 
+
+function temporalScore(row: Record<string, unknown>) {
+  const period = String(row.time_period || '');
+  const years = period
+    .match(/\b20\d{2}\b/g)
+    ?.map((year) => Number(year))
+    .filter((year) => Number.isFinite(year));
+
+  if (!years?.length) return 0;
+
+  const latest = Math.max(...years);
+  if (latest >= 2025) return 5;
+  if (latest === 2024) return 4.5;
+  if (latest === 2023) return 4;
+  if (latest === 2022) return 3;
+  if (latest === 2021) return 2;
+  return 0;
+}
+
 function scoreRow(
   row: Record<string, unknown>,
   tokens: string[],
@@ -349,7 +370,9 @@ function scoreRow(
     ),
   );
 
-  let score = intentScore(row, intent);
+  let score =
+    intentScore(row, intent) +
+    temporalScore(row);
 
   for (const token of tokens) {
     if (haystack.includes(token)) score += 3;
