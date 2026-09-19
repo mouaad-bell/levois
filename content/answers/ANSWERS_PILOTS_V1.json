@@ -1,0 +1,91 @@
+{
+  "version": "LEVOIS_ANSWERS_PILOTS_V1",
+  "canonVersion": "CONTENT_EXPERIENCE_V1_2026-09-19",
+  "evidenceLibraryVersion": "V2.1",
+  "status": "DRAFT_NOT_PUBLISHED",
+  "pages": [
+    {
+      "answerId": "LEV-ANS-001",
+      "familyId": "espace_usage",
+      "title": "80 m² : ce que la surface ne vous dit pas sur l’usage d’un logement",
+      "slug": "80-m2-surface-usage-logement",
+      "pageType": "national_explainer_with_local_context",
+      "queryIntent": "Comprendre pourquoi une surface totale ne suffit pas à vérifier si les usages importants fonctionneront dans un logement.",
+      "targetScope": "France ; application locale possible à Chartres et alentours sans prétendre que les données locales décrivent les plans.",
+      "answerShort": "80 m² donnent une quantité de surface. Ils ne suffisent pas à dire si votre quotidien fonctionnera dans le logement. Pour comparer utilement deux biens, choisissez deux activités importantes qui doivent avoir lieu en même temps, placez-les sur le plan puis vérifiez si chacune peut fonctionner dans les conditions dont vous avez besoin.",
+      "authorizedConclusion": "La surface totale et le nombre de pièces ne suffisent pas, à eux seuls, à confirmer que les usages nécessaires peuvent fonctionner en même temps.",
+      "autonomousAction": "Lister deux activités simultanées, les placer sur le plan et vérifier ce qui permet à chacune de fonctionner.",
+      "evidenceRefs": [
+        "V2-DEF-0029"
+      ],
+      "optionalEvidenceRefs": [
+        "REG-0035"
+      ],
+      "essentialLimit": "Le cas chambre d’amis / télétravail est fictif et ne démontre ni la fréquence du problème ni la qualité d’un logement particulier.",
+      "articleFile": "content/drafts/01_80M2_USAGE_ARTICLE_V1.md",
+      "relatedCarousel": "LEV-PILOT-SPACE-001",
+      "ctaStatus": "DISABLED_UNTIL_DESTINATION_REVIEWED",
+      "internalLinksCandidates": [
+        "/ressources/",
+        "/votre-rue/",
+        "/situer-ma-vente/"
+      ],
+      "freshness": "STATIC_CONCEPT_WITH_PERIODIC_REVIEW",
+      "lastEvidenceReview": "2026-09-19"
+    },
+    {
+      "answerId": "LEV-ANS-002",
+      "familyId": "lieu_mobilite",
+      "title": "Acheter plus loin pour payer moins cher : comment tester ce que le trajet change vraiment",
+      "slug": "acheter-plus-loin-payer-moins-cher-trajet",
+      "pageType": "national_explainer_with_chartres_context",
+      "queryIntent": "Savoir comment tester si l’éloignement d’un logement reste compatible avec l’organisation quotidienne et l’avantage recherché.",
+      "targetScope": "Méthode générale ; contexte historique possible : Bassin de vie 2022 de Chartres, 2023.",
+      "answerShort": "S’éloigner pour payer moins cher peut rester un compromis acceptable, mais la durée supplémentaire n’a de sens qu’en regard de votre organisation réelle. Testez le moment le plus contraint de votre semaine, refaites l’enchaînement depuis le logement envisagé et regardez quelle adaptation devient nécessaire avant de juger l’éloignement.",
+      "authorizedConclusion": "Un temps de trajet supplémentaire ne suffit pas à condamner l’éloignement, mais il peut rendre une organisation précise impossible telle quelle lorsqu’il dépasse une marge contrainte.",
+      "autonomousAction": "Prendre le moment le plus contraint de la semaine, refaire l’enchaînement depuis le logement envisagé et identifier l’adaptation nécessaire si la marge disparaît.",
+      "evidenceRefs": [
+        "INSEE-f36f351aab7a2171"
+      ],
+      "optionalEvidenceRefs": [],
+      "essentialLimit": "Les horaires et durées du récit sont fictifs. La donnée INSEE ne mesure ni distance, ni durée, ni coût, ni difficulté de trajet.",
+      "articleFile": "content/drafts/02_MOBILITY_ARTICLE_V1.md",
+      "relatedCarousel": "LEV-PILOT-MOBILITY-002",
+      "ctaStatus": "DISABLED_UNTIL_DESTINATION_REVIEWED",
+      "internalLinksCandidates": [
+        "/ressources/"
+      ],
+      "freshness": "HISTORICAL_CONTEXT_2023",
+      "lastEvidenceReview": "2026-09-19"
+    },
+    {
+      "answerId": "LEV-ANS-003",
+      "familyId": "prix_valeur",
+      "title": "25 000 € d’écart : pourquoi deux prix ne sont pas forcément comparables",
+      "slug": "ecart-prix-immobilier-comparables",
+      "pageType": "national_explainer",
+      "queryIntent": "Comprendre ce qu’un écart entre deux prix permet réellement de conclure avant de juger qu’un bien est trop cher.",
+      "targetScope": "France ; aucune localisation ajoutée artificiellement tant qu’elle n’apporte pas une preuve propre.",
+      "answerShort": "Un écart de prix peut être parfaitement calculé et pourtant mal interprété. Avant de conclure qu’un bien est trop cher, vérifiez le statut des deux montants, ce que chacun couvre, la période, la surface utilisée et les différences matérielles connues. Le calcul de l’écart vient après la vérification de comparabilité.",
+      "authorizedConclusion": "Un écart de prix, même exact, ne suffit pas à conclure qu’un bien est trop cher si les objets comparés ne sont pas réellement comparables.",
+      "autonomousAction": "Écrire les deux objets comparés, leur statut, leur date, leur périmètre, leur surface, les différences matérielles connues et les inconnues, puis seulement examiner l’écart.",
+      "evidenceRefs": [
+        "METH-0021",
+        "DEF-0001",
+        "DEF-0002",
+        "METH-0022"
+      ],
+      "optionalEvidenceRefs": [],
+      "essentialLimit": "Les montants 285 000 €, 310 000 € et +25 000 € sont pédagogiques. Un comparable ou un prix au m² n’est pas, à lui seul, une estimation individuelle.",
+      "articleFile": "content/drafts/03_PRICE_VALUE_ARTICLE_V1.md",
+      "relatedCarousel": "LEV-PILOT-PRICE-003",
+      "ctaStatus": "DISABLED_UNTIL_DESTINATION_REVIEWED",
+      "internalLinksCandidates": [
+        "/ressources/",
+        "/votre-rue/"
+      ],
+      "freshness": "METHODOLOGY_WITH_PERIODIC_REVIEW",
+      "lastEvidenceReview": "2026-09-19"
+    }
+  ]
+}
