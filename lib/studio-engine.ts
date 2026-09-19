@@ -95,27 +95,31 @@ function distanceFixture(rawInput: string): StudioProject {
           sourceId: 'S001',
           type: 'official_dataset',
           publisher: 'INSEE',
-          title: 'Dossier complet — Bassin de vie de Chartres',
+          title: 'Dossier complet — Bassin de vie 2022 de Chartres',
           url: 'https://www.insee.fr/fr/statistiques/2011101?geo=BV2022-28085',
           dataPeriod: '2023',
-          geographicScope: 'Bassin de vie de Chartres',
+          geographicScope: 'Bassin de vie 2022 de Chartres',
           reliability: 'primary',
         },
       ],
       claims: [
         {
           claimId: 'C007',
-          claim: '73,7 % des actifs occupés du bassin de vie de Chartres travaillent dans une autre commune que leur commune de résidence.',
+          claim: 'En 2023, 73,7 % des actifs de 15 ans ou plus ayant un emploi et résidant dans le Bassin de vie 2022 de Chartres travaillaient dans une commune autre que leur commune de résidence.',
           claimType: 'fact',
           value: 73.7,
           unit: '%',
-          population: 'Actifs occupés',
-          geographicScope: 'Bassin de vie de Chartres',
+          population: 'Actifs de 15 ans ou plus ayant un emploi et résidant dans la zone',
+          geographicScope: 'Bassin de vie 2022 de Chartres',
           timeScope: '2023',
           sourceRefs: ['S001'],
+          evidenceRefs: ['INSEE-f36f351aab7a2171'],
+          evidenceUseClass: 'HISTORICAL_ONLY',
+          publicationReadiness: 'historical_only',
+          verificationRequiredBeforePublication: false,
           evidenceStrength: 'strong',
           status: 'verified',
-          allowedUses: ['Les déplacements intercommunaux concernent une majorité des actifs occupés du bassin de vie de Chartres.'],
+          allowedUses: ['Décrire en 2023 la part des actifs résidents du Bassin de vie 2022 de Chartres qui travaillent dans une autre commune que leur commune de résidence.'],
           forbiddenInferences: [
             'Les actifs ont de longs trajets.',
             'Les habitants passent énormément de temps en voiture.',
@@ -143,7 +147,8 @@ function distanceFixture(rawInput: string): StudioProject {
       title: 'Plus loin. De quoi ?',
       promise: 'Transformer la notion vague de distance en réseau de contraintes réelles.',
       hook: 'PLUS LOIN. DE QUOI ?',
-      centralProof: '73,7 % des actifs occupés du bassin de vie de Chartres travaillent hors de leur commune de résidence.',
+      centralProof: 'En 2023, 73,7 % des actifs résidents ayant un emploi du Bassin de vie 2022 de Chartres travaillent hors de leur commune de résidence.',
+      claimRefs: ['C007'],
       saveValue: 'Une méthode en trois opérations : destinations, fréquence, moment contraint.',
       bridgeQuestion: 'Jusqu’où pouvez-vous réellement vous éloigner compte tenu de votre quotidien ?',
       selected: true,
@@ -168,15 +173,141 @@ function distanceFixture(rawInput: string): StudioProject {
     },
   ];
 
+  const canon = {
+    canonVersion: 'CONTENT_EXPERIENCE_V1_2026-09-19' as const,
+    decisionFrame: {
+      person:
+        'Une personne compare un logement intéressant mais plus éloigné et doit décider si ce compromis reste acceptable dans son quotidien.',
+      decision:
+        'Vérifier ce que l’éloignement change réellement avant de l’accepter ou de le rejeter.',
+      spontaneousReading:
+        'Un logement un peu plus loin paraît être un compromis simple à juger avec une distance ou un temps moyen.',
+      pressureTest:
+        'Les destinations n’ont ni la même fréquence ni le même niveau de contrainte ; quelques minutes peuvent être faciles à absorber ou franchir une marge horaire.',
+      authorizedConclusion:
+        'La distance seule ne suffit pas à déterminer si l’éloignement d’un logement est un compromis acceptable ; il faut examiner ce que cette adresse change dans les destinations, fréquences et moments contraints du quotidien.',
+      finalOperation:
+        'Lister les destinations importantes, leur fréquence et le moment le plus contraint avant de juger la localisation.',
+    },
+    hookCandidates: [
+      {
+        mode: 'direct' as const,
+        family: 'comparison' as const,
+        text: 'PLUS LOIN. DE QUOI ?',
+        explicitPromise:
+          'Montrer pourquoi la distance seule ne suffit pas à juger une localisation.',
+        implicitPromise:
+          'Le lecteur repartira avec une méthode pour tester ce que l’adresse change réellement.',
+        evidenceStatus: 'non_numeric' as const,
+        qualifier: '',
+        claimRefs: ['C007'],
+        evidenceRefs: ['INSEE-f36f351aab7a2171'],
+      },
+      {
+        mode: 'scene' as const,
+        family: 'situation' as const,
+        text: 'LE LOGEMENT VOUS PLAÎT. QU’EST-CE QUI CHANGE DANS VOTRE SEMAINE ?',
+        explicitPromise:
+          'Replacer l’éloignement dans une organisation concrète.',
+        implicitPromise:
+          'Le lecteur saura identifier le moment qui mérite réellement d’être testé.',
+        evidenceStatus: 'non_numeric' as const,
+        qualifier: '',
+        claimRefs: [],
+        evidenceRefs: [],
+      },
+      {
+        mode: 'comparison' as const,
+        family: 'comparison' as const,
+        text: 'MÊME DISTANCE. MÊME CONTRAINTE ?',
+        explicitPromise:
+          'Montrer que la même distance peut produire des effets différents selon les usages.',
+        implicitPromise:
+          'La comparaison reviendra à une méthode concrète plutôt qu’à un verdict général.',
+        evidenceStatus: 'non_numeric' as const,
+        qualifier: '',
+        claimRefs: [],
+        evidenceRefs: [],
+      },
+    ],
+    selectedHookMode: 'direct' as const,
+    storyBeats: [
+      {
+        function: 'situation' as const,
+        before:
+          'Le lecteur sait seulement qu’un logement est plus éloigné.',
+        after:
+          'Il comprend qu’il doit juger cet éloignement dans une décision réelle.',
+        copy:
+          'Le logement vous intéresse. Il est plus loin. Reste à savoir ce que cela change pour vous.',
+        claimRefs: [],
+      },
+      {
+        function: 'initial_reading' as const,
+        before:
+          'La distance paraît être la mesure principale.',
+        after:
+          'Le lecteur voit que cette mesure ne décrit pas encore son organisation.',
+        copy:
+          'Un rayon ou un nombre de kilomètres aide à chercher, mais ne décrit pas votre semaine.',
+        claimRefs: [],
+      },
+      {
+        function: 'friction' as const,
+        before:
+          'Tous les déplacements semblent avoir le même poids.',
+        after:
+          'Le lecteur distingue fréquence et moment contraint.',
+        copy:
+          'Travail, école, gare, proches et activités ne reviennent ni aussi souvent ni avec la même marge.',
+        claimRefs: [],
+      },
+      {
+        function: 'demonstration' as const,
+        before:
+          'Le changement de commune pourrait être confondu avec un trajet long.',
+        after:
+          'La donnée locale est replacée dans son périmètre exact.',
+        copy:
+          'En 2023, 73,7 % des actifs résidents ayant un emploi du Bassin de vie 2022 de Chartres travaillaient dans une autre commune ; cela ne donne pas leur durée de trajet.',
+        claimRefs: ['C007'],
+      },
+      {
+        function: 'rereading' as const,
+        before:
+          'Le logement paraît simplement proche ou loin.',
+        after:
+          'La décision revient à ce que l’adresse change dans l’organisation.',
+        copy:
+          'Le logement peut très bien convenir. La question devient : quelle organisation cette adresse vous demande-t-elle ?',
+        claimRefs: [],
+      },
+      {
+        function: 'practical_take' as const,
+        before:
+          'Le lecteur comprend l’idée mais ne sait pas encore la tester.',
+        after:
+          'Il possède une opération autonome.',
+        copy:
+          'Listez vos destinations importantes, leur fréquence, puis testez le moment le plus contraint.',
+        claimRefs: [],
+      },
+    ],
+    essentialLimit:
+      'La donnée INSEE est historique et décrit un changement de commune, pas la distance, la durée, le coût ou la difficulté des trajets. Toute application personnelle exige des mesures propres au projet.',
+    autonomousAction:
+      'Prenez les trois destinations qui structurent le plus votre semaine, notez leur fréquence et testez depuis le logement le moment où votre marge est la plus faible.',
+  };
+
   const articleMaster: ArticleMaster = {
     workingTitle: 'Plus loin. De quoi ?',
     centralQuestion: 'Comment savoir si un logement est réellement trop éloigné de votre quotidien ?',
-    centralThesis: 'Une localisation doit être évaluée par rapport aux destinations, fréquences et contraintes du quotidien plutôt qu’à partir d’une distance abstraite.',
+    centralThesis: 'La distance seule ne suffit pas à déterminer si l’éloignement d’un logement est un compromis acceptable ; il faut examiner ce que cette adresse change dans les destinations, fréquences et moments contraints du quotidien.',
     family: family.id,
     sections: [
       { sectionId: 'SEC01', type: 'question', heading: '“Plus loin” n’est pas encore une mesure utile', body: 'Dire qu’un logement est plus loin ne dit pas ce qui devient réellement plus difficile. Il faut d’abord identifier les lieux auxquels la semaine vous relie.', claimRefs: [] },
       { sectionId: 'SEC02', type: 'intuition', heading: 'L’intuition du rayon', body: 'On dessine souvent un cercle autour d’une ville. Cette simplification est pratique pour chercher, mais elle ne représente pas forcément les contraintes d’une personne.', claimRefs: [] },
-      { sectionId: 'SEC03', type: 'proof', heading: 'Un territoire déjà intercommunal', body: 'Dans le bassin de vie de Chartres, 73,7 % des actifs occupés travaillent dans une autre commune que leur commune de résidence en 2023. Cela montre que le passage d’une commune à l’autre fait partie du quotidien d’une majorité d’actifs, sans renseigner sur la durée de leurs trajets.', claimRefs: ['C007'] },
+      { sectionId: 'SEC03', type: 'proof', heading: 'Un territoire déjà intercommunal', body: 'Dans le Bassin de vie 2022 de Chartres, 73,7 % des actifs de 15 ans ou plus ayant un emploi travaillent dans une autre commune que leur commune de résidence en 2023. Cette donnée décrit un changement de commune, pas la durée, le coût ni la difficulté du trajet.', claimRefs: ['C007'] },
       { sectionId: 'SEC04', type: 'mechanism', heading: 'Votre adresse est un point. Votre quotidien est un réseau.', body: 'Travail, école, gare, proches, courses et activités n’ont ni la même fréquence ni le même niveau de contrainte. La localisation pertinente dépend de ce réseau.', claimRefs: [] },
       { sectionId: 'SEC05', type: 'case', heading: 'Même maison, deux décisions rationnelles', body: 'Cas pédagogique : une personne se déplace chaque jour pour le travail et l’école, une autre télétravaille quatre jours par semaine. Le logement est identique ; l’effet de sa localisation ne l’est pas.', claimRefs: [] },
       { sectionId: 'SEC06', type: 'method', heading: 'Trois opérations suffisent', body: 'Listez les destinations importantes. Comptez leur fréquence. Testez le moment où votre journée est la plus contrainte. Ensuite seulement, jugez la localisation.', claimRefs: [] },
@@ -202,7 +333,7 @@ function distanceFixture(rawInput: string): StudioProject {
     slides: [
       { slideNumber: 1, narrativeRole: 'hook', objective: 'Stopper le scroll avec une question incomplète.', headline: 'PLUS LOIN. DE QUOI ?', body: 'Avant de chercher “plus près”, encore faut-il savoir de quoi.', claimRefs: [], layout: 'HERO_MAP', readerEffect: 'stop', assetRequirements: ['Photographie locale lumineuse', 'Carte simplifiée de Chartres et alentours'] },
       { slideNumber: 2, narrativeRole: 'tension', objective: 'Casser l’idée que la distance suffit.', headline: 'LOIN ≠ DISTANCE', body: 'Deux logements séparés de quelques kilomètres peuvent bouleverser votre quotidien… ou presque ne rien changer.', claimRefs: [], layout: 'EDITORIAL_SPLIT', readerEffect: 'curiosity', assetRequirements: ['Deux scènes locales contrastées'] },
-      { slideNumber: 3, narrativeRole: 'proof', objective: 'Ancrer le sujet dans une donnée locale réelle.', headline: '73,7 %', body: 'des actifs occupés du bassin de vie de Chartres travaillent dans une autre commune que celle où ils habitent.', claimRefs: ['C007'], layout: 'HERO_NUMBER', readerEffect: 'credibility', sourceLabel: 'INSEE · RP2023 · Bassin de vie de Chartres', assetRequirements: ['Flux territoriaux stylisés'] },
+      { slideNumber: 3, narrativeRole: 'proof', objective: 'Ancrer le sujet dans une donnée locale réelle.', headline: '73,7 %', body: 'des actifs occupés du bassin de vie de Chartres travaillent dans une autre commune que celle où ils habitent.', claimRefs: ['C007'], layout: 'HERO_NUMBER', readerEffect: 'credibility', sourceLabel: 'INSEE · 2023 · Bassin de vie 2022 de Chartres', assetRequirements: ['Flux territoriaux stylisés'] },
       { slideNumber: 4, narrativeRole: 'explanation', objective: 'Faire comprendre la notion de réseau.', headline: 'VOTRE ADRESSE N’EST QU’UN POINT.', body: 'Travail. École. Gare. Proches. Courses. Activités. Votre quotidien est un réseau.', claimRefs: [], layout: 'MAP_NETWORK', readerEffect: 'understanding', assetRequirements: ['Carte réseau schématique'] },
       { slideNumber: 5, narrativeRole: 'case', objective: 'Montrer que la même adresse produit des décisions différentes.', headline: 'MÊME MAISON. DEUX DÉCISIONS RATIONNELLES.', body: 'Cas pédagogique : les contraintes changent, pas le logement.', claimRefs: [], layout: 'CASE_DUAL', readerEffect: 'identification', assetRequirements: ['Maison réelle ou illustration non documentaire', 'Deux profils sans portrait humain nécessaire'] },
       { slideNumber: 6, narrativeRole: 'method', objective: 'Donner une méthode mémorisable.', headline: 'NE MESUREZ PAS D’ABORD LES KILOMÈTRES.', body: '1 — Listez les destinations. 2 — Comptez la fréquence. 3 — Testez le moment le plus contraint.', claimRefs: [], layout: 'METHOD_STEPS', readerEffect: 'clarity', assetRequirements: ['Pictogrammes simples ou typographie pure'] },
@@ -231,6 +362,7 @@ function distanceFixture(rawInput: string): StudioProject {
     scope,
     evidencePack,
     angles,
+    canon,
     articleMaster,
     storyboard,
     generatedAt: new Date().toISOString(),
