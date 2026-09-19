@@ -226,3 +226,22 @@ Le script :
 - vérifie la version, le nombre de preuves, les classes moteur, le registre de fraîcheur et les alias.
 
 Valeur attendue après import : **39 721 preuves actives**.
+
+
+## FTS5
+
+La migration V2.1 crée `evidence_search`, un index FTS5 limité aux champs utiles à la récupération :
+
+- evidence_id ;
+- topic ;
+- subtopic ;
+- geographic_label ;
+- period ;
+- claim ;
+- decision_use.
+
+Les champs JSON lourds ne sont pas dupliqués dans l’index.
+
+L’import exclut `DO_NOT_USE` de l’index FTS. Le moteur récupère ensuite les lignes canoniques dans `evidence` pour appliquer tous les garde-fous.
+
+Le ranking ajoute une couche d’intention afin d’éviter des ambiguïtés lexicales : par exemple, une recherche sur les trajets ne doit pas être dominée par la réglementation du « bail mobilité ».
