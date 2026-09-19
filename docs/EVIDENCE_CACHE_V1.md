@@ -108,9 +108,9 @@ Appliquer ensuite :
 
 `npx wrangler d1 execute levois-evidence --remote --file=db/evidence-library-schema.sql`
 
-puis :
+Le schéma canonique contient déjà toutes les colonnes et l’index FTS5 V2.1.
 
-`npx wrangler d1 execute levois-evidence --remote --file=db/evidence-library-v21-migration.sql`
+N’utiliser `db/evidence-library-v21-migration.sql` que pour une ancienne base prototype, via le switch PowerShell `-LegacySchema`.
 
 Ajouter le binding `LEVOIS_EVIDENCE_DB` uniquement à l’environnement Studio avant le test.
 
@@ -220,7 +220,7 @@ Une fois la base D1 créée et le binding configuré, l’import V2.1 peut être
 Le script :
 
 - applique le schéma D1 ;
-- applique la migration V2.1 ;
+- utilise directement le schéma canonique V2.1 ;
 - construit les lots SQL ;
 - importe tous les lots ;
 - vérifie la version, le nombre de preuves, les classes moteur, le registre de fraîcheur et les alias.
