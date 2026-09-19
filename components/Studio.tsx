@@ -10,7 +10,7 @@ import { buildPublicationPackage } from '@/lib/publication-package';
 import { CarouselFrame } from '@/components/render/CarouselFrame';
 import styles from '@/app/studio/studio.module.css';
 
-type Tab = 'scope' | 'evidence' | 'canon' | 'angles' | 'article' | 'storyboard' | 'publication' | 'json';
+type Tab = 'scope' | 'evidence' | 'canon' | 'angles' | 'article' | 'storyboard' | 'publication' | 'reviews' | 'json';
 
 const tabs: Array<[Tab, string]> = [
   ['scope', 'Scope'],
@@ -20,6 +20,7 @@ const tabs: Array<[Tab, string]> = [
   ['article', 'Article'],
   ['storyboard', 'Storyboard'],
   ['publication', 'Publication'],
+  ['reviews', 'Revue'],
   ['json', 'JSON'],
 ];
 
@@ -362,6 +363,7 @@ export function Studio() {
         {tab === 'article' ? <ArticleView project={project} /> : null}
         {tab === 'storyboard' ? <StoryboardView project={project} /> : null}
         {tab === 'publication' ? <PublicationView project={project} studioKey={studioKey} /> : null}
+        {tab === 'reviews' ? <ReviewQueueView studioKey={studioKey} /> : null}
         {tab === 'json' ? <JsonView project={project} /> : null}
       </main>
     </div>
@@ -1021,6 +1023,242 @@ function PublicationView({
           <p className={styles.researchMeta}>{queueMessage}</p>
         ) : null}
       </section>
+    </div>
+  );
+}
+
+type ReviewQueueItem = {
+  review_id: string;
+  artifact_id: string;
+  evidence_id: string | null;
+  trigger_type: string;
+  reason: string;
+  severity: string;
+  status: string;
+  detected_at: string;
+  artifact_type: string;
+  title: string;
+  slug: string | null;
+  route: string | null;
+};
+
+function ReviewQueueView({
+  studioKey,
+}: {
+  studioKey: string;
+}) {
+  const [reviews, setReviews] = useState<ReviewQueueItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [message, setMessage] = useState('');
+
+  async function loadReviews() {
+    if (!studioKey.trim()) {
+      setMessage('Ajoutez la clé Studio privée pour lire la file de revue.');
+      return;
+    }
+
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/studio/traceability/reviews', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-studio-key': studioKey.trim(),
+        },
+        body: JSON.stringify({ limit: 200 }),
+      });
+
+      const payload = await response.json() as {
+        reviews?: ReviewQueueItem[];
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(
+          payload.error || 'Impossible de charger la file de revue.',
+        );
+      }
+
+      setReviews(payload.reviews ?? []);
+      setMessage(
+        (payload.reviews?.length ?? 0) +
+          ' élément(s) ouvert(s).',
+      );
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : 'Chargement de la file de revue impossible.',
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function syncReviews() {
+    if (!studioKey.trim()) {
+      setMessage('Ajoutez la clé Studio privée pour synchroniser la file de revue.');
+      return;
+    }
+
+    setSyncing(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/studio/traceability/sync', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-studio-key': studioKey.trim(),
+        },
+        body: JSON.stringify({ limit: 500 }),
+      });
+
+      const payload = await response.json() as {
+        queuedArtifacts?: number;
+        staleDependencies?: number;
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(
+          payload.error || 'Synchronisation impossible.',
+        );
+      }
+
+      setMessage(
+        (payload.queuedArtifacts ?? 0) +
+          ' contenu(s) concernés · ' +
+          (payload.staleDependencies ?? 0) +
+          ' dépendance(s) modifiée(s).',
+      );
+
+      await loadReviews();
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : 'Synchronisation impossible.',
+      );
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  async function resolveReview(item: ReviewQueueItem) {
+    const resolution = window.prompt(
+      'Note de résolution pour ' + item.title,
+      'Preuve relue et contenu vérifié.',
+    );
+
+    if (!resolution?.trim()) return;
+
+    const response = await fetch('/api/studio/traceability/resolve', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-studio-key': studioKey.trim(),
+      },
+      body: JSON.stringify({
+        reviewId: item.review_id,
+        resolution: resolution.trim(),
+      }),
+    });
+
+    const payload = await response.json() as {
+      resolved?: boolean;
+      error?: string;
+    };
+
+    if (!response.ok || !payload.resolved) {
+      setMessage(
+        payload.error || 'Résolution de la revue impossible.',
+      );
+      return;
+    }
+
+    setReviews((current) =>
+      current.filter(
+        (review) => review.review_id !== item.review_id,
+      ),
+    );
+    setMessage('Revue clôturée : ' + item.title);
+  }
+
+  return (
+    <div className={styles.stack}>
+      <section className={styles.evidenceHeader}>
+        <div>
+          <p className={styles.kicker}>Maintenance éditoriale</p>
+          <h2>File de revue des preuves</h2>
+          <p>
+            Une preuve V2.1 modifiée peut rouvrir automatiquement les contenus
+            qui en dépendent.
+          </p>
+        </div>
+        <div className={styles.publicationHeaderActions}>
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={loadReviews}
+            disabled={loading}
+          >
+            {loading ? 'Chargement…' : 'Charger'}
+          </button>
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={syncReviews}
+            disabled={syncing}
+          >
+            {syncing ? 'Synchronisation…' : 'Synchroniser V2.1'}
+          </button>
+        </div>
+      </section>
+
+      {message ? (
+        <p className={styles.researchMeta}>{message}</p>
+      ) : null}
+
+      {!reviews.length ? (
+        <section className={styles.emptyState}>
+          <strong>Aucune revue ouverte chargée.</strong>
+          <p>
+            Chargez la file ou synchronisez les dépendances après une mise à jour
+            de la bibliothèque.
+          </p>
+        </section>
+      ) : (
+        <div className={styles.stack}>
+          {reviews.map((item) => (
+            <article className={styles.card} key={item.review_id}>
+              <div className={styles.reviewTop}>
+                <span data-severity={item.severity}>{item.severity}</span>
+                <small>{item.artifact_type}</small>
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.reason}</p>
+              <dl className={styles.definitionList}>
+                <div><dt>Evidence</dt><dd>{item.evidence_id ?? '—'}</dd></div>
+                <div><dt>Artifact</dt><dd>{item.artifact_id}</dd></div>
+                <div><dt>Détecté</dt><dd>{item.detected_at}</dd></div>
+              </dl>
+              <div className={styles.actionRow}>
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  onClick={() => resolveReview(item)}
+                >
+                  Marquer revu
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
