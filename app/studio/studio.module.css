@@ -74,3 +74,10 @@
 .reviewTop span[data-severity="HIGH"]{border-color:#ffb347;color:#ffca7a;background:rgba(255,179,71,.08)}
 .reviewTop span[data-severity="MEDIUM"]{border-color:var(--studio-accent);color:var(--studio-accent);background:color-mix(in srgb,var(--studio-accent) 8%,transparent)}
 .reviewTop small{color:var(--studio-muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+
+.roadmapGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.roadmapTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.roadmapTop span{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:color-mix(in srgb,var(--studio-accent) 18%,transparent);color:var(--studio-accent);font-size:12px;font-weight:900}
+.roadmapTop small{color:var(--studio-muted);font-size:10px;font-weight:850;letter-spacing:.07em;text-transform:uppercase}
+@media(max-width:1100px){.roadmapGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.roadmapGrid{grid-template-columns:1fr}}
