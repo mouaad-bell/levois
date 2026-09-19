@@ -624,6 +624,8 @@ function surfaceFixture(rawInput: string): StudioProject {
             'Montrer pourquoi la surface seule ne permet pas de confirmer un usage.',
           implicitPromise:
             'Donner une manière concrète de tester le logement.',
+          evidenceStatus: 'non_numeric',
+          qualifier: '',
           claimRefs: ['C001'],
           evidenceRefs: ['V2-DEF-0029'],
         },
@@ -636,6 +638,8 @@ function surfaceFixture(rawInput: string): StudioProject {
             'Montrer un conflit d’usage concret qui n’apparaît pas dans la simple liste des pièces.',
           implicitPromise:
             'Donner un test réutilisable sur un autre plan.',
+          evidenceStatus: 'non_numeric',
+          qualifier: '',
           claimRefs: [],
           evidenceRefs: [],
         },
@@ -647,6 +651,8 @@ function surfaceFixture(rawInput: string): StudioProject {
             'Comparer quantité de mètres carrés et fonctionnement réel.',
           implicitPromise:
             'Montrer ce qu’il faut regarder au-delà du total.',
+          evidenceStatus: 'non_numeric',
+          qualifier: '',
           claimRefs: ['C001'],
           evidenceRefs: ['V2-DEF-0029'],
         },
