@@ -1,261 +1,163 @@
-# LEVOIS — VULGARISATION ENGINE V1
+# LEVOIS — VULGARISATION ENGINE V1 — aligné Canon Contenu & Expérience V1
 
 ## Mission
 
-Transformer un Evidence Pack vérifié en contenu compréhensible, mémorisable et actionnable par le plus grand nombre, sans perdre la rigueur de la preuve.
+Transformer un dossier de preuves qualifiées en contenu compréhensible, inspectable et réutilisable, sans agrandir la conclusion.
 
-Le moteur ne doit pas simplement simplifier des phrases.
-Il doit simplifier le raisonnement.
+Le moteur ne simplifie pas seulement les phrases. Il simplifie le raisonnement tout en conservant :
 
-Chaîne cible :
+- le degré de certitude ;
+- le périmètre ;
+- la période ;
+- la distinction fait / déclaration / hypothèse / inconnue / cas fictif ;
+- la limite essentielle ;
+- l’action autonome.
+
+## Ordre de production
 
 PREUVES
-→ QUESTION DE DÉCISION
-→ IDÉE SIMPLE
-→ MÉCANISME
-→ EXEMPLE
-→ MÉTHODE
-→ QUESTION PERSONNELLE
-→ CTA LEVOIS
+→ DÉCISION
+→ LECTURE SPONTANÉE
+→ ÉLÉMENT QUI LA MET À L’ÉPREUVE
+→ CONCLUSION AUTORISÉE
+→ OPÉRATION FINALE
+→ PROGRESSION
+→ TROIS OUVERTURES
+→ ADAPTATION AU FORMAT
+→ CONTRÔLE PROMESSE / PREUVE / CONTINUITÉ
 
-## Principe central
+Le hook vient donc **après** la conclusion autorisée et l’opération finale.
 
-Une slide = une idée que le lecteur peut répéter à quelqu’un d’autre.
+## Ce que l’ancien moteur ne doit plus imposer
 
-Si le lecteur doit relire une slide pour comprendre ce qu’elle veut dire, la slide échoue.
+Les règles suivantes étaient des heuristiques de travail, pas des lois canoniques :
 
-## Test collégien
+- 7 à 10 slides obligatoires ;
+- 45 mots maximum comme règle éditoriale absolue ;
+- méthode obligatoirement en trois étapes ;
+- dernière slide obligatoirement commerciale ;
+- save/share value comme condition de vérité ou de publication.
 
-Avant validation, le moteur doit être capable de résumer le contenu entier en trois phrases simples.
+Elles peuvent rester des contraintes de rendu ou des préférences de composition, mais elles ne remplacent pas le canon.
 
-Exemple :
+## Progression canonique
 
-Deux logements peuvent avoir la même surface.
-Mais leurs mètres carrés ne servent pas forcément aux mêmes choses.
-Pour comparer, regarde où passe la place avant de regarder seulement le total.
+Le storytelling doit couvrir six fonctions, qui peuvent être réunies ou réparties différemment selon le format :
 
-Si le raisonnement ne peut pas être reformulé ainsi, il doit être retravaillé.
+1. situation ;
+2. lecture initiale ;
+3. friction ;
+4. démonstration ;
+5. relecture ;
+6. prise pratique.
 
-## Interdictions
+Pour chaque bloc, le moteur conserve :
 
-Le moteur ne doit pas :
+- ce que le lecteur sait avant ;
+- ce qu’il sait après.
 
-- transformer une statistique intéressante en slide si elle ne change pas la décision ;
-- empiler plusieurs chiffres sur une même slide ;
-- utiliser un mot technique non expliqué ;
-- écrire une slide de plus de 45 mots hors exception ;
-- produire une méthode de plus de 3 étapes sauf nécessité forte ;
-- introduire un nouveau grand sujet dans les deux dernières slides ;
-- utiliser une statistique comme preuve d’un mécanisme qu’elle ne mesure pas ;
-- confondre contexte, preuve et conclusion ;
-- écrire des slogans vagues du type « prenez la bonne décision ».
+Si les deux états sont identiques, le bloc est à fusionner ou supprimer.
 
-## Hiérarchie éditoriale
+## Simplification
 
-Chaque information reçue doit être classée dans une catégorie :
+### Retirer
 
-1. PREUVE CENTRALE — information sans laquelle le raisonnement tombe.
-2. CONTEXTE — information utile mais non décisive.
-3. MÉCANISME — explication causale ou logique démontrée ou explicitement présentée comme hypothèse.
-4. EXEMPLE — cas réel ou scénario pédagogique clairement signalé.
-5. MÉTHODE — action que le lecteur peut reproduire.
-6. LIMITE — ce que le raisonnement ne permet pas de conclure.
+Supprimer ce qui n’aide ni à comprendre, ni à vérifier, ni à décider.
 
-Les slides ne doivent pas traiter ces catégories comme équivalentes.
+### Traduire
 
-## Compression
-
-Le moteur applique trois passes.
-
-### Passe A — retirer
-
-Supprimer toute information qui n’aide pas à comprendre ou décider.
-
-### Passe B — traduire
-
-Remplacer les abstractions par des mots concrets.
+Remplacer les abstractions par l’action réelle.
 
 Exemples :
 
-- « distribution spatiale » → « où passent les mètres carrés »
-- « fréquence d’usage » → « combien de fois par semaine »
-- « périmètre statistique » → « la zone réellement mesurée »
+- « compatibilité des temporalités » → « quand l’argent sera réellement disponible » ;
+- « distribution spatiale » → « où passe la place » ;
+- « périmètre statistique » → « la zone réellement mesurée ».
 
-### Passe C — ancrer
+### Ancrer
 
-Ajouter un exemple ou une situation quotidienne quand cela améliore la compréhension.
+Faire reconnaître une scène : moment du parcours, intention, contrainte, question.
 
-## Longueur cible
+### Conserver la portée
 
-Hook : 2 à 8 mots idéalement.
+Une phrase plus courte ne peut jamais rendre une conclusion plus certaine.
 
-Headline : 3 à 12 mots.
+## Carrousel
 
-Corps : 10 à 35 mots. 45 mots maximum sauf slide méthode.
+La couverture fait comprendre la situation ou l’objet étudié.
 
-Source : visible mais secondaire.
+La deuxième slide commence à payer la promesse : donnée, cas ou distinction.
 
-## Architecture narrative
+Chaque slide suivante doit modifier la compréhension.
 
-Le moteur choisit 7 à 10 slides.
+Le nombre de slides dépend du raisonnement. Le renderer vérifie la lisibilité réelle à 1080×1350 ; il ne doit pas comprimer une démonstration jusqu’à rendre le texte illisible.
 
-Fonctions disponibles :
+Une slide partagée seule doit garder assez de contexte pour éviter une interprétation trompeuse.
 
-1. HOOK
-2. TENSION
-3. PREUVE
-4. EXPLICATION
-5. CAS
-6. MÉTHODE
-7. DÉCLIC
-8. TRANSFERT
-9. EXERCICE
-10. PONT
+## Article
 
-Le parcours doit couvrir :
+L’article répond tôt, puis permet d’examiner la réponse.
 
-STOPPER
-→ FAIRE DOUTER
-→ PROUVER
-→ FAIRE COMPRENDRE
-→ RENDRE CONCRET
-→ DONNER UNE MÉTHODE
-→ FAIRE MÉMORISER
-→ PERSONNALISER
-→ CONTINUER SUR LEVOIS
+Les intertitres portent des réponses ou des opérations, pas des titres génériques.
 
-## Hook
+Les sources, dates, périmètres et limites doivent être retrouvables.
 
-Le hook doit réussir 5 tests :
+## Exemple et scène
 
-- compréhension immédiate ;
-- tension réelle ;
-- curiosité ;
-- honnêteté ;
-- potentiel visuel.
+Un cas est :
 
-Exemples forts :
+- réel et documenté ;
+- ou explicitement fictif/pédagogique.
 
-- 80 m². Où passe la place ?
-- 25 000 € d’écart. Trop chère ?
-- Plus loin. De quoi ?
+Une pensée, une émotion, une cause ou une réplique ne sont jamais inventées pour rendre le récit plus vivant.
 
-Exemples faibles :
+Une image illustrative n’est jamais une preuve.
 
-- 5 conseils avant d’acheter
-- Tout savoir sur l’immobilier
-- Les erreurs à éviter
+## Limites
 
-## Statistiques
+La limite essentielle apparaît au moment où elle change la lecture.
 
-Une statistique n’entre dans le carrousel que si elle remplit au moins une fonction :
+Exemples :
 
-- prouver un contexte important ;
-- casser une intuition ;
-- quantifier un mécanisme ;
-- permettre une comparaison ;
-- aider à décider.
+- CAS FICTIF accompagne le cas ;
+- TRAJET SIMULÉ accompagne la durée ;
+- HISTORIQUE accompagne une donnée non actuelle ;
+- À VÉRIFIER accompagne une condition non établie.
 
-Sinon elle reste dans l’article maître.
+Une note finale ne répare pas une promesse excessive placée au début.
 
-## Exemple
+## Résolution et autonomie
 
-Un exemple doit être réel et sourcé, ou explicitement pédagogique.
+La question principale est fermée avant tout prolongement commercial.
 
-Jamais une fiction présentée comme une personne réelle.
+Le lecteur doit repartir avec une opération qu’il peut refaire sans Mouaad.
 
-## Méthode
+Un CTA est facultatif. S’il existe, il prolonge la valeur déjà reçue et annonce une action réellement disponible.
 
-Une bonne méthode doit être courte, mémorisable, actionnable immédiatement et indépendante d’un professionnel.
+## Contrôle avant diffusion
 
-Format préféré :
+Le Quality Gate du moteur reprend le canon :
 
-1. NOMMER
-2. MESURER
-3. COMPARER
+- canonPresent ;
+- subjectClear ;
+- promiseHeld ;
+- progression ;
+- mechanism ;
+- limitsVisible ;
+- resolution ;
+- autonomy ;
+- mobileReadability ;
+- continuity ;
+- factuality.
 
-ou :
+Save Value, Share Value et présence d’un bridge LEVOIS restent des observations de conception, pas des substituts à ces contrôles.
 
-1. AFFECTER
-2. TESTER
-3. ARBITRER
+## Trois vetos
 
-## Save Value
+1. Fait fabriqué présenté comme réel.
+2. Peur non justifiée par le dossier.
+3. Résolution remplacée par une obligation commerciale.
 
-Avant rendu, le moteur répond :
+## Définition de terminé
 
-Qu’est-ce que quelqu’un voudra retrouver dans six mois ?
-
-Si aucune réponse claire n’existe, le contenu est trop faible.
-
-## Share Value
-
-Le moteur répond également :
-
-Quelle slide peut être envoyée avec « regarde ça » ?
-
-## Pont LEVOIS
-
-Le CTA ne doit pas être une publicité ajoutée à la fin.
-
-Il doit prolonger la question créée par le contenu.
-
-Mauvais :
-
-Contactez-moi pour votre projet.
-
-Bon :
-
-Voir ce que cette réponse change dans ma situation.
-
-Le moteur produit obligatoirement :
-
-- next_personal_question ;
-- best_levois_path ;
-- cta_label.
-
-## Contrat visuel
-
-La vulgarisation doit respecter la DA figée :
-
-- format 4:5 ;
-- titre monumental ;
-- photographie locale ou matière réelle ;
-- couleur de famille ;
-- peu de microtexte ;
-- aucune statistique illisible ;
-- contraste fort ;
-- une idée visuelle dominante par slide.
-
-## Quality Gate
-
-Un storyboard n’est prêt pour Remotion que si :
-
-- Hook : PASS
-- Factuality : PASS
-- Simplicity : PASS
-- Mobile Readability : PASS
-- Save Value : PASS
-- Share Value : PASS
-- Transfer Value : PASS
-- LEVOIS Bridge : PASS
-- Collégien Test : PASS
-- No New Topic Late : PASS
-
-## Sortie attendue
-
-Le moteur produit un objet structuré contenant :
-
-- central_idea
-- reader_takeaway
-- key_proof_refs
-- narrative_arc
-- slides[]
-- next_personal_question
-- cta
-- save_value
-- share_value
-- rejected_evidence[]
-- simplifications[]
-
-La liste rejected_evidence est importante : elle montre les statistiques volontairement écartées parce qu’elles n’amélioraient pas le raisonnement.
+Le sujet est compris dès l’entrée ; le corps tient la promesse ; chaque étape apporte une progression ; les qualifications essentielles sont visibles ; la personne dispose d’une action autonome ; le format est lisible ; la destination fonctionne comme annoncé.
