@@ -1,148 +1,120 @@
-# FIXTURE ÉDITORIAL — 80 m². Où passe la place ?
+# PILOTE 01 — ESPACE / USAGE — Canon V1
 
-Ce fichier sert à tester les deux moteurs : carrousel et Answers.
+## Statut
 
-Il ne remplace pas l’Evidence Pack.
-Toute donnée chiffrée locale doit être injectée depuis la bibliothèque.
+Pilote éditorial canonique. Le fichier structuré de production est :
 
-## Question centrale
+`content/pilots/PILOT_01_ESPACE_USAGE_CANON_V1.json`
 
-Deux logements de même surface sont-ils réellement comparables à vivre ?
+## Sujet de départ
 
-## Thèse
+`80 m². Où passe la place ?`
 
-La surface totale décrit une quantité de mètres carrés, pas la manière dont ils servent le quotidien.
+Le canon a fait évoluer l’angle : on ne cherche plus seulement à parler de répartition abstraite des mètres carrés. On part d’une **décision d’usage identifiable**.
 
-## Version carrousel
+## Décision
 
-### Slide 1 — Hook
+Vérifier si les usages importants peuvent réellement fonctionner ensemble dans le logement.
 
-80 m².
-OÙ PASSE LA PLACE ?
+## Lecture spontanée
 
-Sous-texte :
+Deux chambres et une surface jugée suffisante semblent répondre au besoin.
 
-Même surface ne veut pas dire même usage.
+## Élément qui met cette lecture à l’épreuve
 
-### Slide 2 — Tension
+Une chambre sert aussi de bureau. Quand elle est occupée par un proche, le travail et le sommeil peuvent se gêner au même moment.
 
-LE CHIFFRE EST IDENTIQUE.
-PAS LE PLAN.
+## Conclusion autorisée
 
-Deux logements peuvent afficher la même surface et répartir leurs mètres carrés très différemment.
+La surface totale et le nombre de pièces ne suffisent pas, à eux seuls, à confirmer que les usages nécessaires peuvent fonctionner ensemble.
 
-### Slide 3 — Preuve / contexte
+## Opération autonome
 
-Utiliser ici uniquement un fait local réellement utile issu de la bibliothèque.
+Choisir deux activités qui doivent avoir lieu en même temps, les placer sur le plan et vérifier ce qui permet à chacune de fonctionner.
 
-But :
+## Preuve retenue
 
-montrer que la tranche de surface existe réellement localement, sans prétendre que la statistique décrit la qualité des plans.
+### V2-DEF-0029 — INSEE — Surface du logement
 
-### Slide 4 — Déclic
+Usage : expliquer ce que recouvre la notion statistique de surface du logement.
 
-80 m² EST UNE ENVELOPPE.
+Limite : la définition ne décrit ni la qualité du plan ni la coexistence des usages ; elle n’est pas un mesurage Carrez individuel.
 
-Elle ne dit pas combien servent au séjour, au rangement, aux chambres ou seulement à circuler.
+## Preuve volontairement écartée du carrousel
 
-### Slide 5 — Cas pédagogique
+### DVFAGG-07b0238efb7be1c5 — Chartres — appartements 80–100 m² — 2024
 
-DEUX FAUX 80 m².
-DEUX VIES.
+Cette donnée historique est réelle et possède un effectif exploitable, mais elle ne démontre rien sur la qualité d’un plan ou sur la coexistence des usages. Elle n’entre donc pas dans le carrousel seulement pour « faire local ».
 
-Plan A :
-plus de circulation, moins de rangement.
+Cette exclusion est un comportement attendu du moteur.
 
-Plan B :
-moins de circulation, plus d’espace utile pour le quotidien.
+## Trois ouvertures canoniques
 
-Label obligatoire :
+### Directe
 
-CAS PÉDAGOGIQUE
+**LA SURFACE SUFFIT-ELLE À VÉRIFIER VOS USAGES ?**
 
-### Slide 6 — Nouvelle question
+### Scène — retenue
 
-NE DEMANDEZ PLUS :
-« EST-CE ASSEZ GRAND ? »
+**DEUX CHAMBRES. OÙ TRAVAILLEZ-VOUS QUAND LES DEUX SONT OCCUPÉES ?**
 
-Demandez :
+### Comparaison
 
-« OÙ PASSENT MES MÈTRES CARRÉS ? »
+**MÊME SURFACE. VOS DEUX USAGES TIENNENT-ILS ENSEMBLE ?**
 
-### Slide 7 — Méthode
+Le hook scène est retenu parce qu’il fait reconnaître immédiatement une situation décisionnelle, sans agrandir la conclusion.
 
-3 GESTES.
+## Storytelling
 
-1. AFFECTER
-À quoi sert chaque zone ?
+1. **Situation** — Deux chambres sont recherchées ; la seconde doit aussi servir de bureau.
+2. **Lecture initiale** — Sur le papier, la fiche semble complète.
+3. **Friction** — Cas fictif : à 9 h, la chambre d’amis est occupée et une réunion confidentielle doit commencer.
+4. **Démonstration** — La question utile n’est plus seulement la quantité de surface, mais la coexistence des usages.
+5. **Relecture** — Le logement peut très bien convenir ; la surface redevient un contexte, pas un verdict.
+6. **Prise pratique** — Lister deux activités simultanées, les placer, vérifier les conditions de fonctionnement.
 
-2. TESTER
-Vos usages importants tiennent-ils ?
+## Carrousel
 
-3. ARBITRER
-Que sacrifieriez-vous en premier ?
+Le carrousel de référence comporte actuellement 9 slides, non parce que 9 serait une norme, mais parce que le raisonnement tient proprement dans cette progression.
 
-### Slide 8 — Exercice
+1. Deux chambres. Où travaillez-vous quand les deux sont occupées ?
+2. Sur le papier, tout y est.
+3. 9 h. La chambre est occupée. — CAS FICTIF
+4. Le total ne répond pas à cette question.
+5. Changez de question.
+6. Listez. Placez. Vérifiez.
+7. Le logement peut très bien convenir.
+8. Testez le prochain plan.
+9. Pont LEVOIS facultatif, uniquement si la destination réelle est vérifiée.
 
-TESTEZ LE PROCHAIN PLAN.
+## Article Answers
 
-Entourez :
-- ce que vous utilisez tous les jours ;
-- ce qui sert surtout à circuler ;
-- ce qui manque pour votre quotidien.
+### Titre de travail
 
-### Slide 9 — Pont LEVOIS
-
-ET VOUS,
-OÙ DOIVENT ALLER VOS 80 m² ?
-
-CTA :
-
-Mettre mes usages au clair
-
-## Version article — intention
-
-### Titre
-
-80 m² : pourquoi deux logements de même surface peuvent être très différents à vivre
+**80 m² : ce que la surface ne vous dit pas sur l’usage d’un logement**
 
 ### Réponse courte
 
-Deux logements de 80 m² ne sont pas automatiquement équivalents. La surface mesure une quantité totale, pas sa répartition. Un plan peut consacrer davantage de place aux circulations, au rangement, au séjour ou aux chambres. Pour comparer utilement deux biens, il faut donc regarder où vont les mètres carrés et si cette répartition correspond à votre quotidien.
+La surface totale décrit une quantité de mètres carrés, pas la manière dont vos usages s’organisent dans le temps. Deux logements de surface proche peuvent donc répondre différemment à un même besoin. Pour comparer, repérez les activités qui doivent avoir lieu en même temps, placez-les sur le plan et vérifiez qu’elles peuvent fonctionner sans se gêner.
 
 ### Plan
 
-1. Ce que signifie réellement « 80 m² »
-2. Pourquoi la surface seule ne décrit pas l’usage
-3. Ce que les données locales peuvent réellement montrer
-4. Deux plans pédagogiques pour comprendre
-5. La méthode Affecter / Tester / Arbitrer
-6. Ce que les statistiques ne voient pas
-7. Comment appliquer la méthode à votre prochain bien
-8. Sources et limites
-9. Continuer sur LEVOIS
+1. Pourquoi « 80 m² » ne suffit pas à répondre à une question d’usage
+2. Ce que mesure réellement la surface
+3. Cas fictif : chambre d’amis et télétravail au même moment
+4. Le mécanisme : disponibilité d’une pièce au moment nécessaire
+5. La méthode : activités simultanées → plan → conditions
+6. Ce que ce test ne permet pas de conclure
+7. Application à la prochaine visite
 
-## Preuves requises
+## Limite essentielle
 
-Le moteur doit rechercher dans la bibliothèque :
+Le conflit est un cas fictif pédagogique. Il montre une possibilité à tester, pas la fréquence de ce problème ni la qualité d’un bien particulier.
 
-- définition de surface habitable / surface utilisée selon le contexte ;
-- données locales sur la tranche 80–100 m² si utiles ;
-- distinction maisons/appartements ;
-- nombre moyen de pièces si utile ;
-- limites de ces statistiques.
+## Avant publication réelle
 
-## Preuves à ne pas surutiliser
-
-Écarter du carrousel si elles n’améliorent pas directement la décision :
-
-- population générale ;
-- statistiques nationales trop éloignées ;
-- moyennes de surface sans lien avec le mécanisme ;
-- données de marché sans rapport avec l’usage du plan.
-
-## Test final
-
-Le lecteur doit pouvoir dire :
-
-« Je ne comparerai plus deux logements uniquement avec leur surface. Je regarderai où passent les mètres carrés. »
+- relire toute règle juridique si elle est ajoutée à l’article ;
+- vérifier la destination du CTA ;
+- tester le hook et les textes à taille mobile réelle ;
+- conserver `CAS FICTIF` au moment où la scène apparaît ;
+- ne pas ajouter une statistique locale si elle ne fait pas avancer le raisonnement.
