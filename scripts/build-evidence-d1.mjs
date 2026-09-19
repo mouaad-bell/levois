@@ -24,7 +24,8 @@ const args = parseArgs(process.argv.slice(2));
 const inputDir = path.resolve(String(args.input || 'LEVOIS_EVIDENCE_LIBRARY_V2_1'));
 const outputDir = path.resolve(String(args.output || '.levois-evidence-sql'));
 const version = String(args.version || 'V21').toUpperCase();
-const batchRows = Math.max(25, Math.min(Number(args.batch || 150), 300));
+const batchRows = Math.max(1, Math.min(Number(args.batch || 100), 250));
+const maxStatementBytes = Math.max(20_000, Math.min(Number(args.maxStatementBytes || 80_000), 90_000));
 
 if (!fs.existsSync(inputDir)) {
   console.error('Input directory not found:', inputDir);
@@ -48,6 +49,13 @@ function sqlBool(value) {
 function compactJson(value) {
   if (value === undefined || value === null || value === '') return null;
   return typeof value === 'string' ? value : JSON.stringify(value);
+}
+
+function compactValue(value, maxBytes = 8_000) {
+  if (value === undefined || value === null || value === '') return null;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  const text = typeof value === 'string' ? value : JSON.stringify(value);
+  return Buffer.byteLength(text, 'utf8') <= maxBytes ? text : null;
 }
 
 function normalizeSearch(value) {
@@ -128,28 +136,90 @@ let aliasRows = 0;
 const engineClassCounts = {};
 
 function writeBatch(table, columns, rows, prefix, transformValue) {
-  for (let start = 0; start < rows.length; start += batchRows) {
-    const slice = rows.slice(start, start + batchRows);
-    const values = slice.map((row) => {
-      const parts = columns.map((column) => {
-        const value = transformValue ? transformValue(column, row[column], row) : row[column];
-        return sqlValue(value);
-      });
-      return '(' + parts.join(',') + ')';
-    });
+  const insertPrefix =
+    'INSERT OR REPLACE INTO ' +
+    table +
+    ' (' +
+    columns.join(',') +
+    ') VALUES\n';
+
+  let values = [];
+
+  function flush() {
+    if (!values.length) return;
+    const statement = insertPrefix + values.join(',\n') + ';';
+    const statementBytes = Buffer.byteLength(statement, 'utf8');
+
+    if (statementBytes > maxStatementBytes) {
+      throw new Error(
+        'Generated SQL statement exceeds safety limit: ' +
+          statementBytes +
+          ' bytes for ' +
+          table,
+      );
+    }
 
     const sql = [
       'BEGIN TRANSACTION;',
-      'INSERT OR REPLACE INTO ' + table + ' (' + columns.join(',') + ') VALUES',
-      values.join(',\n') + ';',
+      statement,
       'COMMIT;',
       '',
     ].join('\n');
 
-    const filename = String(sequence++).padStart(4, '0') + '_' + prefix + '.sql';
+    const filename =
+      String(sequence++).padStart(4, '0') +
+      '_' +
+      prefix +
+      '.sql';
     fs.writeFileSync(path.join(outputDir, filename), sql);
     commandFiles.push(filename);
+    values = [];
   }
+
+  for (const row of rows) {
+    const parts = columns.map((column) => {
+      const value = transformValue
+        ? transformValue(column, row[column], row)
+        : row[column];
+      return sqlValue(value);
+    });
+    const rendered = '(' + parts.join(',') + ')';
+    const singleStatementBytes = Buffer.byteLength(
+      insertPrefix + rendered + ';',
+      'utf8',
+    );
+
+    if (singleStatementBytes > maxStatementBytes) {
+      throw new Error(
+        'Single row exceeds D1 SQL statement safety limit for ' +
+          table +
+          ': ' +
+          singleStatementBytes +
+          ' bytes',
+      );
+    }
+
+    const separatorBytes = values.length ? 2 : 0;
+    const projected =
+      Buffer.byteLength(
+        insertPrefix + values.join(',\n'),
+        'utf8',
+      ) +
+      separatorBytes +
+      Buffer.byteLength(rendered, 'utf8') +
+      1;
+
+    if (
+      values.length >= batchRows ||
+      (values.length && projected > maxStatementBytes)
+    ) {
+      flush();
+    }
+
+    values.push(rendered);
+  }
+
+  flush();
 }
 
 function findEvidenceFile() {
@@ -175,15 +245,14 @@ async function importV21() {
     'time_period','source_publisher','source_title','source_url',
     'source_dataset_id','retrieved_at','source_tier','status','methodology',
     'allowed_uses','forbidden_inferences','refresh_policy','next_review_date',
-    'tags','notes','library_version',
-    'origin','evidence_kind','source_registry_id','source_registry_ids_json',
+    'tags','library_version',
+    'origin','evidence_kind','source_registry_id',
     'engine_use_class','engine_policy_version',
     'verification_required_for_property_application',
     'verification_required_for_person_application',
     'verification_required_before_publication',
-    'reuse_modes_json','future_application_guard','verification_scope_v21',
-    'freshness_json','geographic_precision_json','temporal_precision_json',
-    'decision_use','source_exact_url_variants_json',
+    'future_application_guard','verification_scope_v21',
+    'decision_use',
     'publication_status','n_mutations','public_price_benchmark_allowed',
     'search_text'
   ];
@@ -199,12 +268,7 @@ async function importV21() {
     const row = {
       ...raw,
       library_version: version,
-      source_registry_ids_json: compactJson(raw.source_registry_ids),
-      reuse_modes_json: compactJson(raw.reuse_modes),
-      freshness_json: compactJson(raw.freshness),
-      geographic_precision_json: compactJson(raw.geographic_precision),
-      temporal_precision_json: compactJson(raw.temporal_precision),
-      source_exact_url_variants_json: compactJson(raw.source_exact_url_variants),
+      value: compactValue(raw.value),
       verification_required_for_property_application:
         raw.verification_required_for_property_application ? 1 : 0,
       verification_required_for_person_application:
@@ -366,6 +430,7 @@ const manifest = {
   inputDir,
   outputDir,
   batchRows,
+  maxStatementBytes,
   evidenceRows,
   sourceRows,
   refreshRows,
