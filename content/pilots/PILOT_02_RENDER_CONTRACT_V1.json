@@ -1,0 +1,128 @@
+{
+  "renderVersion": "CAROUSEL_RENDER_CONTRACT_V1",
+  "width": 1080,
+  "height": 1350,
+  "familyId": "lieu_mobilite",
+  "accent": "#2979FF",
+  "assets": [
+    {
+      "assetId": "MAP_CHARTRES_GENERIC",
+      "kind": "map",
+      "status": "illustrative",
+      "label": "SCHÉMA DE TRAJET",
+      "source": "Construction éditoriale LEVOIS",
+      "evidenceRefs": [],
+      "alt": "Carte schématique autour de Chartres utilisée pour visualiser un trajet fictif sans représenter un itinéraire réel.",
+      "canImplyPropertyFact": false
+    },
+    {
+      "assetId": "CASE_SCHEDULE_FICTIVE",
+      "kind": "timeline",
+      "status": "pedagogical_fiction",
+      "label": "CAS FICTIF",
+      "source": "Canon LEVOIS Contenu & expérience V1",
+      "evidenceRefs": [],
+      "alt": "Scénario fictif de contrainte horaire avec créneau de 45 minutes et deux durées de trajet pédagogiques.",
+      "canImplyPropertyFact": false
+    },
+    {
+      "assetId": "INSEE_COMMUTING_CONTEXT",
+      "kind": "data",
+      "status": "real_documented",
+      "label": "INSEE · Bassin de vie 2022 de Chartres · 2023",
+      "source": "INSEE-f36f351aab7a2171",
+      "evidenceRefs": [
+        "INSEE-f36f351aab7a2171"
+      ],
+      "alt": "Contexte historique sur la part des actifs résidents travaillant dans une autre commune, sans indication de durée ni de difficulté de trajet.",
+      "canImplyPropertyFact": false
+    }
+  ],
+  "slides": [
+    {
+      "slideNumber": 1,
+      "layout": "HERO_MAP",
+      "headline": "MOINS CHÈRE, PLUS LOIN.",
+      "body": "Votre soirée fonctionne-t-elle encore ?",
+      "essentialQualifier": "CAS FICTIF POUR LES HORAIRES ET DURÉES",
+      "assetIds": [
+        "MAP_CHARTRES_GENERIC"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 2,
+      "layout": "EDITORIAL_SPLIT",
+      "headline": "LE COMPROMIS PARAÎT SIMPLE.",
+      "body": "Un peu plus de trajet contre un prix plus bas.",
+      "essentialQualifier": "CAS FICTIF",
+      "assetIds": [
+        "MAP_CHARTRES_GENERIC"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 3,
+      "layout": "HERO_NUMBER",
+      "headline": "45 MINUTES DE CRÉNEAU.",
+      "body": "35 min aujourd’hui. 50 min depuis le logement envisagé.",
+      "sourceLabel": "CAS FICTIF",
+      "essentialQualifier": "CAS FICTIF",
+      "assetIds": [
+        "CASE_SCHEDULE_FICTIVE"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 4,
+      "layout": "COMPARISON_DUAL",
+      "headline": "15 MINUTES DE PLUS.",
+      "body": "Ici, elles dépassent une marge qui n’en comptait que 10.",
+      "sourceLabel": "CAS FICTIF",
+      "essentialQualifier": "CAS FICTIF",
+      "assetIds": [
+        "CASE_SCHEDULE_FICTIVE"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 5,
+      "layout": "QUESTION_SHIFT",
+      "headline": "CE N’EST PAS « LOIN = MAUVAIS ».",
+      "body": "C’est : cette organisation ne fonctionne plus telle quelle.",
+      "essentialQualifier": "CAS FICTIF",
+      "assetIds": [
+        "CASE_SCHEDULE_FICTIVE"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 6,
+      "layout": "METHOD_STEPS",
+      "headline": "TESTEZ LE MOMENT LE PLUS CONTRAINT.",
+      "body": "Créneau disponible → trajet réel → adaptation nécessaire.",
+      "assetIds": [
+        "MAP_CHARTRES_GENERIC"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 7,
+      "layout": "EDITORIAL_SPLIT",
+      "headline": "REVENONS À L’ACHAT.",
+      "body": "L’économie reste-t-elle intéressante avec une organisation que vous jugez acceptable ?",
+      "assetIds": [
+        "MAP_CHARTRES_GENERIC"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 8,
+      "layout": "DATA_FIELD",
+      "headline": "FAITES LE TEST SUR VOTRE SEMAINE.",
+      "body": "Prenez votre contrainte horaire la plus rigide, refaites l’enchaînement et notez l’adaptation nécessaire.",
+      "assetIds": [],
+      "evidenceRefs": []
+    }
+  ]
+}

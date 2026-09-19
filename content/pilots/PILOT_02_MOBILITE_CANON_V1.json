@@ -1,0 +1,162 @@
+{
+  "pilotId": "LEV-PILOT-MOBILITY-002",
+  "status": "editorial_ready_case_fictive",
+  "canonVersion": "CONTENT_EXPERIENCE_V1_2026-09-19",
+  "familyId": "lieu_mobilite",
+  "workingTopic": "Moins chère, plus loin : votre soirée fonctionne-t-elle encore ?",
+  "decisionFrame": {
+    "person": "Une personne envisage un logement moins cher mais plus éloigné et doit récupérer un enfant avant une heure fixe.",
+    "decision": "Vérifier si l’économie recherchée reste compatible avec le moment le plus contraint du quotidien.",
+    "spontaneousReading": "Quelques minutes de trajet supplémentaires paraissent être un compromis acceptable pour payer moins cher.",
+    "pressureTest": "Dans le cas fictif, la nouvelle durée dépasse la marge disponible avant la fermeture de l’accueil.",
+    "authorizedConclusion": "Un temps de trajet supplémentaire ne suffit pas à condamner l’éloignement, mais il peut rendre une organisation précise impossible telle quelle lorsqu’il dépasse une marge contrainte.",
+    "finalOperation": "Prendre le moment le plus contraint de la semaine, refaire l’enchaînement depuis le logement envisagé et vérifier l’organisation nécessaire avant de considérer l’éloignement comme acceptable."
+  },
+  "evidence": [
+    {
+      "evidenceId": "INSEE-f36f351aab7a2171",
+      "role": "local_context_optional",
+      "engineUseClass": "HISTORICAL_ONLY",
+      "claim": "En 2023, 73,7 % des actifs de 15 ans ou plus ayant un emploi et résidant dans le Bassin de vie 2022 de Chartres travaillaient dans une commune autre que leur commune de résidence.",
+      "source": "INSEE — ACT T4 — Bassin de vie 2022 de Chartres",
+      "sourceUrl": "https://www.insee.fr/fr/statistiques/2011101?geo=BV2022-28085#ancre-ACT_T4",
+      "limitation": "Cette donnée ne dit rien sur la distance, la durée, le coût ou la difficulté des trajets et ne décrit pas un ménage particulier.",
+      "publicationUse": "Contexte local daté dans l’article uniquement ; ne pas l’utiliser pour prouver le mécanisme du cas fictif."
+    }
+  ],
+  "hookCandidates": [
+    {
+      "mode": "direct",
+      "family": "comparison",
+      "text": "MOINS CHÈRE, PLUS LOIN : VOTRE SOIRÉE FONCTIONNE-T-ELLE ENCORE ?",
+      "explicitPromise": "Tester le compromis prix / éloignement sur un moment concret.",
+      "implicitPromise": "Le lecteur saura refaire le test avec ses propres contraintes.",
+      "evidenceRefs": [],
+      "claimRefs": [],
+      "evidenceStatus": "non_numeric",
+      "qualifier": ""
+    },
+    {
+      "mode": "scene",
+      "family": "calendar",
+      "text": "17 H 30. L’ACCUEIL FERME À 18 H 15. QUELLE MARGE VOUS RESTE-T-IL ?",
+      "explicitPromise": "Montrer comment une durée supplémentaire peut franchir une limite d’organisation.",
+      "implicitPromise": "Le lecteur comprendra pourquoi la marge importe plus que le nombre de minutes seul.",
+      "evidenceRefs": [],
+      "claimRefs": [],
+      "evidenceStatus": "pedagogical_scenario",
+      "qualifier": "CAS FICTIF"
+    },
+    {
+      "mode": "comparison",
+      "family": "comparison",
+      "text": "15 MINUTES DE PLUS. PETIT ÉCART OU ORGANISATION À REFAIRE ?",
+      "explicitPromise": "Comparer la durée supplémentaire à la marge réellement disponible.",
+      "implicitPromise": "Le contenu ne jugera pas la distance en général, mais ce qu’elle change dans une situation.",
+      "evidenceRefs": [],
+      "claimRefs": [],
+      "evidenceStatus": "pedagogical_scenario",
+      "qualifier": "CAS FICTIF"
+    }
+  ],
+  "selectedHookMode": "direct",
+  "essentialLimit": "Les horaires et durées du récit sont fictifs. Le cas montre un mécanisme de décision, pas la durée réelle des trajets autour de Chartres ni une règle générale contre l’éloignement.",
+  "autonomousAction": "Prenez votre contrainte horaire la plus rigide, calculez la marge actuelle, refaites l’enchaînement depuis le logement envisagé et identifiez l’adaptation nécessaire si la marge disparaît.",
+  "storyBeats": [
+    {
+      "function": "situation",
+      "before": "Le lecteur sait seulement qu’un bien est moins cher mais plus loin.",
+      "after": "Il comprend l’avantage recherché et la contrainte horaire du soir.",
+      "copy": "Le logement coûte moins cher. Vous devez aussi récupérer votre enfant avant une heure fixe."
+    },
+    {
+      "function": "initial_reading",
+      "before": "L’éloignement paraît être un petit compromis.",
+      "after": "La différence de trajet est replacée dans un créneau précis.",
+      "copy": "Quelques minutes de plus semblent acceptables tant qu’on regarde seulement la durée."
+    },
+    {
+      "function": "friction",
+      "before": "La durée supplémentaire reste abstraite.",
+      "after": "Elle dépasse la marge disponible dans le scénario.",
+      "copy": "CAS FICTIF — 45 minutes de créneau, 35 minutes de trajet actuel, 50 minutes depuis le nouveau logement : l’organisation ne fonctionne plus telle quelle."
+    },
+    {
+      "function": "demonstration",
+      "before": "Le lecteur pourrait conclure que 15 minutes sont toujours beaucoup ou peu.",
+      "after": "Il comprend que l’effet dépend de la marge disponible.",
+      "copy": "15 minutes supplémentaires n’ont pas toujours le même poids. Ici, elles dépassent une marge de 10 minutes."
+    },
+    {
+      "function": "rereading",
+      "before": "Le logement pourrait être rejeté à cause du trajet.",
+      "after": "L’économie à l’achat revient dans la décision avec la question d’organisation.",
+      "copy": "Le logement reste peut-être intéressant. La vraie question devient : quelle organisation faut-il accepter pour conserver l’économie recherchée ?"
+    },
+    {
+      "function": "practical_take",
+      "before": "Le lecteur comprend le cas.",
+      "after": "Il sait le reproduire sur son propre projet.",
+      "copy": "Prenez votre moment le plus contraint, refaites l’enchaînement, puis vérifiez l’adaptation nécessaire."
+    }
+  ],
+  "carousel": {
+    "slides": [
+      [
+        "hook",
+        "MOINS CHÈRE, PLUS LOIN.",
+        "Votre soirée fonctionne-t-elle encore ?"
+      ],
+      [
+        "initial_reading",
+        "LE COMPROMIS PARAÎT SIMPLE.",
+        "Un peu plus de trajet contre un prix plus bas."
+      ],
+      [
+        "friction",
+        "45 MINUTES DE CRÉNEAU.",
+        "CAS FICTIF — 35 min aujourd’hui. 50 min depuis le logement envisagé."
+      ],
+      [
+        "demonstration",
+        "15 MINUTES DE PLUS.",
+        "Ici, elles dépassent une marge qui n’en comptait que 10."
+      ],
+      [
+        "rereading",
+        "CE N’EST PAS « LOIN = MAUVAIS ».",
+        "C’est : cette organisation ne fonctionne plus telle quelle."
+      ],
+      [
+        "method",
+        "TESTEZ LE MOMENT LE PLUS CONTRAINT.",
+        "Créneau disponible → trajet réel → adaptation nécessaire."
+      ],
+      [
+        "return_to_decision",
+        "REVENONS À L’ACHAT.",
+        "L’économie reste-t-elle intéressante avec une organisation que vous jugez acceptable ?"
+      ],
+      [
+        "autonomy",
+        "FAITES LE TEST SUR VOTRE SEMAINE.",
+        "Pas besoin de contact pour appliquer la méthode."
+      ]
+    ]
+  },
+  "article": {
+    "title": "Acheter plus loin pour payer moins cher : comment tester ce que le trajet change vraiment",
+    "localContextEvidenceId": "INSEE-f36f351aab7a2171",
+    "localContextUse": "Contexte 2023 du Bassin de vie 2022 de Chartres uniquement. Ne jamais transformer le changement de commune en durée ou pénibilité de trajet.",
+    "answerShort": "S’éloigner pour payer moins cher peut rester un compromis acceptable, mais la durée supplémentaire n’a de sens qu’en regard de votre organisation réelle. Testez le moment le plus contraint de votre semaine, refaites l’enchaînement depuis le logement envisagé et regardez quelle adaptation devient nécessaire avant de juger l’éloignement."
+  },
+  "prepublication": {
+    "status": "TO_REVIEW",
+    "blockers": [
+      "Conserver la mention CAS FICTIF sur toutes les slides contenant 17 h 30, 18 h 15, 35 min, 45 min, 50 min ou 15 min.",
+      "Si le contexte INSEE est publié, afficher exactement Bassin de vie 2022 de Chartres · 2023 et rappeler qu’il ne mesure pas la durée des trajets.",
+      "Aucun CTA commercial ne doit remplacer la méthode autonome."
+    ],
+    "absoluteVetosPassed": true
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "version": "CONTENT_DEPENDENCY_MANIFEST_V1",
+  "canonVersion": "CONTENT_EXPERIENCE_V1_2026-09-19",
+  "evidenceLibraryVersion": "V2.1",
+  "purpose": "Permettre d’identifier les contenus à relire lorsqu’une preuve, une règle ou un statut change.",
+  "contents": [
+    {
+      "contentId": "LEV-PILOT-SPACE-001",
+      "title": "Deux chambres. Où travaillez-vous quand les deux sont occupées ?",
+      "familyId": "espace_usage",
+      "status": "editorial_ready",
+      "canonFile": "content/pilots/PILOT_01_ESPACE_USAGE_CANON_V1.json",
+      "renderFile": "content/pilots/PILOT_01_RENDER_CONTRACT_V1.json",
+      "articleFile": "content/drafts/01_80M2_USAGE_ARTICLE_V1.md",
+      "evidenceRefs": [
+        "V2-DEF-0029",
+        "REG-0035"
+      ],
+      "blockingBeforePublication": [
+        "Relire REG-0035 uniquement si la règle juridique reste dans la copie publiée.",
+        "Recetter toute destination CTA avant activation."
+      ]
+    },
+    {
+      "contentId": "LEV-PILOT-MOBILITY-002",
+      "title": "Moins chère, plus loin : votre soirée fonctionne-t-elle encore ?",
+      "familyId": "lieu_mobilite",
+      "status": "editorial_ready_case_fictive",
+      "canonFile": "content/pilots/PILOT_02_MOBILITE_CANON_V1.json",
+      "renderFile": "content/pilots/PILOT_02_RENDER_CONTRACT_V1.json",
+      "articleFile": "content/drafts/02_MOBILITY_ARTICLE_V1.md",
+      "evidenceRefs": [
+        "INSEE-f36f351aab7a2171"
+      ],
+      "blockingBeforePublication": [
+        "Conserver CAS FICTIF sur tous les horaires et durées pédagogiques.",
+        "Si le contexte INSEE est publié, garder exactement Bassin de vie 2022 de Chartres · 2023.",
+        "Ne jamais transformer le changement de commune en durée, coût ou difficulté de trajet."
+      ]
+    },
+    {
+      "contentId": "LEV-PILOT-PRICE-003",
+      "title": "25 000 € d’écart. Trop chère ?",
+      "familyId": "prix_valeur",
+      "status": "editorial_ready_case_pedagogique",
+      "canonFile": "content/pilots/PILOT_03_PRIX_VALEUR_CANON_V1.json",
+      "renderFile": "content/pilots/PILOT_03_RENDER_CONTRACT_V1.json",
+      "articleFile": "content/drafts/03_PRICE_VALUE_ARTICLE_V1.md",
+      "evidenceRefs": [
+        "METH-0021",
+        "DEF-0001",
+        "DEF-0002",
+        "METH-0022"
+      ],
+      "blockingBeforePublication": [
+        "Afficher CAS PÉDAGOGIQUE au même niveau perceptif que 285 000 €, 310 000 € et +25 000 €.",
+        "Ne pas transformer une valeur DVF complexe en prix individuel.",
+        "Ne pas transformer un comparable ou un prix au m² en estimation automatique."
+      ]
+    }
+  ]
+}

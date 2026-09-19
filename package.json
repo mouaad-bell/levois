@@ -4,15 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "clean": "rm -rf .next out",
+    "clean": "node -e \"const fs=require('fs'); for (const p of ['.next','out']) fs.rmSync(p,{recursive:true,force:true})\"",
     "build": "npm run clean && next build",
     "typecheck": "tsc --noEmit",
     "security:audit": "npm audit --audit-level=high",
-    "check": "npm run typecheck && npm run build && npm run security:audit",
-    "deploy": "wrangler deploy"
+    "check": "npm run typecheck && npm run validate:editorial && npm run validate:render && npm run validate:dependencies && npm run validate:answers && npm run test:evidence-import && npm run build && npm run security:audit",
+    "deploy": "wrangler deploy",
+    "validate:editorial": "node scripts/validate-editorial-pilots.mjs",
+    "validate:render": "node scripts/validate-render-packages.mjs",
+    "test:evidence-import": "node scripts/test-evidence-import-limits.mjs",
+    "validate:dependencies": "node scripts/validate-content-dependencies.mjs",
+    "validate:answers": "node scripts/validate-answers-pilots.mjs"
   },
   "dependencies": {
-    "next": "16.2.10",
+    "next": "16.3.5",
     "react": "19.2.7",
     "react-dom": "19.2.7"
   },
@@ -21,9 +26,9 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "typescript": "5.9.3",
-    "wrangler": "4.112.0"
+    "wrangler": "4.135.0"
   },
   "overrides": {
-    "postcss": "8.5.10"
+    "postcss": "^8.5.23"
   }
 }

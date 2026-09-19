@@ -1,0 +1,523 @@
+#!/usr/bin/env node
+import fs from 'node:fs';
+import path from 'node:path';
+import readline from 'node:readline';
+
+function parseArgs(argv) {
+  const out = {};
+  for (let i = 0; i < argv.length; i += 1) {
+    const item = argv[i];
+    if (!item.startsWith('--')) continue;
+    const key = item.slice(2);
+    const next = argv[i + 1];
+    if (next && !next.startsWith('--')) {
+      out[key] = next;
+      i += 1;
+    } else {
+      out[key] = true;
+    }
+  }
+  return out;
+}
+
+const args = parseArgs(process.argv.slice(2));
+const inputDir = path.resolve(String(args.input || 'LEVOIS_EVIDENCE_LIBRARY_V2_1'));
+const outputDir = path.resolve(String(args.output || '.levois-evidence-sql'));
+const version = String(args.version || 'V21').toUpperCase();
+const batchRows = Math.max(1, Math.min(Number(args.batch || 100), 250));
+const maxStatementBytes = Math.max(20_000, Math.min(Number(args.maxStatementBytes || 80_000), 90_000));
+
+if (!fs.existsSync(inputDir)) {
+  console.error('Input directory not found:', inputDir);
+  process.exit(1);
+}
+
+fs.rmSync(outputDir, { recursive: true, force: true });
+fs.mkdirSync(outputDir, { recursive: true });
+
+function sqlValue(value) {
+  if (value === undefined || value === null || value === '') return 'NULL';
+  return "'" + String(value).replaceAll("'", "''").replaceAll('\u0000', '') + "'";
+}
+
+function sqlBool(value) {
+  if (value === true || value === 'True' || value === 'true' || value === 1 || value === '1') return '1';
+  if (value === false || value === 'False' || value === 'false' || value === 0 || value === '0') return '0';
+  return 'NULL';
+}
+
+function compactJson(value) {
+  if (value === undefined || value === null || value === '') return null;
+  return typeof value === 'string' ? value : JSON.stringify(value);
+}
+
+function compactValue(value, maxBytes = 8_000) {
+  if (value === undefined || value === null || value === '') return null;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  const text = typeof value === 'string' ? value : JSON.stringify(value);
+  return Buffer.byteLength(text, 'utf8') <= maxBytes ? text : null;
+}
+
+function normalizeSearch(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let field = '';
+  let quoted = false;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+
+    if (quoted) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') {
+          field += '"';
+          i += 1;
+        } else {
+          quoted = false;
+        }
+      } else {
+        field += ch;
+      }
+      continue;
+    }
+
+    if (ch === '"') quoted = true;
+    else if (ch === ',') {
+      row.push(field);
+      field = '';
+    } else if (ch === '\n') {
+      row.push(field.replace(/\r$/, ''));
+      rows.push(row);
+      row = [];
+      field = '';
+    } else {
+      field += ch;
+    }
+  }
+
+  if (field.length || row.length) {
+    row.push(field.replace(/\r$/, ''));
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+function readCsv(name) {
+  const file = path.join(inputDir, name);
+  if (!fs.existsSync(file)) return [];
+  const text = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '');
+  const rows = parseCsv(text);
+  const headers = rows.shift() || [];
+
+  return rows
+    .filter((row) => row.some((cell) => cell !== ''))
+    .map((row) =>
+      Object.fromEntries(headers.map((header, index) => [header, row[index] || ''])),
+    );
+}
+
+let sequence = 1;
+const commandFiles = [];
+let evidenceRows = 0;
+let sourceRows = 0;
+let refreshRows = 0;
+let aliasRows = 0;
+let ftsRows = 0;
+const engineClassCounts = {};
+
+function writeBatch(table, columns, rows, prefix, transformValue) {
+  const insertPrefix =
+    'INSERT OR REPLACE INTO ' +
+    table +
+    ' (' +
+    columns.join(',') +
+    ') VALUES\n';
+
+  let values = [];
+
+  function flush() {
+    if (!values.length) return;
+    const statement = insertPrefix + values.join(',\n') + ';';
+    const statementBytes = Buffer.byteLength(statement, 'utf8');
+
+    if (statementBytes > maxStatementBytes) {
+      throw new Error(
+        'Generated SQL statement exceeds safety limit: ' +
+          statementBytes +
+          ' bytes for ' +
+          table,
+      );
+    }
+
+    const sql = statement + '\n';
+
+    const filename =
+      String(sequence++).padStart(4, '0') +
+      '_' +
+      prefix +
+      '.sql';
+    fs.writeFileSync(path.join(outputDir, filename), sql);
+    commandFiles.push(filename);
+    values = [];
+  }
+
+  for (const row of rows) {
+    const parts = columns.map((column) => {
+      const value = transformValue
+        ? transformValue(column, row[column], row)
+        : row[column];
+      return sqlValue(value);
+    });
+    const rendered = '(' + parts.join(',') + ')';
+    const singleStatementBytes = Buffer.byteLength(
+      insertPrefix + rendered + ';',
+      'utf8',
+    );
+
+    if (singleStatementBytes > maxStatementBytes) {
+      throw new Error(
+        'Single row exceeds D1 SQL statement safety limit for ' +
+          table +
+          ': ' +
+          singleStatementBytes +
+          ' bytes',
+      );
+    }
+
+    const separatorBytes = values.length ? 2 : 0;
+    const projected =
+      Buffer.byteLength(
+        insertPrefix + values.join(',\n'),
+        'utf8',
+      ) +
+      separatorBytes +
+      Buffer.byteLength(rendered, 'utf8') +
+      1;
+
+    if (
+      values.length >= batchRows ||
+      (values.length && projected > maxStatementBytes)
+    ) {
+      flush();
+    }
+
+    values.push(rendered);
+  }
+
+  flush();
+}
+
+function findEvidenceFile() {
+  const candidates = [
+    '02_EVIDENCE_LIBRARY_V21.jsonl',
+    '02_EVIDENCE_LIBRARY_V2.jsonl',
+    '02_EVIDENCE_LIBRARY.jsonl',
+  ];
+  for (const candidate of candidates) {
+    const file = path.join(inputDir, candidate);
+    if (fs.existsSync(file)) return file;
+  }
+  return '';
+}
+
+async function importV21() {
+  const evidencePath = findEvidenceFile();
+  if (!evidencePath) throw new Error('No evidence JSONL found in ' + inputDir);
+
+  const evidenceColumns = [
+    'evidence_id','topic','subtopic','claim','value','unit','population',
+    'geographic_scope_type','geographic_scope_label','geographic_code',
+    'time_period','source_publisher','source_title','source_url',
+    'source_dataset_id','retrieved_at','source_tier','status','methodology',
+    'allowed_uses','forbidden_inferences','refresh_policy','next_review_date',
+    'tags','library_version',
+    'origin','evidence_kind','source_registry_id',
+    'engine_use_class','engine_policy_version',
+    'verification_required_for_property_application',
+    'verification_required_for_person_application',
+    'verification_required_before_publication',
+    'future_application_guard','verification_scope_v21',
+    'decision_use',
+    'publication_status','n_mutations','public_price_benchmark_allowed',
+    'search_text'
+  ];
+
+  const ftsResetFile =
+    String(sequence++).padStart(4, '0') + '_fts_reset.sql';
+  fs.writeFileSync(
+    path.join(outputDir, ftsResetFile),
+    'DELETE FROM evidence_search;\n',
+  );
+  commandFiles.push(ftsResetFile);
+
+  const stream = fs.createReadStream(evidencePath, { encoding: 'utf8' });
+  const lines = readline.createInterface({ input: stream, crlfDelay: Infinity });
+  const batch = [];
+  const ftsBatch = [];
+  const ftsColumns = [
+    'evidence_id',
+    'topic',
+    'subtopic',
+    'geographic_label',
+    'period',
+    'claim',
+    'decision_use',
+  ];
+
+  for await (const line of lines) {
+    if (!line.trim()) continue;
+    const raw = JSON.parse(line);
+
+    const row = {
+      ...raw,
+      library_version: version,
+      value: compactValue(raw.value),
+      verification_required_for_property_application:
+        raw.verification_required_for_property_application ? 1 : 0,
+      verification_required_for_person_application:
+        raw.verification_required_for_person_application ? 1 : 0,
+      verification_required_before_publication:
+        raw.verification_required_before_publication ? 1 : 0,
+      public_price_benchmark_allowed:
+        raw.public_price_benchmark_allowed === undefined || raw.public_price_benchmark_allowed === null
+          ? null
+          : raw.public_price_benchmark_allowed ? 1 : 0,
+      search_text: normalizeSearch([
+        raw.topic,
+        raw.subtopic,
+        raw.claim,
+        raw.value,
+        raw.unit,
+        raw.geographic_scope_label,
+        raw.allowed_uses,
+        raw.forbidden_inferences,
+        raw.decision_use,
+        raw.tags,
+      ].filter(Boolean).join(' ')),
+    };
+
+    const engineClass = raw.engine_use_class || 'UNKNOWN';
+    engineClassCounts[engineClass] =
+      (engineClassCounts[engineClass] || 0) + 1;
+
+    batch.push(row);
+    evidenceRows += 1;
+
+    if (engineClass !== 'DO_NOT_USE') {
+      ftsBatch.push({
+        evidence_id: raw.evidence_id,
+        topic: raw.topic,
+        subtopic: raw.subtopic,
+        geographic_label: raw.geographic_scope_label,
+        period: raw.time_period,
+        claim: raw.claim,
+        decision_use: raw.decision_use,
+      });
+      ftsRows += 1;
+    }
+
+    if (batch.length >= batchRows) {
+      writeBatch(
+        'evidence',
+        evidenceColumns,
+        batch.splice(0, batch.length),
+        'evidence',
+      );
+    }
+
+    if (ftsBatch.length >= batchRows) {
+      writeBatch(
+        'evidence_search',
+        ftsColumns,
+        ftsBatch.splice(0, ftsBatch.length),
+        'fts',
+      );
+    }
+  }
+
+  if (batch.length) {
+    writeBatch('evidence', evidenceColumns, batch, 'evidence');
+  }
+  if (ftsBatch.length) {
+    writeBatch('evidence_search', ftsColumns, ftsBatch, 'fts');
+  }
+
+  const sources = readCsv('V21_SOURCE_REGISTRY.csv');
+  if (sources.length) {
+    sourceRows = sources.length;
+    writeBatch(
+      'evidence_sources_v21',
+      [
+        'source_id','publisher','title','url','scope_v21','evidence_count_v21',
+        'evidence_rechecked_v21','new_evidence_v21','next_review_date_v21',
+        'validation_statuses_v21','v21_archives','verification_notice'
+      ],
+      sources,
+      'sources_v21',
+    );
+  }
+
+  const refresh = readCsv('V21_REFRESH_REGISTRY.csv');
+  if (refresh.length) {
+    refreshRows = refresh.length;
+    writeBatch(
+      'evidence_refresh_v21',
+      [
+        'evidence_id','domain','source_registry_id','status','source_url',
+        'source_date','observation_period','retrieved_at','last_reverified_v21',
+        'refresh_policy','next_review_date','engine_use_class',
+        'verification_required_before_publication','verify_property','verify_person',
+        'future_only','verification_scope_v21'
+      ],
+      refresh,
+      'refresh_v21',
+      (column, value) => {
+        if (['verification_required_before_publication','verify_property','verify_person','future_only'].includes(column)) {
+          const parsed = sqlBool(value);
+          return parsed === 'NULL' ? null : Number(parsed);
+        }
+        return value;
+      },
+    );
+  }
+
+  const aliases = readCsv('V21_EVIDENCE_ALIASES.csv');
+  if (aliases.length) {
+    aliasRows = aliases.length;
+    const mapped = aliases.map((row) => ({
+      alias_id: row.alias_id,
+      canonical_id: row.canonical_id,
+      reason: [row.decision, row.reason].filter(Boolean).join(' — '),
+      library_version: version,
+    }));
+    writeBatch(
+      'evidence_aliases',
+      ['alias_id','canonical_id','reason','library_version'],
+      mapped,
+      'aliases_v21',
+    );
+  }
+}
+
+async function importLegacy() {
+  const evidencePath = findEvidenceFile();
+  if (!evidencePath) throw new Error('No evidence JSONL found in ' + inputDir);
+
+  const columns = [
+    'evidence_id','topic','subtopic','claim','value','unit','population',
+    'geographic_scope_type','geographic_scope_label','geographic_code',
+    'time_period','source_publisher','source_title','source_url',
+    'source_dataset_id','retrieved_at','source_tier','status','methodology',
+    'allowed_uses','forbidden_inferences','refresh_policy','next_review_date',
+    'tags','notes','library_version'
+  ];
+
+  const stream = fs.createReadStream(evidencePath, { encoding: 'utf8' });
+  const lines = readline.createInterface({ input: stream, crlfDelay: Infinity });
+  const batch = [];
+
+  for await (const line of lines) {
+    if (!line.trim()) continue;
+    const row = JSON.parse(line);
+    row.library_version = version;
+    batch.push(row);
+    evidenceRows += 1;
+
+    if (batch.length >= batchRows) {
+      writeBatch('evidence', columns, batch.splice(0, batch.length), 'evidence');
+    }
+  }
+
+  if (batch.length) writeBatch('evidence', columns, batch, 'evidence');
+}
+
+if (version === 'V21' || fs.existsSync(path.join(inputDir, 'V21_ENGINE_CONTRACT.md'))) {
+  await importV21();
+} else {
+  await importLegacy();
+}
+
+const metaRows = [
+  ['library_version', version],
+  ['evidence_rows', String(evidenceRows)],
+  ['source_rows', String(sourceRows)],
+  ['refresh_rows', String(refreshRows)],
+  ['alias_rows', String(aliasRows)],
+  ['fts_rows', String(ftsRows)],
+  ['engine_class_counts', JSON.stringify(engineClassCounts)],
+];
+
+const metaSql = [
+  'INSERT OR REPLACE INTO evidence_library_meta (key,value,updated_at) VALUES',
+  metaRows
+    .map(([key, value]) => '(' + sqlValue(key) + ',' + sqlValue(value) + ',CURRENT_TIMESTAMP)')
+    .join(',\n') + ';',
+  '',
+].join('\n');
+
+const metaFile = String(sequence++).padStart(4, '0') + '_meta.sql';
+fs.writeFileSync(path.join(outputDir, metaFile), metaSql);
+commandFiles.push(metaFile);
+
+const manifest = {
+  libraryVersion: version,
+  createdAt: new Date().toISOString(),
+  inputDir,
+  outputDir,
+  batchRows,
+  maxStatementBytes,
+  evidenceRows,
+  sourceRows,
+  refreshRows,
+  aliasRows,
+  ftsRows,
+  engineClassCounts,
+  sqlFiles: commandFiles,
+};
+
+fs.writeFileSync(
+  path.join(outputDir, 'manifest.json'),
+  JSON.stringify(manifest, null, 2),
+);
+
+const databaseName = String(args.database || 'levois-evidence');
+const commandText =
+  commandFiles
+    .map(
+      (file) =>
+        'npx wrangler d1 execute ' +
+        databaseName +
+        ' --remote --file="' +
+        path.join(outputDir, file) +
+        '"',
+    )
+    .join('\n') + '\n';
+
+fs.writeFileSync(path.join(outputDir, 'RUN_ME_AFTER_SCHEMA.txt'), commandText);
+
+console.log(
+  'Generated ' +
+    commandFiles.length +
+    ' SQL batches. Evidence=' +
+    evidenceRows +
+    ', sources=' +
+    sourceRows +
+    ', refresh=' +
+    refreshRows +
+    ', aliases=' +
+    aliasRows +
+    ', fts=' +
+    ftsRows,
+);
+console.log('Engine classes:', engineClassCounts);
