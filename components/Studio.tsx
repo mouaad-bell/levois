@@ -8,9 +8,10 @@ import type { StudioProject } from '@/lib/studio-schema';
 import { reviewCanon } from '@/lib/canon-review';
 import { buildPublicationPackage } from '@/lib/publication-package';
 import { CarouselFrame } from '@/components/render/CarouselFrame';
+import editorialBacklog from '@/content/roadmap/EDITORIAL_BACKLOG_V1.json';
 import styles from '@/app/studio/studio.module.css';
 
-type Tab = 'scope' | 'evidence' | 'canon' | 'angles' | 'article' | 'storyboard' | 'publication' | 'reviews' | 'json';
+type Tab = 'scope' | 'evidence' | 'canon' | 'angles' | 'article' | 'storyboard' | 'publication' | 'roadmap' | 'reviews' | 'json';
 
 const tabs: Array<[Tab, string]> = [
   ['scope', 'Scope'],
@@ -20,6 +21,7 @@ const tabs: Array<[Tab, string]> = [
   ['article', 'Article'],
   ['storyboard', 'Storyboard'],
   ['publication', 'Publication'],
+  ['roadmap', 'Roadmap'],
   ['reviews', 'Revue'],
   ['json', 'JSON'],
 ];
@@ -373,6 +375,7 @@ export function Studio() {
         {tab === 'article' ? <ArticleView project={project} /> : null}
         {tab === 'storyboard' ? <StoryboardView project={project} /> : null}
         {tab === 'publication' ? <PublicationView project={project} studioKey={studioKey} /> : null}
+        {tab === 'roadmap' ? <RoadmapView onUse={(question) => { setInput(question); setTab('scope'); }} /> : null}
         {tab === 'reviews' ? <ReviewQueueView studioKey={studioKey} /> : null}
         {tab === 'json' ? <JsonView project={project} /> : null}
       </main>
@@ -1032,6 +1035,94 @@ function PublicationView({
         {queueMessage ? (
           <p className={styles.researchMeta}>{queueMessage}</p>
         ) : null}
+      </section>
+    </div>
+  );
+}
+
+type EditorialBacklogItem = {
+  order: number;
+  question: string;
+  domain: string;
+  familyId: string;
+  evidenceRefs: string[];
+  formats: string[];
+  priorityReason: string;
+  autonomousTake: string;
+};
+
+function RoadmapView({
+  onUse,
+}: {
+  onUse: (question: string) => void;
+}) {
+  const items = editorialBacklog.afterCanonicalPilots as EditorialBacklogItem[];
+  const parked = editorialBacklog.parked as Array<{
+    question: string;
+    reason: string;
+  }>;
+
+  return (
+    <div className={styles.stack}>
+      <section className={styles.evidenceHeader}>
+        <div>
+          <p className={styles.kicker}>Evidence-ready</p>
+          <h2>Roadmap éditoriale V1</h2>
+          <p>
+            Priorité interne fondée sur l’utilité décisionnelle et la couverture
+            V2.1. Ce classement ne prétend pas mesurer la demande Google.
+          </p>
+        </div>
+        <span data-ready="true">{items.length} sujets prêts</span>
+      </section>
+
+      <div className={styles.roadmapGrid}>
+        {items.map((item) => (
+          <article className={styles.card} key={item.order}>
+            <div className={styles.roadmapTop}>
+              <span>{String(item.order).padStart(2, '0')}</span>
+              <small>{item.domain}</small>
+            </div>
+            <h3>{item.question}</h3>
+            <p>{item.priorityReason}</p>
+            <p className={styles.limitText}>
+              → {item.autonomousTake}
+            </p>
+            <dl className={styles.definitionList}>
+              <div>
+                <dt>Preuves</dt>
+                <dd>{item.evidenceRefs.length}</dd>
+              </div>
+              <div>
+                <dt>Formats</dt>
+                <dd>{item.formats.join(' · ')}</dd>
+              </div>
+            </dl>
+            <div className={styles.actionRow}>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={() => onUse(item.question)}
+              >
+                Utiliser ce sujet
+              </button>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <section className={styles.card}>
+        <p className={styles.cardIndex}>Parking</p>
+        <h3>Questions utiles, mais pas prêtes pour une réponse générique</h3>
+        {parked.map((item) => (
+          <div className={styles.unknownRow} key={item.question}>
+            <span>À VÉRIFIER AU CAS</span>
+            <div>
+              <strong>{item.question}</strong>
+              <p>{item.reason}</p>
+            </div>
+          </div>
+        ))}
       </section>
     </div>
   );
