@@ -927,6 +927,7 @@ function PublicationView({
             <div><dt>Slug</dt><dd>{publication.article.slug}</dd></div>
             <div><dt>Scope</dt><dd>{publication.article.targetScope}</dd></div>
             <div><dt>Evidence</dt><dd>{publication.article.evidenceRefs.join(', ') || '—'}</dd></div>
+            <div><dt>SEO gate</dt><dd>{publication.seo.ready ? 'PASS' : 'REVIEW'}</dd></div>
           </dl>
         </article>
 
@@ -940,6 +941,23 @@ function PublicationView({
             <div><dt>CTA</dt><dd>{publication.carousel.ctaLabel ?? 'désactivé'}</dd></div>
           </dl>
         </article>
+      </section>
+
+      <section className={styles.card}>
+        <p className={styles.cardIndex}>SEO / Answers</p>
+        <h3>{publication.seo.ready ? 'Page structurellement prête' : 'Revue SEO nécessaire'}</h3>
+        <div className={styles.stack}>
+          {publication.seo.checks.map((check) => (
+            <div className={styles.unknownRow} key={check.id}>
+              <span>{check.status.toUpperCase()}</span>
+              <div>
+                <strong>{check.id}</strong>
+                <p>{check.reason}</p>
+                {check.correction ? <small>Correction : {check.correction}</small> : null}
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className={styles.card}>
