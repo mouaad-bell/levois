@@ -139,7 +139,7 @@ export function inferRetrievalIntent(text: string): RetrievalIntent {
   if (/\b(distance|loin|trajet|transport|gare|deplacement|soiree)\b/.test(q)) {
     return 'mobility';
   }
-  if (/\b(prix|cher|ecart|valeur|vente|vendu|comparable|dvf)\b/.test(q)) {
+  if (/\b(prix|cher|chere|ecart|decart|valeur|vente|vendu|comparable|dvf)\b/.test(q)) {
     return 'price_value';
   }
   if (/\b(dpe|energie|chauffage|isolation)\b/.test(q)) return 'energy';
