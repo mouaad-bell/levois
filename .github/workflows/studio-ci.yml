@@ -37,6 +37,8 @@ jobs:
         run: npm run validate:answers
       - name: D1 import safety
         run: npm run test:evidence-import
+      - name: D1 schema smoke test
+        run: npm run test:d1-schema
       - name: Build
         run: npm run build
       - name: Security audit
