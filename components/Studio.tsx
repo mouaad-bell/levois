@@ -60,7 +60,7 @@ export function Studio() {
 
   async function runResearch() {
     if (!studioKey.trim()) {
-      setError('Ajoutez la clé Studio privée pour lancer la recherche web.');
+      setError('Ajoutez la clé Studio privée pour lancer la recherche.');
       return;
     }
 
@@ -113,8 +113,8 @@ export function Studio() {
           <p className={styles.kicker}>Matière de départ</p>
           <h1>De quoi voulez-vous parler ?</h1>
           <p>
-            Donnez une idée, une question ou une URL. Le Studio cherche les preuves, distingue faits et inconnues,
-            puis construit l’angle, l’article et le storyboard. Si une preuve manque, il bloque la conclusion.
+            Donnez une idée, une question ou une URL. Le Studio commence par la bibliothèque LEVOIS, distingue faits et inconnues,
+            puis construit l’angle, l’article et le storyboard. Le web n’est appelé que si une preuve nécessaire manque ou doit être rafraîchie.
           </p>
         </div>
 
@@ -159,7 +159,12 @@ export function Studio() {
 
           {researchMeta ? (
             <p className={styles.researchMeta}>
-              {researchMeta.searchedSources} sources web observées · {researchMeta.acceptedSources} retenues · {researchMeta.downgradedClaims} claim(s) déclassé(s)
+              {researchMeta.libraryHits ?? 0} preuve(s) bibliothèque ·{' '}
+              {researchMeta.webSkipped
+                ? 'web évité'
+                : `${researchMeta.searchedSources} source(s) web observée(s)`} ·{' '}
+              {researchMeta.acceptedSources} source(s) retenue(s) ·{' '}
+              {researchMeta.downgradedClaims} claim(s) déclassé(s)
             </p>
           ) : null}
           {error ? <p className={styles.error}>{error}</p> : null}
