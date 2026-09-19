@@ -283,3 +283,28 @@ Le script :
 Aucune clé OpenAI ni clé Studio n’est écrite dans `wrangler.jsonc`.
 
 Pour une ancienne base prototype pré-V2.1, utiliser d’abord le script d’import avec `-LegacySchema` au lieu du chemin frais.
+
+
+## Cache éditorial
+
+La construction éditoriale depuis V2.1 possède un cache interne de 30 jours.
+
+La clé de cache est un SHA-256 calculé à partir de :
+
+- l’entrée normalisée ;
+- le modèle ;
+- la version du canon ;
+- la version de la bibliothèque ;
+- le contenu exact du Evidence Pack.
+
+Conséquences :
+
+- une preuve modifiée produit une nouvelle clé ;
+- un changement de canon produit une nouvelle clé ;
+- un changement de modèle produit une nouvelle clé ;
+- cliquer sur **Régénérer** ignore volontairement le cache ;
+- le cache peut être vidé explicitement depuis l’onglet Revue.
+
+Le cache ne stocke pas le texte brut d’entrée comme colonne d’identification. Le bundle généré reste néanmoins conservé temporairement dans D1 pendant la durée du cache : ne pas utiliser le Studio comme coffre de données personnelles inutiles.
+
+Les logs de génération stockent un hash de l’entrée, pas le texte brut.
