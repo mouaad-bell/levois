@@ -454,3 +454,76 @@ export async function syncStaleContentReviews(
     queuedArtifacts: queued.size,
   };
 }
+
+
+export async function listOpenContentReviews(
+  db: EvidenceDb,
+  limit = 200,
+) {
+  const safeLimit = Math.max(1, Math.min(limit, 500));
+
+  const rows = await db
+    .prepare(
+      [
+        'SELECT',
+        'q.review_id, q.artifact_id, q.evidence_id, q.trigger_type,',
+        'q.reason, q.severity, q.status, q.detected_at,',
+        'a.artifact_type, a.title, a.slug, a.route',
+        'FROM content_review_queue q',
+        'JOIN content_artifacts a ON a.artifact_id = q.artifact_id',
+        "WHERE q.status = 'OPEN'",
+        "ORDER BY CASE q.severity",
+        "WHEN 'BLOCKING' THEN 1",
+        "WHEN 'HIGH' THEN 2",
+        "WHEN 'MEDIUM' THEN 3",
+        'ELSE 4 END, q.detected_at DESC',
+        'LIMIT ?',
+      ].join(' '),
+    )
+    .bind(safeLimit)
+    .all<{
+      review_id: string;
+      artifact_id: string;
+      evidence_id: string | null;
+      trigger_type: string;
+      reason: string;
+      severity: string;
+      status: string;
+      detected_at: string;
+      artifact_type: string;
+      title: string;
+      slug: string | null;
+      route: string | null;
+    }>();
+
+  return rows.results || [];
+}
+
+export async function resolveContentReview(
+  db: EvidenceDb,
+  reviewId: string,
+  resolution: string,
+) {
+  const id = reviewId.trim();
+  if (!id) return false;
+
+  await db
+    .prepare(
+      [
+        'UPDATE content_review_queue',
+        "SET status='RESOLVED', resolved_at=CURRENT_TIMESTAMP, resolution=?",
+        "WHERE review_id=? AND status='OPEN'",
+      ].join(' '),
+    )
+    .bind(resolution.slice(0, 2000), id)
+    .run();
+
+  const row = await db
+    .prepare(
+      'SELECT status FROM content_review_queue WHERE review_id=?',
+    )
+    .bind(id)
+    .first<{ status: string }>();
+
+  return row?.status === 'RESOLVED';
+}
