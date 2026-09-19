@@ -7,6 +7,9 @@ import { buildStudioProjectFromEditorial, type EditorialApiResponse } from '@/li
 import type { StudioProject } from '@/lib/studio-schema';
 import { reviewCanon } from '@/lib/canon-review';
 import { buildPublicationPackage } from '@/lib/publication-package';
+import { buildStructuralRenderPackage } from '@/lib/render-package-builder';
+import { reviewCarouselRender } from '@/lib/carousel-render-contract';
+import { CarouselFrame } from '@/components/render/CarouselFrame';
 import styles from '@/app/studio/studio.module.css';
 
 type Tab = 'scope' | 'evidence' | 'canon' | 'angles' | 'article' | 'storyboard' | 'publication' | 'json';
@@ -663,6 +666,9 @@ function PublicationView({
   studioKey: string;
 }) {
   const publication = buildPublicationPackage(project);
+  const renderPackage = buildStructuralRenderPackage(project);
+  const renderReview = reviewCarouselRender(renderPackage);
+  const [previewSlideIndex, setPreviewSlideIndex] = useState(0);
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
   const [staleChecking, setStaleChecking] = useState(false);
@@ -828,6 +834,39 @@ function PublicationView({
             <div><dt>CTA</dt><dd>{publication.carousel.ctaLabel ?? 'désactivé'}</dd></div>
           </dl>
         </article>
+      </section>
+
+      <section className={styles.card}>
+        <p className={styles.cardIndex}>Aperçu structurel 4:5</p>
+        <div className={styles.renderPreview}>
+          <CarouselFrame
+            slide={renderPackage.slides[
+              Math.min(
+                previewSlideIndex,
+                Math.max(renderPackage.slides.length - 1, 0),
+              )
+            ]}
+            packageData={renderPackage}
+          />
+        </div>
+        <div className={styles.previewNav}>
+          {renderPackage.slides.map((slide, index) => (
+            <button
+              type="button"
+              key={slide.slideNumber}
+              data-active={index === previewSlideIndex ? 'true' : 'false'}
+              onClick={() => setPreviewSlideIndex(index)}
+            >
+              {String(slide.slideNumber).padStart(2, '0')}
+            </button>
+          ))}
+        </div>
+        <p className={styles.limitText}>
+          {renderReview.ready
+            ? 'Structure compatible avec le renderer.'
+            : renderReview.issues.length +
+              ' point(s) de rendu à traiter, notamment les assets encore manquants.'}
+        </p>
       </section>
 
       <section className={styles.card}>
