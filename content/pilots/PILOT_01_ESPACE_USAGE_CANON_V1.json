@@ -1,0 +1,218 @@
+{
+  "pilotId": "LEV-PILOT-SPACE-001",
+  "status": "editorial_ready_evidence_refresh_before_publication",
+  "canonVersion": "CONTENT_EXPERIENCE_V1_2026-09-19",
+  "familyId": "espace_usage",
+  "workingTopic": "80 m². Où passe la place ?",
+  "decisionFrame": {
+    "person": "Une personne compare des logements et veut pouvoir télétravailler tout en accueillant ponctuellement un proche.",
+    "decision": "Vérifier si le logement permet réellement aux usages importants de fonctionner ensemble.",
+    "spontaneousReading": "Deux chambres et environ 80 m² semblent suffire sur la fiche.",
+    "pressureTest": "Quand la chambre d’amis est occupée, le bureau installé dans cette même pièce n’est plus disponible au moment de la réunion.",
+    "authorizedConclusion": "La surface totale et le nombre de pièces ne suffisent pas, à eux seuls, à confirmer que les usages nécessaires peuvent fonctionner en même temps.",
+    "finalOperation": "Lister deux activités qui doivent avoir lieu au même moment, les placer sur le plan, puis vérifier ce qui permet à chacune de fonctionner."
+  },
+  "evidence": [
+    {
+      "evidenceId": "V2-DEF-0029",
+      "role": "definition_support",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "publicationUse": "Expliquer ce que recouvre la notion statistique de surface du logement et rappeler qu’elle n’est pas un mesurage Carrez individuel.",
+      "source": "INSEE — Surface du logement",
+      "sourceUrl": "https://www.insee.fr/fr/metadonnees/definition/c2078",
+      "limitation": "Cette définition ne décrit pas la qualité du plan ni la coexistence des usages."
+    },
+    {
+      "evidenceId": "REG-0035",
+      "role": "legal_context_optional",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "publicationUse": "Contexte juridique général de la surface habitable seulement si la source est relue au moment de publication.",
+      "source": "Légifrance — CCH, article R156-1",
+      "sourceUrl": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043819221",
+      "verificationRequiredBeforePublication": true,
+      "limitation": "Ne pas transformer cette règle générale en conclusion sur la surface d’un bien particulier."
+    }
+  ],
+  "deliberatelyRejectedEvidence": [
+    {
+      "evidenceId": "DVFAGG-07b0238efb7be1c5",
+      "reason": "La cohorte historique 80–100 m² à Chartres donne un contexte local mais ne démontre rien sur la qualité d’un plan ni sur la coexistence des usages. Elle alourdirait le carrousel sans faire avancer la décision."
+    }
+  ],
+  "hookCandidates": [
+    {
+      "mode": "direct",
+      "family": "usage",
+      "text": "LA SURFACE SUFFIT-ELLE À VÉRIFIER VOS USAGES ?",
+      "explicitPromise": "Montrer pourquoi la surface seule ne permet pas de confirmer un usage.",
+      "implicitPromise": "Le contenu donnera une manière concrète de tester le logement.",
+      "evidenceRefs": [
+        "V2-DEF-0029"
+      ],
+      "claimRefs": []
+    },
+    {
+      "mode": "scene",
+      "family": "usage",
+      "text": "DEUX CHAMBRES. OÙ TRAVAILLEZ-VOUS QUAND LES DEUX SONT OCCUPÉES ?",
+      "explicitPromise": "Montrer un conflit d’usage concret qui n’apparaît pas dans la simple liste des pièces.",
+      "implicitPromise": "Le lecteur saura reproduire ce test sur un autre plan.",
+      "evidenceRefs": [],
+      "claimRefs": []
+    },
+    {
+      "mode": "comparison",
+      "family": "comparison",
+      "text": "MÊME SURFACE. VOS DEUX USAGES TIENNENT-ILS ENSEMBLE ?",
+      "explicitPromise": "Comparer deux lectures d’une même surface : quantité de mètres carrés et fonctionnement réel.",
+      "implicitPromise": "Le contenu montrera ce qu’il faut regarder au-delà du total.",
+      "evidenceRefs": [
+        "V2-DEF-0029"
+      ],
+      "claimRefs": []
+    }
+  ],
+  "selectedHookMode": "scene",
+  "selectedHookReason": "La scène fait reconnaître immédiatement une décision d’usage, ouvre une question vérifiable et ne promet pas davantage que le cas pédagogique peut montrer.",
+  "storyBeats": [
+    {
+      "function": "situation",
+      "before": "Le lecteur sait seulement qu’il compare un logement avec deux chambres.",
+      "after": "Il comprend l’usage recherché : dormir, accueillir et télétravailler.",
+      "copy": "Vous cherchez deux chambres. La seconde doit aussi servir de bureau."
+    },
+    {
+      "function": "initial_reading",
+      "before": "Les besoins sont encore abstraits.",
+      "after": "La fiche paraît répondre à la demande.",
+      "copy": "Sur le papier, tout y est : deux chambres et une surface qui paraît suffisante."
+    },
+    {
+      "function": "friction",
+      "before": "Le bureau et la chambre d’amis semblent compatibles.",
+      "after": "Le lecteur voit qu’ils peuvent se gêner au même moment.",
+      "copy": "Cas fictif : votre proche dort encore. À 9 h, vous avez une réunion confidentielle. Le bureau est dans sa chambre."
+    },
+    {
+      "function": "demonstration",
+      "before": "Le problème pourrait être interprété comme un simple manque de mètres carrés.",
+      "after": "Le lecteur comprend que le point décisif est la coexistence des usages.",
+      "copy": "La question n’est plus seulement « combien de m² ? ». Elle devient « quels usages doivent fonctionner en même temps, et où ? »"
+    },
+    {
+      "function": "rereading",
+      "before": "Le logement semble validé ou rejeté par sa surface.",
+      "after": "La surface redevient un contexte, pas un verdict.",
+      "copy": "Le logement peut très bien convenir. Mais la surface totale ne suffit pas à le confirmer : il faut tester l’organisation."
+    },
+    {
+      "function": "practical_take",
+      "before": "Le lecteur comprend le mécanisme sans encore savoir l’appliquer.",
+      "after": "Il possède une opération autonome à refaire sur un plan.",
+      "copy": "Listez deux activités simultanées. Placez-les sur le plan. Vérifiez ce qui permet à chacune de fonctionner."
+    }
+  ],
+  "essentialLimit": "Le conflit présenté est un cas fictif pédagogique. Il montre une possibilité à tester, pas la fréquence de ce problème ni la qualité d’un logement particulier.",
+  "autonomousAction": "Sur le prochain plan, choisissez deux activités qui doivent coexister, placez-les dans les pièces prévues et vérifiez les accès, le calme, l’intimité et les adaptations réellement possibles.",
+  "carousel": {
+    "format": "1080x1350",
+    "slides": [
+      {
+        "n": 1,
+        "role": "hook",
+        "headline": "DEUX CHAMBRES.",
+        "subheadline": "OÙ TRAVAILLEZ-VOUS QUAND LES DEUX SONT OCCUPÉES ?",
+        "body": "",
+        "proofLabel": "",
+        "visualMechanism": "Plan simplifié : la deuxième chambre porte simultanément les étiquettes DORMIR et TRAVAILLER."
+      },
+      {
+        "n": 2,
+        "role": "initial_reading",
+        "headline": "SUR LE PAPIER, TOUT Y EST.",
+        "body": "Deux chambres. Une surface qui paraît suffisante. Un bureau prévu dans la seconde.",
+        "visualMechanism": "Liste d’annonce très lisible qui se transforme progressivement en plan."
+      },
+      {
+        "n": 3,
+        "role": "friction",
+        "headline": "9 H. LA CHAMBRE EST OCCUPÉE.",
+        "body": "CAS FICTIF — Votre proche dort encore. Vous avez une réunion confidentielle. Le bureau est dans sa chambre.",
+        "proofLabel": "CAS FICTIF",
+        "visualMechanism": "Deux usages apparaissent au même endroit et au même moment."
+      },
+      {
+        "n": 4,
+        "role": "demonstration",
+        "headline": "LE TOTAL NE RÉPOND PAS À CETTE QUESTION.",
+        "body": "Une surface mesure une quantité. Elle ne vous dit pas, à elle seule, si deux usages nécessaires peuvent fonctionner ensemble.",
+        "proofLabel": "Définition de surface : INSEE · preuve V2-DEF-0029",
+        "visualMechanism": "Le grand nombre « 80 m² » recule ; le plan et les usages prennent le dessus."
+      },
+      {
+        "n": 5,
+        "role": "question_shift",
+        "headline": "CHANGEZ DE QUESTION.",
+        "body": "Au lieu de « est-ce assez grand ? », demandez : « quels usages doivent fonctionner en même temps ? »",
+        "visualMechanism": "Ancienne question barrée, nouvelle question matérialisée sur le plan."
+      },
+      {
+        "n": 6,
+        "role": "method",
+        "headline": "3 OPÉRATIONS.",
+        "body": "1 — Listez deux activités simultanées. 2 — Placez-les sur le plan. 3 — Vérifiez ce qui permet à chacune de fonctionner.",
+        "visualMechanism": "Trois gestes successifs sur le même plan, sans nouvelle scène décorative."
+      },
+      {
+        "n": 7,
+        "role": "rereading",
+        "headline": "LE LOGEMENT PEUT TRÈS BIEN CONVENIR.",
+        "body": "Le test ne sert pas à trouver un défaut. Il sert à vérifier une possibilité avant d’en faire une certitude.",
+        "visualMechanism": "Le conflit se résout dans une variante de plan ou reste marqué « à vérifier »."
+      },
+      {
+        "n": 8,
+        "role": "autonomous_action",
+        "headline": "TESTEZ LE PROCHAIN PLAN.",
+        "body": "Choisissez deux usages qui doivent coexister. Placez-les. Vérifiez accès, calme, intimité et adaptation possible.",
+        "visualMechanism": "Fiche simple réutilisable ; aucun contact requis pour obtenir la méthode."
+      },
+      {
+        "n": 9,
+        "role": "bridge_optional",
+        "headline": "ET DANS VOTRE RECHERCHE ?",
+        "body": "Si plusieurs critères se gênent entre eux, mettez votre recherche au clair avant de comparer les annonces.",
+        "cta": "Mettre ma recherche au clair",
+        "destinationStatus": "À vérifier sur le site avant publication",
+        "visualMechanism": "Retour à une grille de priorités LEVOIS ; le CTA reste secondaire après la résolution."
+      }
+    ]
+  },
+  "article": {
+    "workingTitle": "80 m² : ce que la surface ne vous dit pas sur l’usage d’un logement",
+    "answerShort": "La surface totale décrit une quantité de mètres carrés, pas la manière dont vos usages s’organisent dans le temps. Deux logements de surface proche peuvent donc répondre différemment à un même besoin. Pour comparer, repérez les activités qui doivent avoir lieu en même temps, placez-les sur le plan et vérifiez qu’elles peuvent fonctionner sans se gêner.",
+    "sections": [
+      "Pourquoi « 80 m² » ne suffit pas à répondre à une question d’usage",
+      "Ce que mesure réellement la surface",
+      "Le cas fictif : chambre d’amis et télétravail au même moment",
+      "Le mécanisme : une pièce peut être disponible sur le plan mais indisponible au moment nécessaire",
+      "La méthode : activités simultanées → plan → conditions de fonctionnement",
+      "Ce que ce test ne permet pas de conclure",
+      "Comment l’appliquer à votre prochaine visite"
+    ],
+    "sources": [
+      "V2-DEF-0029 — INSEE — Surface du logement",
+      "REG-0035 — Légifrance — CCH R156-1 — à relire avant publication si utilisé"
+    ],
+    "seoIntent": "Répondre à une question d’usage et de surface sans transformer la surface en verdict universel."
+  },
+  "prepublication": {
+    "status": "TO_REVIEW",
+    "blockers": [
+      "Relire REG-0035 uniquement si la définition juridique est conservée dans l’article publié.",
+      "Vérifier que le CTA « Mettre ma recherche au clair » conduit réellement à l’expérience annoncée.",
+      "Tester la lisibilité mobile du hook long sur le renderer final."
+    ],
+    "absoluteVetosPassed": true
+  }
+}
