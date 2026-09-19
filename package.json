@@ -8,8 +8,9 @@
     "build": "npm run clean && next build",
     "typecheck": "tsc --noEmit",
     "security:audit": "npm audit --audit-level=high",
-    "check": "npm run typecheck && npm run build && npm run security:audit",
-    "deploy": "wrangler deploy"
+    "check": "npm run typecheck && npm run validate:editorial && npm run build && npm run security:audit",
+    "deploy": "wrangler deploy",
+    "validate:editorial": "node scripts/validate-editorial-pilots.mjs"
   },
   "dependencies": {
     "next": "16.2.10",
