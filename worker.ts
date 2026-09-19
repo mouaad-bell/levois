@@ -1,5 +1,5 @@
 import type { ResearchBundle } from './lib/studio-research';
-import { searchEvidenceLibrary, libraryCoverageSummary, type EvidenceDb } from './lib/evidence-library';
+import { searchEvidenceLibrary, libraryCoverageSummary, inferRetrievalIntent, type EvidenceDb } from './lib/evidence-library';
 import { buildEvidencePackFromLibrary } from './lib/evidence-pack';
 import type { EditorialBundle } from './lib/studio-editorial';
 import { recordGenerationRun } from './lib/content-traceability-db';
@@ -540,10 +540,11 @@ async function librarySearch(request: Request, env: StudioEnv) {
 
   const coverage = libraryCoverageSummary(hits);
   const evidencePack = buildEvidencePackFromLibrary(hits);
+  const retrievalIntent = inferRetrievalIntent(input);
 
   return json({
     hits,
-    coverage,
+    coverage: { ...coverage, retrievalIntent },
     evidencePack: evidencePack.pack,
     traceability: {
       evidenceIds: evidencePack.evidenceIds,
@@ -579,6 +580,7 @@ async function editorial(request: Request, env: StudioEnv) {
 
   const hits = await searchEvidenceLibrary(env.LEVOIS_EVIDENCE_DB, { text: input, geographicLabels: [...LEVOIS_LOCAL_LABELS], limit: 30 });
   const coverage = libraryCoverageSummary(hits);
+  const retrievalIntent = inferRetrievalIntent(input);
   const built = buildEvidencePackFromLibrary(hits);
   if (!built.pack.summary.canPublish) {
     return json({
@@ -675,6 +677,7 @@ async function editorial(request: Request, env: StudioEnv) {
       rejectedEvidence: built.excludedEvidenceIds.length,
       requestId: payload.id || '',
       webUsed: false,
+      retrievalIntent,
       traceabilityLogged,
     },
   });
@@ -708,6 +711,7 @@ async function research(request: Request, env: StudioEnv) {
     ? await searchEvidenceLibrary(env.LEVOIS_EVIDENCE_DB, { text: input, geographicLabels: [...LEVOIS_LOCAL_LABELS], limit: 24 })
     : [];
   const libraryCoverage = libraryCoverageSummary(libraryHits);
+  const retrievalIntent = inferRetrievalIntent(input);
   const allowedEvidenceIds = new Set(libraryHits.map((hit) => hit.evidenceId));
 
   const libraryContext = libraryHits.slice(0, 18).map((hit) => ({
@@ -945,6 +949,7 @@ Tu dois respecter strictement le schéma JSON de sortie.`;
       libraryHits: libraryHits.length,
       libraryCoverage,
       webSkipped: canSkipWeb,
+      retrievalIntent,
       traceabilityLogged,
     },
   });
