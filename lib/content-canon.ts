@@ -182,6 +182,139 @@ export const LEVOIS_PREPUBLICATION_CONTROLS = [
   'continuity',
 ] as const;
 
+
+export const LEVOIS_BRAND_COMMITMENTS = {
+  expertise: {
+    commitment:
+      'Aider à voir ce qu’une information change dans un choix immobilier.',
+    observable:
+      'Une comparaison, une distinction ou un test réutilisable.',
+  },
+  emotion: {
+    commitment: 'Clarté et sentiment de pouvoir avancer.',
+    observable:
+      'Une prochaine étape proportionnée, sans assurance artificielle.',
+  },
+  vision: {
+    commitment:
+      'Une décision gagne à expliciter ses raisons et ses conditions.',
+    observable: 'Avantages, concessions et inconnues visibles.',
+  },
+  proof: {
+    commitment: 'Rendre le raisonnement inspectable.',
+    observable: 'Sources adaptées, exemples identifiés, corrections assumées.',
+  },
+  refusal: {
+    commitment: 'Ne pas faire choisir sous une pression fabriquée.',
+    observable:
+      'Pas de faux compte à rebours, de verdict automatique ou de réponse retenue contre un email.',
+  },
+} as const;
+
+export type CanonFormat = 'carousel' | 'article' | 'site' | 'video';
+
+export const LEVOIS_FORMAT_CONTRACTS: Record<
+  CanonFormat,
+  { entry: string; progression: string; resolution: string }
+> = {
+  carousel: {
+    entry: 'Couverture lisible et première transition.',
+    progression: 'Une avancée utile par slide.',
+    resolution: 'Test ou question à refaire.',
+  },
+  article: {
+    entry: 'Titre, introduction et premiers intertitres.',
+    progression: 'Réponse puis explication inspectable.',
+    resolution: 'Méthode et limites retrouvables.',
+  },
+  site: {
+    entry: 'Premier écran lié à l’intention de visite.',
+    progression: 'Comprendre, choisir, obtenir une valeur.',
+    resolution: 'Action ou résultat correspondant au bouton.',
+  },
+  video: {
+    entry: 'Première image, texte et premières paroles.',
+    progression: 'Une information compréhensible à chaque étape.',
+    resolution: 'Réponse audible et action mémorisable.',
+  },
+};
+
+export const LEVOIS_PREPUBLICATION_QUESTIONS = {
+  subject: {
+    question: 'Sait-on ce qui sera examiné dès l’entrée ?',
+    correction: 'Avancer l’objet et la situation.',
+  },
+  understanding: {
+    question: 'La phrase peut-elle être reformulée simplement ?',
+    correction: 'Réduire le jargon et les ambiguïtés.',
+  },
+  recognition: {
+    question: 'Qui décide quoi, à quel moment ?',
+    correction: 'Remplacer le thème par une scène.',
+  },
+  interest: {
+    question: 'Quelle réponse utile donne envie de poursuivre ?',
+    correction: 'Préciser l’enjeu ou le test promis.',
+  },
+  promise: {
+    question: 'Le corps répond-il à ce que l’entrée suggère ?',
+    correction: 'Réduire le hook ou compléter la preuve.',
+  },
+  progression: {
+    question: 'Chaque bloc apporte-t-il un changement ?',
+    correction: 'Fusionner ou supprimer les répétitions.',
+  },
+  mechanism: {
+    question: 'Comprend-on pourquoi l’information compte ?',
+    correction: 'Montrer la relation ou le contre-exemple.',
+  },
+  limits: {
+    question: 'Les qualifications essentielles sont-elles visibles ?',
+    correction: 'Les rapprocher de l’affirmation.',
+  },
+  resolution: {
+    question: 'La question principale est-elle traitée ?',
+    correction: 'Écrire la réponse autorisée.',
+  },
+  autonomy: {
+    question: 'Peut-on utiliser la méthode sans contacter LEVOIS ?',
+    correction: 'Ajouter une opération interprétable.',
+  },
+  format: {
+    question: 'Le support permet-il de lire ou entendre le propos ?',
+    correction: 'Réduire la densité ou changer de format.',
+  },
+  continuity: {
+    question: 'Le bouton ou la proposition finale tient-il sa promesse ?',
+    correction: 'Aligner le libellé et l’action réelle.',
+  },
+} as const;
+
+export const LEVOIS_PRODUCTION_ORDER = [
+  'Choisir la décision.',
+  'Qualifier les preuves.',
+  'Écrire la résolution.',
+  'Construire la progression.',
+  'Proposer trois ouvertures.',
+  'Adapter au support.',
+  'Vérifier la promesse.',
+  'Contrôler le rendu et la destination.',
+] as const;
+
+export const LEVOIS_MEASUREMENT_DIMENSIONS = {
+  entry: 'Entrée dans le contenu.',
+  progression: 'Progression jusqu’à la réponse.',
+  utility: 'Utilité obtenue et prochaine action comprise.',
+} as const;
+
+export const LEVOIS_CONVERSION_RULES = [
+  'La première conversion recherchée est une progression de compréhension.',
+  'Un échange avec Mouaad vient après une valeur déjà reçue.',
+  'Un seul appel principal suffit généralement à orienter l’action.',
+  'Le libellé d’un CTA doit désigner une action réellement disponible.',
+  'La résolution n’est jamais retenue pour obtenir des coordonnées.',
+] as const;
+
 export type CanonProductionRecord = {
   canonVersion: typeof LEVOIS_CANON_VERSION;
   audience: string;
