@@ -79,22 +79,37 @@ for (const file of files) {
     }
 
     const hasNumber = /\d/.test(String(hook.text || ''));
+    const hasLocalAnchor =
+      /chartres|l[eè]ves|luc[eé]|mainvilliers|luisant|coudray|champhol/i.test(
+        String(hook.text || ''),
+      );
     const hasEvidence =
-      Array.isArray(hook.evidenceRefs) && hook.evidenceRefs.length > 0;
-    const declaredCase =
-      /cas fictif|cas pédagogique|pedagogique|fictif/i.test(
-        JSON.stringify(hook),
-      ) ||
-      /case_pedagogique|case_fictive/i.test(
-        String(data.numericStatus || ''),
-      );
+      (Array.isArray(hook.evidenceRefs) && hook.evidenceRefs.length > 0) ||
+      (Array.isArray(hook.claimRefs) && hook.claimRefs.length > 0);
 
-    if (hasNumber && !hasEvidence && !declaredCase) {
-      fail(
-        file,
-        'hook chiffré sans evidenceRef ni statut pédagogique: ' +
-          hook.text,
-      );
+    if (!['sourced', 'pedagogical_scenario', 'non_numeric'].includes(hook.evidenceStatus)) {
+      fail(file, 'evidenceStatus invalide pour ' + hook.mode);
+    }
+
+    if (hasLocalAnchor && !hasEvidence) {
+      fail(file, 'hook local sans preuve référencée: ' + hook.text);
+    }
+
+    if (hasNumber) {
+      if (hook.evidenceStatus === 'sourced' && !hasEvidence) {
+        fail(file, 'hook chiffré marqué sourced sans preuve: ' + hook.text);
+      }
+      if (
+        hook.evidenceStatus === 'pedagogical_scenario' &&
+        !/cas fictif|cas pédagogique|cas pedagogique|simulation/i.test(
+          String(hook.qualifier || ''),
+        )
+      ) {
+        fail(file, 'hook pédagogique chiffré sans qualificatif visible: ' + hook.text);
+      }
+      if (hook.evidenceStatus === 'non_numeric') {
+        fail(file, 'hook chiffré marqué non_numeric: ' + hook.text);
+      }
     }
   }
 
