@@ -123,6 +123,9 @@ export type ResearchApiResponse = {
     };
     webSkipped?: boolean;
     retrievalIntent?: string;
+    inputTokens?: number | null;
+    outputTokens?: number | null;
+    totalTokens?: number | null;
     traceabilityLogged?: boolean;
   };
 };
