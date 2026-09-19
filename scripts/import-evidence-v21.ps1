@@ -57,7 +57,8 @@ $checks = @(
   "SELECT engine_use_class, COUNT(*) AS n FROM evidence GROUP BY engine_use_class ORDER BY n DESC;",
   "SELECT COUNT(*) AS do_not_use_count FROM evidence WHERE engine_use_class='DO_NOT_USE';",
   "SELECT COUNT(*) AS refresh_rows FROM evidence_refresh_v21;",
-  "SELECT COUNT(*) AS alias_rows FROM evidence_aliases;"
+  "SELECT COUNT(*) AS alias_rows FROM evidence_aliases;",
+  "SELECT COUNT(*) AS fts_rows FROM evidence_search;"
 )
 
 foreach ($query in $checks) {
@@ -69,6 +70,7 @@ foreach ($query in $checks) {
 Step "Contrôle attendu"
 Write-Host "Bibliothèque canonique attendue : V21"
 Write-Host "Preuves actives attendues : 39 721"
+Write-Host "Lignes FTS attendues : 38 931 (39 721 - 790 DO_NOT_USE)"
 Write-Host "Important : les DO_NOT_USE peuvent être stockés pour audit mais sont exclus du retrieval publiable."
 Write-Host ""
 Write-Host "Ensuite : ajouter le binding LEVOIS_EVIDENCE_DB dans env.studio, puis déployer levois-studio." -ForegroundColor Green
