@@ -138,6 +138,10 @@ export function buildEvidencePackFromLibrary(
       timeScope: hit.timePeriod,
       sourceRefs,
       evidenceRefs: [hit.evidenceId],
+      evidenceUseClass: hit.engineUseClass,
+      publicationReadiness: hit.publicationReadiness,
+      verificationRequiredBeforePublication:
+        hit.verificationRequiredBeforePublication,
       evidenceStrength:
         isDirect && hit.sourceTier === 1
           ? 'strong'
