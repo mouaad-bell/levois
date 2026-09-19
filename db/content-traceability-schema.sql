@@ -71,3 +71,20 @@ CREATE TABLE IF NOT EXISTS content_generation_runs (
   request_id TEXT,
   FOREIGN KEY (artifact_id) REFERENCES content_artifacts(artifact_id)
 );
+
+
+-- Short-lived internal cache for deterministic editorial generations.
+-- No raw user input is stored here: cache identity is a SHA-256 over
+-- normalized input + evidence pack + canon/model versions.
+CREATE TABLE IF NOT EXISTS studio_editorial_cache (
+  cache_key TEXT PRIMARY KEY,
+  model TEXT NOT NULL,
+  canon_version TEXT NOT NULL,
+  evidence_library_version TEXT NOT NULL,
+  bundle_json TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  expires_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_studio_editorial_cache_expiry
+  ON studio_editorial_cache(expires_at);
