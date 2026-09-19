@@ -266,14 +266,24 @@ Des preuves méthodologiques supplémentaires sont signalées sans bloquer si le
 
 ## Mise en service complète sur Windows
 
-Quand la base D1 `levois-evidence` a été créée et que son `database_id` est connu :
+Commande recommandée si la base D1 existe déjà :
 
-`powershell -ExecutionPolicy Bypass -File scripts/setup-studio-v21.ps1 -LibraryPath "C:\chemin\LEVOIS_EVIDENCE_LIBRARY_V2_1.zip" -DatabaseId "<DATABASE_ID>"`
+`powershell -ExecutionPolicy Bypass -File scripts/setup-studio-v21.ps1 -LibraryPath "C:\chemin\LEVOIS_EVIDENCE_LIBRARY_V2_1.zip"`
+
+Le script cherche automatiquement une base nommée `levois-evidence`.
+
+Si elle n’existe pas encore, la création doit être explicitement autorisée :
+
+`powershell -ExecutionPolicy Bypass -File scripts/setup-studio-v21.ps1 -LibraryPath "C:\chemin\LEVOIS_EVIDENCE_LIBRARY_V2_1.zip" -CreateDatabase`
+
+`-DatabaseId "<DATABASE_ID>"` reste disponible pour forcer une base précise.
 
 Le script :
 
 - accepte directement le ZIP V2.1 ou le dossier déjà extrait ;
 - extrait automatiquement le ZIP dans un dossier de travail si nécessaire ;
+- recherche d’abord une base D1 existante pour éviter les doublons ;
+- ne crée une base que si `-CreateDatabase` est explicitement fourni ;
 - ajoute uniquement le binding D1 non secret à `env.studio` ;
 - importe V2.1 ;
 - applique les tables de traçabilité ;
