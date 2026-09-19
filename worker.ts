@@ -22,6 +22,16 @@ type OpenAIResponse = {
   error?: { message?: string };
 };
 
+const LEVOIS_LOCAL_LABELS = [
+  'Chartres',
+  'Lèves',
+  'Lucé',
+  'Mainvilliers',
+  'Luisant',
+  'Le Coudray',
+  'Champhol',
+] as const;
+
 const FAMILY_IDS = [
   'decider_arbitrer',
   'prix_valeur',
@@ -562,7 +572,7 @@ async function editorial(request: Request, env: StudioEnv) {
     return json({ error: 'Le sujet doit contenir entre 1 et 5 000 caractères.' }, { status: 400 });
   }
 
-  const hits = await searchEvidenceLibrary(env.LEVOIS_EVIDENCE_DB, { text: input, limit: 30 });
+  const hits = await searchEvidenceLibrary(env.LEVOIS_EVIDENCE_DB, { text: input, geographicLabels: [...LEVOIS_LOCAL_LABELS], limit: 30 });
   const coverage = libraryCoverageSummary(hits);
   const built = buildEvidencePackFromLibrary(hits);
   if (!built.pack.summary.canPublish) {
@@ -665,7 +675,7 @@ async function research(request: Request, env: StudioEnv) {
   }
 
   const libraryHits = env.LEVOIS_EVIDENCE_DB
-    ? await searchEvidenceLibrary(env.LEVOIS_EVIDENCE_DB, { text: input, limit: 24 })
+    ? await searchEvidenceLibrary(env.LEVOIS_EVIDENCE_DB, { text: input, geographicLabels: [...LEVOIS_LOCAL_LABELS], limit: 24 })
     : [];
   const libraryCoverage = libraryCoverageSummary(libraryHits);
   const allowedEvidenceIds = new Set(libraryHits.map((hit) => hit.evidenceId));
