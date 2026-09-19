@@ -769,11 +769,11 @@ LIGNE ÉDITORIALE
 - Pas de clickbait mensonger, pas de jargon, pas de CTA commercial agressif.
 - Le hook doit être court, provocant par l'idée ou l'image, pas par l'exagération.
 - Produit exactement 3 angles éditoriaux et sélectionne le meilleur. Chaque angle doit contenir claimRefs avec les IDs des preuves factuelles centrales qui le soutiennent.
-- Article Master : 8 sections dans cet ordre logique : question, intuition, proof, mechanism, case, method, limits, application.
-- Méthode : vise 3 opérations mémorisables ; 4 maximum seulement si le sujet l'exige réellement. Évite les listes de 5 étapes ou plus.
+- Article Master : utilise seulement les sections nécessaires, maximum technique 8. Donne la réponse assez tôt puis rends la preuve, le mécanisme, la méthode et les limites inspectables.
+- Méthode : préfère une opération courte et mémorisable quand le sujet le permet, sans imposer un nombre universel d'étapes.
 - Storyboard : choisis seulement le nombre de slides nécessaire au raisonnement, dans la limite technique de 10. La première unité doit faire comprendre le sujet. La résolution principale doit être livrée avant tout prolongement commercial. La dernière slide peut être une méthode autonome ; un bridge LEVOIS n’est ajouté que s’il prolonge réellement la valeur.
 - Dans le dernier tiers du carrousel, n'introduis pas un nouveau grand sujet qui détourne du raisonnement central. Par exemple, ne fais pas entrer le prix dans un carrousel de mobilité sauf s'il était déjà une variable centrale.
-- La dernière slide doit ouvrir explicitement la question personnelle créée par le contenu et proposer un CTA LEVOIS contextuel, sans sollicitation commerciale agressive.
+- Un CTA LEVOIS est facultatif. S'il existe, il vient après la résolution et décrit une action réellement disponible. Ne retiens jamais la réponse pour obtenir un contact.
 - Choisis une seule famille parmi les 8 IDs autorisés.
 
 SOURCES
