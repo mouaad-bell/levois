@@ -671,6 +671,8 @@ function PublicationView({
   const [saveMessage, setSaveMessage] = useState('');
   const [staleChecking, setStaleChecking] = useState(false);
   const [staleMessage, setStaleMessage] = useState('');
+  const [queueSyncing, setQueueSyncing] = useState(false);
+  const [queueMessage, setQueueMessage] = useState('');
 
   async function copyPublicationPackage() {
     const payload = JSON.stringify(publication, null, 2);
@@ -751,6 +753,55 @@ function PublicationView({
       );
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function syncReviewQueue() {
+    if (!studioKey.trim()) {
+      setQueueMessage('Ajoutez la clé Studio privée avant de synchroniser la file de revue.');
+      return;
+    }
+
+    setQueueSyncing(true);
+    setQueueMessage('');
+
+    try {
+      const response = await fetch('/api/studio/traceability/sync', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-studio-key': studioKey.trim(),
+        },
+        body: JSON.stringify({ limit: 500 }),
+      });
+
+      const payload = await response.json() as {
+        queuedArtifacts?: number;
+        staleDependencies?: number;
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(
+          payload.error ||
+            'Impossible de synchroniser la file de revue.',
+        );
+      }
+
+      setQueueMessage(
+        (payload.queuedArtifacts ?? 0) +
+          ' contenu(s) en revue · ' +
+          (payload.staleDependencies ?? 0) +
+          ' dépendance(s) détectée(s).',
+      );
+    } catch (error) {
+      setQueueMessage(
+        error instanceof Error
+          ? error.message
+          : 'Synchronisation de la file de revue impossible.',
+      );
+    } finally {
+      setQueueSyncing(false);
     }
   }
 
@@ -951,12 +1002,23 @@ function PublicationView({
           >
             {staleChecking ? 'Vérification…' : 'Vérifier les preuves modifiées'}
           </button>
+          <button
+            className={styles.secondaryButton}
+            type="button"
+            onClick={syncReviewQueue}
+            disabled={queueSyncing}
+          >
+            {queueSyncing ? 'Synchronisation…' : 'Créer la file de revue'}
+          </button>
         </div>
         {saveMessage ? (
           <p className={styles.researchMeta}>{saveMessage}</p>
         ) : null}
         {staleMessage ? (
           <p className={styles.researchMeta}>{staleMessage}</p>
+        ) : null}
+        {queueMessage ? (
+          <p className={styles.researchMeta}>{queueMessage}</p>
         ) : null}
       </section>
     </div>
