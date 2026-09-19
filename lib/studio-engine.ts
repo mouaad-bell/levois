@@ -580,6 +580,10 @@ function surfaceFixture(rawInput: string): StudioProject {
       transferValue: true,
       saveValue: true,
       levoisBridge: true,
+      canonPromise: true,
+      resolution: true,
+      autonomy: true,
+      limitsVisible: true,
     },
   };
 
