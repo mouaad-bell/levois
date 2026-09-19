@@ -1,4 +1,5 @@
 import type { ResearchBundle } from './lib/studio-research';
+import { searchEvidenceLibrary, libraryCoverageSummary, type EvidenceDb } from './lib/evidence-library';
 
 type AssetsBinding = { fetch(request: Request): Promise<Response> };
 
@@ -7,6 +8,7 @@ type StudioEnv = {
   OPENAI_API_KEY?: string;
   STUDIO_ACCESS_TOKEN?: string;
   STUDIO_RESEARCH_MODEL?: string;
+  LEVOIS_EVIDENCE_DB?: EvidenceDb;
 };
 
 type OpenAIResponse = {
@@ -77,12 +79,13 @@ const researchSchema = {
           geographicScope: { type: 'string' },
           timeScope: { type: 'string' },
           sourceRefs: { type: 'array', items: { type: 'string' } },
+          evidenceRefs: { type: 'array', items: { type: 'string' } },
           evidenceStrength: { type: 'string', enum: ['strong', 'medium', 'weak', 'none'] },
           status: { type: 'string', enum: ['verified', 'qualified', 'insufficient', 'rejected'] },
           allowedUses: { type: 'array', items: { type: 'string' } },
           forbiddenInferences: { type: 'array', items: { type: 'string' } },
         },
-        required: ['claimId', 'claim', 'claimType', 'value', 'unit', 'population', 'geographicScope', 'timeScope', 'sourceRefs', 'evidenceStrength', 'status', 'allowedUses', 'forbiddenInferences'],
+        required: ['claimId', 'claim', 'claimType', 'value', 'unit', 'population', 'geographicScope', 'timeScope', 'sourceRefs', 'evidenceRefs', 'evidenceStrength', 'status', 'allowedUses', 'forbiddenInferences'],
       },
     },
     unknowns: {
@@ -247,17 +250,21 @@ function extractOutputText(response: OpenAIResponse) {
   return chunks.join('\n');
 }
 
-function sanitizeBundle(bundle: ResearchBundle, webSources: Map<string, { url: string; title: string }>) {
+function sanitizeBundle(
+  bundle: ResearchBundle,
+  acceptedSources: Map<string, { url: string; title: string }>,
+  allowedEvidenceIds: Set<string>,
+) {
   const oldToNew = new Map<string, string>();
 
   const sources = bundle.sources
     .map((source) => ({ ...source, url: normalizeUrl(source.url) }))
-    .filter((source) => source.url && webSources.has(source.url))
+    .filter((source) => source.url && acceptedSources.has(source.url))
     .slice(0, 16)
     .map((source, index) => {
       const sourceId = `S${String(index + 1).padStart(3, '0')}`;
       oldToNew.set(source.sourceId, sourceId);
-      const observed = webSources.get(source.url);
+      const observed = acceptedSources.get(source.url);
       return { ...source, sourceId, title: observed?.title || source.title };
     });
 
@@ -269,18 +276,21 @@ function sanitizeBundle(bundle: ResearchBundle, webSources: Map<string, { url: s
       .map((sourceId) => oldToNew.get(sourceId) ?? '')
       .filter((sourceId, refIndex, refs) => Boolean(sourceId) && validSourceIds.has(sourceId) && refs.indexOf(sourceId) === refIndex);
 
+    const evidenceRefs = (claim.evidenceRefs ?? [])
+      .filter((evidenceId, refIndex, refs) => allowedEvidenceIds.has(evidenceId) && refs.indexOf(evidenceId) === refIndex);
+
     const claimId = `C${String(index + 1).padStart(3, '0')}`;
     const needsSource = claim.claimType === 'fact' || claim.claimType === 'calculation';
     let status = claim.status;
     let evidenceStrength = claim.evidenceStrength;
 
-    if (needsSource && sourceRefs.length === 0) {
+    if (needsSource && sourceRefs.length === 0 && evidenceRefs.length === 0) {
       status = 'insufficient';
       evidenceStrength = 'none';
       downgradedClaims += 1;
     }
 
-    return { ...claim, claimId, sourceRefs, status, evidenceStrength };
+    return { ...claim, claimId, sourceRefs, evidenceRefs, status, evidenceStrength };
   });
 
   const oldClaimIds = bundle.claims.map((claim) => claim.claimId);
