@@ -60,7 +60,7 @@ function sharesMeaning(a: string, b: string) {
   if (!left.size || !right.size) return false;
   let shared = 0;
   for (const token of left) if (right.has(token)) shared += 1;
-  return shared / Math.min(left.size, right.size) >= 0.3;
+  return shared / Math.min(left.size, right.size) >= 0.1;
 }
 
 function hasSituation(candidate: CanonHookCandidate, brief: HookBrief) {
