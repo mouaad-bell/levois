@@ -4,7 +4,7 @@ import { buildEvidencePackFromLibrary } from './lib/evidence-pack';
 import type { EditorialBundle } from './lib/studio-editorial';
 import { recordGenerationRun, persistTraceabilityManifest, findImpactedContent, findStaleContentDependencies, syncStaleContentReviews, listOpenContentReviews, resolveContentReview } from './lib/content-traceability-db';
 import type { ContentTraceabilityManifest } from './lib/content-traceability';
-import { buildEditorialCacheKey, getEditorialCache, putEditorialCache } from './lib/studio-cache';
+import { buildEditorialCacheKey, getEditorialCache, putEditorialCache, clearEditorialCache } from './lib/studio-cache';
 
 type AssetsBinding = { fetch(request: Request): Promise<Response> };
 
@@ -554,6 +554,37 @@ async function librarySearch(request: Request, env: StudioEnv) {
       conditionalEvidenceIds: evidencePack.conditionalEvidenceIds,
       excludedEvidenceIds: evidencePack.excludedEvidenceIds,
     },
+  });
+}
+
+async function clearStudioEditorialCache(
+  request: Request,
+  env: StudioEnv,
+) {
+  if (!env.STUDIO_ACCESS_TOKEN) {
+    return json(
+      { error: 'Studio non configuré : STUDIO_ACCESS_TOKEN requis.' },
+      { status: 503 },
+    );
+  }
+
+  const provided = request.headers.get('x-studio-key') ?? '';
+  if (!provided || !safeEqual(provided, env.STUDIO_ACCESS_TOKEN)) {
+    return json({ error: 'Accès Studio refusé.' }, { status: 401 });
+  }
+
+  if (!env.LEVOIS_EVIDENCE_DB) {
+    return json(
+      { error: 'Bibliothèque LEVOIS non connectée.' },
+      { status: 503 },
+    );
+  }
+
+  await clearEditorialCache(env.LEVOIS_EVIDENCE_DB);
+
+  return json({
+    cleared: true,
+    cache: 'studio_editorial_cache',
   });
 }
 
@@ -1384,6 +1415,11 @@ Tu dois respecter strictement le schéma JSON de sortie.`;
 export default {
   async fetch(request: Request, env: StudioEnv): Promise<Response> {
     const url = new URL(request.url);
+    if (url.pathname === '/api/studio/cache/clear') {
+      if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
+      return clearStudioEditorialCache(request, env);
+    }
+
     if (url.pathname === '/api/studio/editorial') {
       if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
       return editorial(request, env);
