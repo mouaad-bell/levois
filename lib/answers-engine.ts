@@ -32,7 +32,7 @@ export type AnswerPageBrief = {
   internalLinkCandidates: string[];
   structuredDataPlan: string[];
   nextPersonalQuestion: string;
-  ctaLabel: string;
+  ctaLabel?: string;
   derivativeContentOpportunities: string[];
   continuity: {
     destinationExists: boolean;
@@ -256,7 +256,9 @@ export function buildAnswerPageBrief(
     nextPersonalQuestion:
       project.articleMaster.nextPersonalQuestion,
     ctaLabel:
-      project.articleMaster.recommendedLevoisPath.label,
+      project.articleMaster.recommendedLevoisPath.routeStatus === 'live'
+        ? project.articleMaster.recommendedLevoisPath.label
+        : undefined,
     derivativeContentOpportunities: [
       'carrousel',
       'LinkedIn',
