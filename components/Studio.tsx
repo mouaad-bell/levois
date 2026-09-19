@@ -28,6 +28,8 @@ type LibraryCoveragePreview = {
   personCheck: number;
   freshDirect: number;
   primaryDirect: number;
+  strongDirect: number;
+  topDirectScore: number;
   uniqueTopics: number;
   candidateForWebSkip: boolean;
 };
@@ -237,7 +239,7 @@ export function Studio() {
           {libraryCoverage ? (
             <p className={styles.researchMeta}>
               Bibliothèque : {libraryCoverage.hits} résultat(s) · {libraryCoverage.direct} direct(s) ·{' '}
-              {libraryCoverage.historical} historique(s) · {libraryCoverage.refreshRequired} à rafraîchir ·{' '}
+              {libraryCoverage.strongDirect} fort(s) · {libraryCoverage.historical} historique(s) · {libraryCoverage.refreshRequired} à rafraîchir ·{' '}
               {libraryCoverage.candidateForWebSkip ? 'couverture suffisante pour tenter sans web' : 'complément potentiellement nécessaire'}
             </p>
           ) : null}
