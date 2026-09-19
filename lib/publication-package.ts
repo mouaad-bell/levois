@@ -1,4 +1,5 @@
 import { buildAnswerPageBrief } from './answers-engine';
+import { buildDistributionBrief } from './distribution-brief';
 import { reviewCanon } from './canon-review';
 import { buildTraceabilityManifest } from './content-traceability';
 import { buildStructuralRenderPackage } from './render-package-builder';
@@ -23,6 +24,7 @@ export type PublicationPackage = {
   canon: ReturnType<typeof reviewCanon>;
   article: ReturnType<typeof buildAnswerPageBrief>;
   carousel: ReturnType<typeof buildVulgarisationBrief>;
+  distribution: ReturnType<typeof buildDistributionBrief>;
   render: {
     package: ReturnType<typeof buildStructuralRenderPackage>;
     review: ReturnType<typeof reviewCarouselRender>;
@@ -76,6 +78,7 @@ export function buildPublicationPackage(
   const canon = reviewCanon(project);
   const article = buildAnswerPageBrief(project);
   const carousel = buildVulgarisationBrief(project);
+  const distribution = buildDistributionBrief(project);
   const renderPackage = buildStructuralRenderPackage(project);
   const renderReview = reviewCarouselRender(renderPackage);
   const assetPlan = buildVisualAssetPlan(project, renderPackage);
