@@ -136,6 +136,8 @@ export type CanonHookCandidate = {
   text: string;
   explicitPromise: string;
   implicitPromise: string;
+  evidenceStatus: 'sourced' | 'pedagogical_scenario' | 'non_numeric';
+  qualifier: string;
   claimRefs: string[];
   evidenceRefs: string[];
 };
