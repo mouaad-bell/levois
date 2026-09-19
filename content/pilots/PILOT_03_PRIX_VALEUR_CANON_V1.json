@@ -22,7 +22,9 @@
       "implicitPromise": "Le lecteur apprendra à vérifier la comparabilité avant de juger le prix.",
       "evidenceRefs": [],
       "claimRefs": [],
-      "guard": "Autorisé uniquement si les deux montants sont sourcés ou explicitement présentés comme CAS PÉDAGOGIQUE sur la couverture."
+      "guard": "Autorisé uniquement si les deux montants sont sourcés ou explicitement présentés comme CAS PÉDAGOGIQUE sur la couverture.",
+      "evidenceStatus": "pedagogical_scenario",
+      "qualifier": "CAS PÉDAGOGIQUE"
     },
     {
       "mode": "scene",
@@ -32,7 +34,9 @@
       "implicitPromise": "Le contenu détaillera les conditions nécessaires à une comparaison utile.",
       "evidenceRefs": [],
       "claimRefs": [],
-      "guard": "CAS PÉDAGOGIQUE tant qu’aucun dossier réel n’est branché."
+      "guard": "CAS PÉDAGOGIQUE tant qu’aucun dossier réel n’est branché.",
+      "evidenceStatus": "pedagogical_scenario",
+      "qualifier": "CAS PÉDAGOGIQUE"
     },
     {
       "mode": "comparison",
@@ -41,7 +45,9 @@
       "explicitPromise": "Montrer que le calcul d’écart vient après la vérification de comparabilité.",
       "implicitPromise": "Le lecteur repartira avec un ordre de contrôle réutilisable.",
       "evidenceRefs": [],
-      "claimRefs": []
+      "claimRefs": [],
+      "evidenceStatus": "non_numeric",
+      "qualifier": ""
     }
   ],
   "selectedHookMode": "direct",
