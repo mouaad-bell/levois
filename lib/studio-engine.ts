@@ -861,6 +861,581 @@ function surfaceFixture(rawInput: string): StudioProject {
   };
 }
 
+function priceFixture(rawInput: string): StudioProject {
+  const family = STUDIO_FAMILIES.prix_valeur;
+
+  const scope: EditorialScope = {
+    rawTopic: rawInput,
+    decisionQuestion:
+      'Un écart de prix suffit-il à conclure qu’un bien est trop cher ?',
+    audience:
+      'Grand public, acheteurs, vendeurs ou personnes qui comparent plusieurs prix immobiliers',
+    territory:
+      'France ; contexte local uniquement lorsqu’il apporte une comparaison réellement documentée',
+    objective:
+      'Apprendre à vérifier la comparabilité de deux montants avant d’interpréter leur écart.',
+    hypothesesToTest: [
+      'Un écart arithmétique suffit à établir qu’un prix est excessif.',
+      'Une valeur DVF correspond toujours au prix d’un seul logement.',
+      'Un prix au m² médian peut être appliqué mécaniquement à un bien particulier.',
+    ],
+    mustNotAssume: [
+      'Les montants pédagogiques 285 000 €, 310 000 € et +25 000 € décrivent une vente réelle.',
+      'Deux biens situés dans la même commune sont automatiquement comparables.',
+      'Un comparable constitue une estimation individuelle.',
+    ],
+  };
+
+  const evidencePack = summarizeEvidence(
+    {
+      sources: [
+        {
+          sourceId: 'S001',
+          type: 'official_dataset',
+          publisher: 'DGFiP',
+          title: 'Demandes de valeurs foncières — DVF',
+          url: 'https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres',
+          dataPeriod: 'méthodologie / définition de la source',
+          geographicScope: 'France',
+          reliability: 'primary',
+        },
+        {
+          sourceId: 'S002',
+          type: 'other',
+          publisher: 'LEVOIS',
+          title: 'Conventions méthodologiques V2.1 — prix au m²',
+          dataPeriod: 'V2.1 · 2026-09-19',
+          geographicScope: 'Méthode générale',
+          reliability: 'context',
+          notes:
+            'Méthode interne traçable : METH-0022. Ne remplace pas une source primaire lorsque le contenu porte sur un champ DVF.',
+        },
+      ],
+      claims: [
+        {
+          claimId: 'C001',
+          claim:
+            'Le prix affiché est une intention d’offre ; le prix vendu est la valeur enregistrée de la mutation, sous les limites de la source.',
+          claimType: 'fact',
+          geographicScope: 'Méthode générale',
+          timeScope: 'statique / relu 2026-09-19',
+          sourceRefs: ['S001'],
+          evidenceRefs: ['METH-0021'],
+          evidenceUseClass: 'REUSABLE_IMMEDIATELY',
+          publicationReadiness: 'direct',
+          verificationRequiredBeforePublication: false,
+          evidenceStrength: 'strong',
+          status: 'verified',
+          allowedUses: [
+            'Séparer annonces et mutations lors d’une analyse de marché.',
+          ],
+          forbiddenInferences: [
+            'Un prix affiché ne prouve pas qu’un acheteur paiera ce montant.',
+            'DVF ne restitue pas toutes les caractéristiques qualitatives.',
+          ],
+        },
+        {
+          claimId: 'C002',
+          claim:
+            'La valeur foncière DVF est le montant de la mutation enregistré ; elle se rapporte à la disposition et peut couvrir plusieurs locaux ou parcelles.',
+          claimType: 'fact',
+          geographicScope: 'France · source DVF',
+          timeScope: 'static/current',
+          sourceRefs: ['S001'],
+          evidenceRefs: ['DEF-0001'],
+          evidenceUseClass: 'REUSABLE_IMMEDIATELY',
+          publicationReadiness: 'direct',
+          verificationRequiredBeforePublication: false,
+          evidenceStrength: 'strong',
+          status: 'verified',
+          allowedUses: [
+            'Préserver le périmètre exact de la valeur foncière avant vulgarisation.',
+          ],
+          forbiddenInferences: [
+            'Ne pas assimiler automatiquement une mutation complexe au prix d’un seul logement.',
+          ],
+        },
+        {
+          claimId: 'C003',
+          claim:
+            'Une mutation est un changement de propriété enregistré ; une mutation DVF peut comporter plusieurs lignes descriptives.',
+          claimType: 'fact',
+          geographicScope: 'France · source DVF',
+          timeScope: 'static/current',
+          sourceRefs: ['S001'],
+          evidenceRefs: ['DEF-0002'],
+          evidenceUseClass: 'REUSABLE_IMMEDIATELY',
+          publicationReadiness: 'direct',
+          verificationRequiredBeforePublication: false,
+          evidenceStrength: 'strong',
+          status: 'verified',
+          allowedUses: [
+            'Expliquer pourquoi plusieurs lignes peuvent appartenir à une seule mutation.',
+          ],
+          forbiddenInferences: [
+            'Une ligne DVF isolée ne doit pas être interprétée sans vérifier la structure de la mutation.',
+          ],
+        },
+        {
+          claimId: 'C004',
+          claim:
+            'Le prix au m² est un rapport entre une valeur de mutation et une surface définie ; sa pertinence dépend du périmètre de la valeur et de la surface.',
+          claimType: 'fact',
+          geographicScope: 'Méthode générale',
+          timeScope: 'V2.1',
+          sourceRefs: ['S002'],
+          evidenceRefs: ['METH-0022'],
+          evidenceUseClass: 'REUSABLE_IMMEDIATELY',
+          publicationReadiness: 'direct',
+          verificationRequiredBeforePublication: false,
+          evidenceStrength: 'medium',
+          status: 'verified',
+          allowedUses: [
+            'Comparer des ventes simples de type et surface similaires en affichant effectif et dispersion lorsque ces données existent.',
+          ],
+          forbiddenInferences: [
+            'Ne pas multiplier mécaniquement un prix au m² médian par la surface d’un bien pour produire une estimation.',
+          ],
+        },
+      ],
+      unknowns: [
+        {
+          unknownId: 'U001',
+          question:
+            'Quelles caractéristiques matérielles des deux biens sont réellement connues dans une comparaison donnée ?',
+          importance: 'medium',
+          reason:
+            'La méthode peut être expliquée sans connaître un bien particulier, mais une conclusion de prix individuelle exige le dossier réel.',
+          blocking: false,
+        },
+      ],
+    },
+    true,
+    [
+      'Les montants 285 000 €, 310 000 € et +25 000 € sont un CAS PÉDAGOGIQUE.',
+      'Une valeur DVF peut couvrir plusieurs locaux ou parcelles.',
+      'Un comparable et un prix au m² ne constituent pas, à eux seuls, une estimation individuelle.',
+    ],
+  );
+
+  const angles: EditorialAngle[] = [
+    {
+      angleId: 'A',
+      title: '25 000 € d’écart. Trop chère ?',
+      promise:
+        'Montrer qu’un écart exact n’est interprétable qu’après contrôle de comparabilité.',
+      hook: '25 000 € D’ÉCART. TROP CHÈRE ?',
+      centralProof:
+        'Le statut et le périmètre d’un prix doivent être établis avant d’interpréter un écart.',
+      claimRefs: ['C001', 'C002', 'C003'],
+      saveValue:
+        'Un ordre de contrôle : objet → statut → périmètre → période → surface → différences → inconnues → écart.',
+      bridgeQuestion:
+        'Qu’est-ce qui est réellement comparable entre les deux prix que vous regardez ?',
+      selected: true,
+    },
+    {
+      angleId: 'B',
+      title: 'Deux prix. Même chose ?',
+      promise:
+        'Faire distinguer prix affiché, prix vendu et valeur de mutation.',
+      hook: 'DEUX PRIX. MÊME STATUT ?',
+      centralProof:
+        'Prix affiché et prix vendu ne décrivent pas le même événement.',
+      claimRefs: ['C001'],
+      saveValue:
+        'Une manière simple de nommer chaque montant avant de le comparer.',
+      bridgeQuestion:
+        'Quels sont les statuts exacts des montants que vous comparez ?',
+    },
+    {
+      angleId: 'C',
+      title: 'Le prix au m² simplifie-t-il trop ?',
+      promise:
+        'Montrer que le rapport dépend du périmètre de la valeur et de la surface.',
+      hook: 'UN PRIX AU M² N’EST PAS ENCORE UNE ESTIMATION.',
+      centralProof:
+        'Le calcul dépend des concepts utilisés au numérateur et au dénominateur.',
+      claimRefs: ['C002', 'C003', 'C004'],
+      saveValue:
+        'Un garde-fou avant d’appliquer une médiane à un bien.',
+      bridgeQuestion:
+        'Le prix au m² que vous utilisez décrit-il réellement le même type de mutation et la même notion de surface ?',
+    },
+  ];
+
+  const canon = {
+    canonVersion: 'CONTENT_EXPERIENCE_V1_2026-09-19',
+    decisionFrame: {
+      person:
+        'Une personne envisage un prix et le compare à une vente enregistrée qui semble moins chère.',
+      decision:
+        'Vérifier si l’écart de prix porte sur des biens et des périmètres réellement comparables avant d’en tirer une conclusion.',
+      spontaneousReading:
+        'Un prix envisagé 25 000 € au-dessus d’une vente enregistrée paraît indiquer que le bien est trop cher.',
+      pressureTest:
+        'L’écart ne devient interprétable qu’après vérification du statut, du périmètre, de la période, des surfaces et des différences matérielles connues.',
+      authorizedConclusion:
+        'Un écart de prix, même exact, ne suffit pas à conclure qu’un bien est trop cher si les objets comparés ne sont pas réellement comparables.',
+      finalOperation:
+        'Nommer ce qui est comparé, vérifier le même périmètre et les différences matérielles, puis seulement examiner ce que l’écart de prix permet de dire.',
+    },
+    hookCandidates: [
+      {
+        mode: 'direct' as const,
+        family: 'comparison' as const,
+        text: '25 000 € D’ÉCART. TROP CHÈRE ?',
+        explicitPromise:
+          'Tester ce que l’écart permet réellement de conclure.',
+        implicitPromise:
+          'Le lecteur apprendra à vérifier la comparabilité avant de juger le prix.',
+        evidenceStatus: 'pedagogical_scenario' as const,
+        qualifier: 'CAS PÉDAGOGIQUE',
+        claimRefs: [],
+        evidenceRefs: [],
+      },
+      {
+        mode: 'scene' as const,
+        family: 'scope' as const,
+        text:
+          'UNE VENTE À 285 000 €. VOTRE PRIX À 310 000 €. COMPARE-T-ON LA MÊME CHOSE ?',
+        explicitPromise:
+          'Faire apparaître la question de périmètre derrière les deux montants.',
+        implicitPromise:
+          'Le contenu détaillera les conditions nécessaires à une comparaison utile.',
+        evidenceStatus: 'pedagogical_scenario' as const,
+        qualifier: 'CAS PÉDAGOGIQUE',
+        claimRefs: [],
+        evidenceRefs: [],
+      },
+      {
+        mode: 'comparison' as const,
+        family: 'scope' as const,
+        text: 'DEUX PRIX. AVANT L’ÉCART, VÉRIFIEZ LE PÉRIMÈTRE.',
+        explicitPromise:
+          'Montrer que le calcul d’écart vient après la vérification de comparabilité.',
+        implicitPromise:
+          'Le lecteur repartira avec un ordre de contrôle réutilisable.',
+        evidenceStatus: 'non_numeric' as const,
+        qualifier: '',
+        claimRefs: ['C001', 'C002', 'C003'],
+        evidenceRefs: ['METH-0021', 'DEF-0001', 'DEF-0002'],
+      },
+    ],
+    selectedHookMode: 'direct' as const,
+    storyBeats: [
+      {
+        function: 'situation' as const,
+        before: 'Le lecteur voit un prix envisagé.',
+        after: 'Il le met face à une vente qui paraît comparable.',
+        copy:
+          'CAS PÉDAGOGIQUE — Vente enregistrée : 285 000 €. Prix envisagé : 310 000 €.',
+        claimRefs: [],
+      },
+      {
+        function: 'initial_reading' as const,
+        before: 'Les deux nombres sont isolés.',
+        after: 'L’écart paraît fournir une conclusion immédiate.',
+        copy:
+          '+25 000 €. La première lecture est simple : « trop chère ? » — CAS PÉDAGOGIQUE.',
+        claimRefs: [],
+      },
+      {
+        function: 'friction' as const,
+        before: 'Le calcul semble suffire.',
+        after:
+          'Le lecteur voit que le statut et le périmètre ne sont pas encore établis.',
+        copy:
+          'Un prix affiché, une valeur de mutation et un prix envisagé ne doivent pas être traités comme des mesures interchangeables.',
+        claimRefs: ['C001', 'C002'],
+      },
+      {
+        function: 'demonstration' as const,
+        before: 'L’écart est traité comme une preuve.',
+        after:
+          'Il devient un résultat conditionnel après contrôle de ce que les deux montants couvrent.',
+        copy:
+          'Le calcul peut être exact alors que la comparaison reste mal posée.',
+        claimRefs: ['C002', 'C003', 'C004'],
+      },
+      {
+        function: 'rereading' as const,
+        before: 'Le prix envisagé semble automatiquement excessif.',
+        after: 'La conclusion devient suspendue à la comparabilité.',
+        copy:
+          'La bonne question devient : quelles différences sont documentées, et lesquelles restent inconnues ?',
+        claimRefs: [],
+      },
+      {
+        function: 'practical_take' as const,
+        before: 'Le lecteur comprend la limite.',
+        after: 'Il sait contrôler une comparaison.',
+        copy:
+          'Objet → statut → périmètre → période → surface → différences → inconnues → écart.',
+        claimRefs: ['C001', 'C002', 'C003', 'C004'],
+      },
+    ],
+    essentialLimit:
+      'Le prix au m² ou une vente voisine ne constituent pas, à eux seuls, une estimation individuelle. Les montants 285 000 €, 310 000 € et +25 000 € sont pédagogiques dans ce dossier.',
+    autonomousAction:
+      'Avant de conclure à partir d’un écart, écrivez les deux objets comparés, leur statut, leur date, leur surface, leur type, leur périmètre, les différences matérielles connues et les inconnues.',
+  };
+
+  const articleMaster: ArticleMaster = {
+    workingTitle:
+      '25 000 € d’écart : pourquoi deux prix ne sont pas forcément comparables',
+    centralQuestion:
+      'Un écart de prix suffit-il à conclure qu’un bien est trop cher ?',
+    centralThesis:
+      'Un écart de prix, même exact, ne suffit pas à conclure qu’un bien est trop cher si les objets comparés ne sont pas réellement comparables.',
+    family: family.id,
+    sections: [
+      {
+        sectionId: 'SEC01',
+        type: 'question',
+        heading: 'Le calcul est exact. La conclusion ne l’est pas encore.',
+        body:
+          'CAS PÉDAGOGIQUE : 285 000 € contre 310 000 € donnent bien 25 000 € d’écart. Cette soustraction ne dit pas encore si les deux objets sont comparables.',
+        claimRefs: [],
+      },
+      {
+        sectionId: 'SEC02',
+        type: 'intuition',
+        heading: 'Commencez par nommer le statut de chaque prix',
+        body:
+          'Un prix affiché est une intention d’offre ; un prix vendu correspond à la valeur enregistrée de la mutation, sous les limites de la source.',
+        claimRefs: ['C001'],
+      },
+      {
+        sectionId: 'SEC03',
+        type: 'proof',
+        heading: 'Une valeur DVF peut couvrir plus qu’un seul logement',
+        body:
+          'La valeur foncière se rapporte à la mutation, qui peut couvrir plusieurs locaux ou parcelles et comporter plusieurs lignes descriptives.',
+        claimRefs: ['C002', 'C003'],
+      },
+      {
+        sectionId: 'SEC04',
+        type: 'mechanism',
+        heading: 'La comparabilité vient avant l’écart',
+        body:
+          'Avant d’interpréter la différence, vérifiez type, périmètre, période, notion de surface, différences matérielles connues et inconnues.',
+        claimRefs: ['C001', 'C002', 'C003'],
+      },
+      {
+        sectionId: 'SEC05',
+        type: 'case',
+        heading: 'CAS PÉDAGOGIQUE : 285 000 € / 310 000 €',
+        body:
+          'Le calcul de +25 000 € est volontairement fictif. Il sert uniquement à montrer qu’un écart ne prend du sens qu’après contrôle de comparabilité.',
+        claimRefs: [],
+      },
+      {
+        sectionId: 'SEC06',
+        type: 'method',
+        heading: 'Comparez dans cet ordre',
+        body:
+          'Objet → statut → périmètre → période → surface → différences → inconnues → écart.',
+        claimRefs: ['C001', 'C002', 'C003', 'C004'],
+      },
+      {
+        sectionId: 'SEC07',
+        type: 'limits',
+        heading: 'Un comparable n’est pas une estimation',
+        body:
+          'Un prix au m² ou une vente voisine aide à raisonner mais ne remplace pas l’examen du bien ; DVF ne restitue pas toutes les différences qualitatives.',
+        claimRefs: ['C001', 'C004'],
+      },
+      {
+        sectionId: 'SEC08',
+        type: 'application',
+        heading: 'Prenez deux prix et écrivez d’abord ce qui est comparable',
+        body:
+          'Avant de calculer l’écart, notez le statut, la date, le périmètre, la surface, les différences connues et les inconnues.',
+        claimRefs: [],
+      },
+    ],
+    keyTakeaway:
+      'L’écart vient après la comparabilité, pas avant.',
+    transferablePrinciple:
+      'Un résultat arithmétique n’est interprétable que si les objets comparés sont suffisamment définis et comparables.',
+    nextPersonalQuestion:
+      'Qu’est-ce qui est réellement comparable entre les deux prix que vous regardez ?',
+    recommendedLevoisPath: {
+      label: 'Comparer mes scénarios',
+      path: '/',
+      routeStatus: 'pending',
+      reason:
+        'La destination publique doit être recettée avant activation ; la méthode autonome reste complète sans CTA.',
+    },
+  };
+
+  const storyboard: Storyboard = {
+    format: 'instagram_carousel_4x5',
+    family: family.id,
+    accentColor: family.accent,
+    slideCount: 8,
+    slides: [
+      {
+        slideNumber: 1,
+        narrativeRole: 'hook',
+        objective:
+          'Faire apparaître l’écart sans le transformer en verdict.',
+        headline: '25 000 € D’ÉCART.',
+        body: 'Trop chère ?',
+        claimRefs: [],
+        layout: 'HERO_NUMBER',
+        readerEffect: 'stop',
+        sourceLabel: 'CAS PÉDAGOGIQUE',
+        assetRequirements: [
+          'CAS PÉDAGOGIQUE chiffré 285 000 € / 310 000 € / +25 000 €',
+        ],
+      },
+      {
+        slideNumber: 2,
+        narrativeRole: 'tension',
+        objective:
+          'Montrer que le calcul est simple mais que son interprétation ne l’est pas encore.',
+        headline: '285 000 € / 310 000 €',
+        body: '+25 000 €. Le calcul est simple.',
+        claimRefs: [],
+        layout: 'COMPARISON_DUAL',
+        readerEffect: 'curiosity',
+        sourceLabel: 'CAS PÉDAGOGIQUE',
+        assetRequirements: [
+          'Comparaison typographique des deux montants fictifs',
+        ],
+      },
+      {
+        slideNumber: 3,
+        narrativeRole: 'explanation',
+        objective:
+          'Faire vérifier ce que les montants désignent réellement.',
+        headline: 'MAIS COMPARE-T-ON LA MÊME CHOSE ?',
+        body:
+          'Statut. Type. Surface. État. Période. Micro-localisation. Terrain. Travaux.',
+        claimRefs: ['C001', 'C002', 'C003'],
+        layout: 'EDITORIAL_SPLIT',
+        readerEffect: 'understanding',
+        sourceLabel:
+          'CAS PÉDAGOGIQUE pour les montants · DGFiP / DVF pour les définitions',
+        assetRequirements: [
+          'Document DVF réel ou schéma programmatique des périmètres',
+        ],
+      },
+      {
+        slideNumber: 4,
+        narrativeRole: 'proof',
+        objective:
+          'Montrer que la structure d’une mutation compte.',
+        headline: 'L’ÉCART EST UN RÉSULTAT.',
+        body:
+          'Son sens dépend de ce que les deux montants couvrent réellement.',
+        claimRefs: ['C001', 'C002', 'C003'],
+        layout: 'DATA_FIELD',
+        readerEffect: 'credibility',
+        sourceLabel: 'DGFiP · DVF · METH-0021 / DEF-0001 / DEF-0002',
+        assetRequirements: [
+          'Schéma programmatique valeur de mutation → locaux / parcelles',
+        ],
+      },
+      {
+        slideNumber: 5,
+        narrativeRole: 'insight',
+        objective: 'Déplacer la question avant le verdict.',
+        headline: 'CHANGEZ DE QUESTION.',
+        body:
+          'Quelles différences peuvent raisonnablement expliquer l’écart ?',
+        claimRefs: [],
+        layout: 'QUESTION_SHIFT',
+        readerEffect: 'surprise',
+        assetRequirements: [
+          'Question initiale barrée puis question de comparabilité',
+        ],
+      },
+      {
+        slideNumber: 6,
+        narrativeRole: 'method',
+        objective:
+          'Donner un ordre de contrôle réutilisable.',
+        headline: 'COMPAREZ DANS CET ORDRE.',
+        body:
+          'Objet → statut → périmètre → période → surface → différences → inconnues → écart.',
+        claimRefs: ['C001', 'C002', 'C003', 'C004'],
+        layout: 'METHOD_STEPS',
+        readerEffect: 'memorization',
+        sourceLabel: 'DGFiP / LEVOIS · méthode V2.1',
+        assetRequirements: [
+          'Séquence typographique programmatique de contrôle',
+        ],
+      },
+      {
+        slideNumber: 7,
+        narrativeRole: 'transfer',
+        objective:
+          'Fermer l’inférence abusive vers une estimation individuelle.',
+        headline: 'UN COMPARABLE N’EST PAS UNE ESTIMATION.',
+        body:
+          'Il aide à raisonner. Il ne remplace pas l’examen du bien.',
+        claimRefs: ['C004'],
+        layout: 'EDITORIAL_SPLIT',
+        readerEffect: 'clarity',
+        sourceLabel: 'LEVOIS · METH-0022',
+        assetRequirements: [
+          'Objet graphique comparatif non attribué à un bien réel',
+        ],
+      },
+      {
+        slideNumber: 8,
+        narrativeRole: 'exercise',
+        objective:
+          'Terminer sur une opération autonome.',
+        headline: 'PRENEZ DEUX PRIX.',
+        body:
+          'Écrivez d’abord ce qui est réellement comparable. Ensuite seulement, jugez l’écart.',
+        claimRefs: [],
+        layout: 'DATA_FIELD',
+        readerEffect: 'participation',
+        assetRequirements: [
+          'Fiche de comparaison programmatique réutilisable',
+        ],
+      },
+    ],
+    qualityGate: {
+      hook: true,
+      factuality: true,
+      narrative: true,
+      mobileDensity: true,
+      transferValue: true,
+      saveValue: true,
+      levoisBridge: true,
+      canonPromise: true,
+      resolution: true,
+      autonomy: true,
+      limitsVisible: true,
+    },
+  };
+
+  return {
+    schemaVersion: STUDIO_SCHEMA_VERSION,
+    projectId: idFrom(rawInput),
+    status: 'storyboard_ready',
+    input: {
+      inputType:
+        rawInput.includes('?') ? 'question' : 'idea',
+      rawInput,
+    },
+    family,
+    scope,
+    evidencePack,
+    angles,
+    canon,
+    articleMaster,
+    storyboard,
+    generatedAt: new Date().toISOString(),
+  };
+}
+
 function researchRequiredFixture(rawInput: string, familyId: StudioFamilyId, kind: 'surface' | 'price' | 'generic'): StudioProject {
   const family = STUDIO_FAMILIES[familyId];
   const specific =
@@ -1011,7 +1586,7 @@ export function buildStudioProject(input: string): StudioProject {
   if (!rawInput) throw new Error('Ajoutez une idée, une question ou une matière de départ.');
   if (isDistanceFixture(rawInput)) return distanceFixture(rawInput);
   if (isSurfaceFixture(rawInput)) return surfaceFixture(rawInput);
-  if (isPriceFixture(rawInput)) return researchRequiredFixture(rawInput, 'prix_valeur', 'price');
+  if (isPriceFixture(rawInput)) return priceFixture(rawInput);
   return researchRequiredFixture(rawInput, detectFamily(rawInput), 'generic');
 }
 
