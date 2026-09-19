@@ -1037,6 +1037,15 @@ function PublicationView({
   );
 }
 
+type ImpactedContentItem = {
+  artifact_id: string;
+  artifact_type: string;
+  title: string;
+  status: string;
+  evidence_id: string;
+  dependency_role: string;
+};
+
 type ReviewQueueItem = {
   review_id: string;
   artifact_id: string;
@@ -1061,7 +1070,66 @@ function ReviewQueueView({
   const [loading, setLoading] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [clearingCache, setClearingCache] = useState(false);
+  const [impactInput, setImpactInput] = useState('');
+  const [impactLoading, setImpactLoading] = useState(false);
+  const [impactRows, setImpactRows] = useState<ImpactedContentItem[]>([]);
   const [message, setMessage] = useState('');
+
+  async function lookupImpact() {
+    if (!studioKey.trim()) {
+      setMessage('Ajoutez la clé Studio privée pour rechercher les dépendances.');
+      return;
+    }
+
+    const evidenceIds = impactInput
+      .split(/[\s,;]+/)
+      .map((value) => value.trim())
+      .filter(Boolean);
+
+    if (!evidenceIds.length) {
+      setMessage('Ajoutez au moins un evidence_id.');
+      return;
+    }
+
+    setImpactLoading(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/studio/traceability/impact', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-studio-key': studioKey.trim(),
+        },
+        body: JSON.stringify({ evidenceIds }),
+      });
+
+      const payload = await response.json() as {
+        impacted?: ImpactedContentItem[];
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(
+          payload.error || 'Recherche d’impact impossible.',
+        );
+      }
+
+      setImpactRows(payload.impacted ?? []);
+      setMessage(
+        (payload.impacted?.length ?? 0) +
+          ' dépendance(s) de contenu trouvée(s).',
+      );
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : 'Recherche d’impact impossible.',
+      );
+    } finally {
+      setImpactLoading(false);
+    }
+  }
 
   async function clearEditorialCache() {
     if (!studioKey.trim()) {
@@ -1286,6 +1354,62 @@ function ReviewQueueView({
             {clearingCache ? 'Suppression…' : 'Vider cache éditorial'}
           </button>
         </div>
+      </section>
+
+      <section className={styles.card}>
+        <p className={styles.cardIndex}>Impact d’une preuve</p>
+        <h3>Quels contenus dépendent de cet evidence_id ?</h3>
+        <p>
+          Collez un ou plusieurs identifiants séparés par des espaces ou des virgules.
+        </p>
+        <div className={styles.accessRow}>
+          <label>
+            <span>Evidence ID(s)</span>
+            <input
+              value={impactInput}
+              onChange={(event) => setImpactInput(event.target.value)}
+              placeholder="V2-DEF-0029, METH-0021"
+            />
+          </label>
+        </div>
+        <div className={styles.actionRow}>
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={lookupImpact}
+            disabled={impactLoading}
+          >
+            {impactLoading ? 'Recherche…' : 'Voir les contenus concernés'}
+          </button>
+        </div>
+
+        {impactRows.length ? (
+          <div className={styles.stack}>
+            {impactRows.map((item) => (
+              <div
+                className={styles.unknownRow}
+                key={
+                  item.artifact_id +
+                  ':' +
+                  item.evidence_id +
+                  ':' +
+                  item.dependency_role
+                }
+              >
+                <span>{item.dependency_role}</span>
+                <div>
+                  <strong>{item.title}</strong>
+                  <p>
+                    {item.artifact_type} · {item.status}
+                  </p>
+                  <small>
+                    {item.evidence_id} → {item.artifact_id}
+                  </small>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
       </section>
 
       {message ? (
