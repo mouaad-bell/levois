@@ -81,6 +81,7 @@ export type EditorialApiResponse = {
     rejectedEvidence: number;
     requestId: string;
     webUsed: false;
+    traceabilityLogged?: boolean;
   };
 };
 
