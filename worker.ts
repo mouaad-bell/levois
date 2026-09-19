@@ -123,6 +123,62 @@ const researchSchema = {
         required: ['angleId', 'title', 'promise', 'hook', 'centralProof', 'saveValue', 'bridgeQuestion', 'claimRefs', 'selected'],
       },
     },
+    canon: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        canonVersion: { type: 'string' },
+        decisionFrame: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            person: { type: 'string' },
+            decision: { type: 'string' },
+            spontaneousReading: { type: 'string' },
+            pressureTest: { type: 'string' },
+            authorizedConclusion: { type: 'string' },
+            finalOperation: { type: 'string' },
+          },
+          required: ['person','decision','spontaneousReading','pressureTest','authorizedConclusion','finalOperation'],
+        },
+        hookCandidates: {
+          type: 'array',
+          items: {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+              mode: { type: 'string', enum: ['direct','scene','comparison'] },
+              family: { type: 'string', enum: ['situation','usage','comparison','condition','calendar','scope','unknown','result'] },
+              text: { type: 'string' },
+              explicitPromise: { type: 'string' },
+              implicitPromise: { type: 'string' },
+              claimRefs: { type: 'array', items: { type: 'string' } },
+              evidenceRefs: { type: 'array', items: { type: 'string' } },
+            },
+            required: ['mode','family','text','explicitPromise','implicitPromise','claimRefs','evidenceRefs'],
+          },
+        },
+        selectedHookMode: { type: 'string', enum: ['direct','scene','comparison'] },
+        storyBeats: {
+          type: 'array',
+          items: {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+              function: { type: 'string', enum: ['situation','initial_reading','friction','demonstration','rereading','practical_take'] },
+              before: { type: 'string' },
+              after: { type: 'string' },
+              copy: { type: 'string' },
+              claimRefs: { type: 'array', items: { type: 'string' } },
+            },
+            required: ['function','before','after','copy','claimRefs'],
+          },
+        },
+        essentialLimit: { type: 'string' },
+        autonomousAction: { type: 'string' },
+      },
+      required: ['canonVersion','decisionFrame','hookCandidates','selectedHookMode','storyBeats','essentialLimit','autonomousAction'],
+    },
     articleMaster: {
       type: 'object',
       additionalProperties: false,
@@ -180,7 +236,7 @@ const researchSchema = {
       required: ['slides'],
     },
   },
-  required: ['familyId', 'scope', 'sources', 'claims', 'unknowns', 'limitations', 'angles', 'articleMaster', 'storyboard'],
+  required: ['familyId', 'scope', 'sources', 'claims', 'unknowns', 'limitations', 'angles', 'canon', 'articleMaster', 'storyboard'],
 } as const;
 
 function json(data: unknown, init: ResponseInit = {}) {
