@@ -930,6 +930,14 @@ function PublicationView({
             <div><dt>Evidence</dt><dd>{publication.article.evidenceRefs.join(', ') || '—'}</dd></div>
             <div><dt>SEO gate</dt><dd>{publication.seo.ready ? 'PASS' : 'REVIEW'}</dd></div>
           </dl>
+          <div className={styles.actionRow}>
+            <a
+              className={styles.renderLink}
+              href={'/studio/answers/' + publication.article.slug + '/'}
+            >
+              Aperçu article
+            </a>
+          </div>
         </article>
 
         <article className={styles.card}>
