@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import type {
   CarouselRenderPackage,
   CarouselRenderSlide,
@@ -91,7 +92,7 @@ export function CarouselFrame({
       style={
         {
           '--accent': accent,
-        } as React.CSSProperties
+        } as CSSProperties
       }
     >
       <div className={styles.texture} />
