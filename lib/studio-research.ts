@@ -323,8 +323,20 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
           ),
         saveValue: selectedAngles.some((angle) => angle.saveValue.trim().length > 20),
         levoisBridge:
-          slides.some((slide) => slide.narrativeRole === 'bridge') ||
+          slides.some((slide) => slide.narrativeRole === 'bridge'),
+        canonPromise:
+          Boolean(
+            bundle.canon.hookCandidates.find(
+              (candidate) => candidate.mode === bundle.canon.selectedHookMode,
+            ),
+          ) &&
+          bundle.canon.decisionFrame.authorizedConclusion.trim().length > 0,
+        resolution:
+          bundle.canon.decisionFrame.authorizedConclusion.trim().length > 0,
+        autonomy:
           bundle.canon.autonomousAction.trim().length > 0,
+        limitsVisible:
+          bundle.canon.essentialLimit.trim().length > 0,
       },
     },
     generatedAt: new Date().toISOString(),
