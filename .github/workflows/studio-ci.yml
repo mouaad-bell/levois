@@ -27,5 +27,7 @@ jobs:
         run: npm run typecheck
       - name: Editorial canon validation
         run: npm run validate:editorial
+      - name: Render evidence validation
+        run: npm run validate:render
       - name: Build
         run: npm run build
