@@ -1,6 +1,18 @@
 import type { EvidenceDb } from './evidence-library';
 import type { ContentTraceabilityManifest } from './content-traceability';
 
+async function hashInput(value: string) {
+  const normalized = value
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+  const bytes = new TextEncoder().encode(normalized);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 export type GenerationRunRecord = {
   generationId: string;
   artifactId?: string;
@@ -19,9 +31,10 @@ export async function recordGenerationRun(
   db: EvidenceDb,
   record: GenerationRunRecord,
 ) {
+  const inputHash = await hashInput(record.inputText);
   const sql = [
     'INSERT OR REPLACE INTO content_generation_runs (',
-    'generation_id, artifact_id, input_text, pipeline, canon_version,',
+    'generation_id, artifact_id, input_hash, pipeline, canon_version,',
     'evidence_library_version, web_used, model, evidence_ids_json,',
     'rejected_evidence_ids_json, request_id',
     ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
@@ -32,7 +45,7 @@ export async function recordGenerationRun(
     .bind(
       record.generationId,
       record.artifactId || null,
-      record.inputText,
+      inputHash,
       record.pipeline,
       record.canonVersion,
       record.evidenceLibraryVersion,
