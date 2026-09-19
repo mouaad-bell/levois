@@ -59,7 +59,7 @@ CREATE INDEX IF NOT EXISTS idx_content_review_open
 CREATE TABLE IF NOT EXISTS content_generation_runs (
   generation_id TEXT PRIMARY KEY,
   artifact_id TEXT,
-  input_text TEXT NOT NULL,
+  input_hash TEXT NOT NULL,
   pipeline TEXT NOT NULL,
   canon_version TEXT NOT NULL,
   evidence_library_version TEXT NOT NULL,
