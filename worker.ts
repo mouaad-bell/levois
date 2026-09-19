@@ -33,8 +33,7 @@ const LEVOIS_LOCAL_LABELS = [
   'Chartres Métropole',
   'Bassin de vie 2022 de Chartres',
   'Unité urbaine 2020 de Chartres',
-  'Aire d’attraction de Chartres',
-  "Aire d'attraction de Chartres",
+  "Aire d'attraction des villes 2020 de Chartres",
 ] as const;
 
 const FAMILY_IDS = [
