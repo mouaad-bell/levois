@@ -19,6 +19,19 @@ const tabs: Array<[Tab, string]> = [
   ['json', 'JSON'],
 ];
 
+type LibraryCoveragePreview = {
+  hits: number;
+  direct: number;
+  historical: number;
+  refreshRequired: number;
+  propertyCheck: number;
+  personCheck: number;
+  freshDirect: number;
+  primaryDirect: number;
+  uniqueTopics: number;
+  candidateForWebSkip: boolean;
+};
+
 const SESSION_KEY = 'levois_studio_access_key';
 
 export function Studio() {
@@ -28,6 +41,8 @@ export function Studio() {
   const [error, setError] = useState('');
   const [studioKey, setStudioKey] = useState('');
   const [researching, setResearching] = useState(false);
+  const [libraryTesting, setLibraryTesting] = useState(false);
+  const [libraryCoverage, setLibraryCoverage] = useState<LibraryCoveragePreview | null>(null);
   const [researchMeta, setResearchMeta] = useState<ResearchApiResponse['meta'] | null>(null);
 
   useEffect(() => {
@@ -53,10 +68,52 @@ export function Studio() {
     try {
       setProject(buildStudioProject(input));
       setResearchMeta(null);
+      setLibraryCoverage(null);
       setTab('scope');
       setError('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Impossible de construire le projet.');
+    }
+  }
+
+  async function runLibrarySearch() {
+    if (!studioKey.trim()) {
+      setError('Ajoutez la clé Studio privée pour tester la bibliothèque.');
+      return;
+    }
+
+    setLibraryTesting(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/studio/library/search', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-studio-key': studioKey.trim(),
+        },
+        body: JSON.stringify({ input, limit: 24 }),
+      });
+
+      const payload = await response.json() as {
+        coverage?: LibraryCoveragePreview;
+        error?: string;
+      };
+
+      if (!response.ok || !payload.coverage) {
+        throw new Error(payload.error || 'La bibliothèque n’a pas répondu.');
+      }
+
+      setLibraryCoverage(payload.coverage);
+      setTab('evidence');
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Le test bibliothèque a échoué.',
+      );
+    } finally {
+      setLibraryTesting(false);
     }
   }
 
@@ -151,14 +208,39 @@ export function Studio() {
           </div>
 
           <div className={styles.actionRow}>
-            <button className={styles.secondaryButton} type="button" onClick={runLocal} disabled={researching}>
+            <button
+              className={styles.secondaryButton}
+              type="button"
+              onClick={runLocal}
+              disabled={researching || libraryTesting}
+            >
               Structure seule
             </button>
-            <button className={styles.runButton} type="button" onClick={runResearch} disabled={researching}>
-              {researching ? 'Recherche en cours…' : 'Rechercher + construire'}
+            <button
+              className={styles.secondaryButton}
+              type="button"
+              onClick={runLibrarySearch}
+              disabled={researching || libraryTesting}
+            >
+              {libraryTesting ? 'Bibliothèque…' : 'Tester bibliothèque'}
+            </button>
+            <button
+              className={styles.runButton}
+              type="button"
+              onClick={runResearch}
+              disabled={researching || libraryTesting}
+            >
+              {researching ? 'Recherche en cours…' : 'Construire le contenu'}
             </button>
           </div>
 
+          {libraryCoverage ? (
+            <p className={styles.researchMeta}>
+              Bibliothèque : {libraryCoverage.hits} résultat(s) · {libraryCoverage.direct} direct(s) ·{' '}
+              {libraryCoverage.historical} historique(s) · {libraryCoverage.refreshRequired} à rafraîchir ·{' '}
+              {libraryCoverage.candidateForWebSkip ? 'couverture suffisante pour tenter sans web' : 'complément potentiellement nécessaire'}
+            </p>
+          ) : null}
           {researchMeta ? (
             <p className={styles.researchMeta}>
               {researchMeta.libraryHits ?? 0} preuve(s) bibliothèque ·{' '}
