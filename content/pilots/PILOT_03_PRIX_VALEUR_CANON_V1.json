@@ -1,6 +1,6 @@
 {
   "pilotId": "LEV-PILOT-PRICE-003",
-  "status": "canonical_shell_case_pedagogique_requires_real_evidence_for_local_publication",
+  "status": "editorial_ready_case_pedagogique",
   "canonVersion": "CONTENT_EXPERIENCE_V1_2026-09-19",
   "familyId": "prix_valeur",
   "workingTopic": "25 000 € d’écart. Trop chère ?",
@@ -93,14 +93,12 @@
     }
   ],
   "evidenceRequirements": {
-    "beforeRealPublication": [
-      "Au moins une vente réelle avec evidence_id DVF autorisé publiquement.",
-      "Périmètre géographique exact.",
-      "Période exacte.",
-      "Effectif n si un agrégat est utilisé.",
-      "Surface et type réellement comparables.",
-      "Règles DVF : n<5 non publiable comme repère de prix ; 5≤n<15 forte fragilité.",
-      "Aucune transformation du prix DVF en estimation automatique du bien."
+    "beforePublication": [
+      "Les nombres 285 000 €, 310 000 € et +25 000 € restent explicitement CAS PÉDAGOGIQUE s’ils sont conservés.",
+      "Si un cas réel remplace le cas pédagogique, chaque montant doit être relié à une preuve et à son statut : affiché, vendu, envisagé ou calculé.",
+      "Toute donnée DVF doit conserver périmètre géographique, période, structure de mutation et notion de surface.",
+      "n<5 n’est jamais publié comme repère de prix ; 5≤n<15 exige une forte réserve.",
+      "Aucun comparable ni prix au m² ne devient une estimation automatique du bien."
     ]
   },
   "carousel": {
@@ -146,5 +144,63 @@
         "Écrivez ce qui est réellement comparable avant de juger l’écart."
       ]
     ]
+  },
+  "evidence": [
+    {
+      "evidenceId": "METH-0021",
+      "role": "asking_vs_sold",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "claim": "Le prix affiché est une intention d’offre ; le prix vendu est la valeur enregistrée de la mutation, sous les limites de la source.",
+      "source": "DGFiP / LEVOIS — DVF, origine des données et distinction opérationnelle avec les annonces",
+      "sourceUrl": "https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres",
+      "limitation": "Un prix affiché ne prouve pas qu’un acheteur paiera ce montant ; DVF ne restitue pas toutes les caractéristiques qualitatives."
+    },
+    {
+      "evidenceId": "DEF-0001",
+      "role": "dvf_value_scope",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "claim": "La valeur foncière DVF est le montant de la mutation enregistré ; elle se rapporte à la disposition et peut couvrir plusieurs locaux ou parcelles.",
+      "source": "DGFiP — notice DVF",
+      "sourceUrl": "https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres",
+      "limitation": "Ne pas assimiler automatiquement la valeur d’une mutation complexe au prix d’un seul logement."
+    },
+    {
+      "evidenceId": "DEF-0002",
+      "role": "dvf_mutation_scope",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "claim": "Une mutation est un changement de propriété enregistré ; une mutation DVF peut comporter plusieurs lignes descriptives.",
+      "source": "DGFiP — notice DVF",
+      "sourceUrl": "https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres",
+      "limitation": "Une ligne DVF isolée ne doit pas être interprétée sans vérifier la structure de la mutation."
+    },
+    {
+      "evidenceId": "METH-0022",
+      "role": "price_per_m2_guard",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "claim": "Le prix au m² est un rapport entre une valeur de mutation et une surface définie ; sa pertinence dépend du périmètre de la valeur et de la surface.",
+      "source": "LEVOIS — Conventions méthodologiques V2.1",
+      "sourceUrl": "local:V21_METHOD_POLICIES.md",
+      "limitation": "Ne pas multiplier mécaniquement un prix au m² médian par la surface d’un bien sans ajuster les caractéristiques et la structure de la mutation."
+    }
+  ],
+  "article": {
+    "title": "25 000 € d’écart : pourquoi deux prix ne sont pas forcément comparables",
+    "answerShort": "Un écart de prix peut être parfaitement calculé et pourtant mal interprété. Avant de conclure qu’un bien est trop cher, vérifiez le statut des deux montants, le périmètre de chaque vente, la période, la surface réellement utilisée et les différences matérielles connues. L’écart vient après la comparabilité, pas avant.",
+    "evidenceRefs": [
+      "METH-0021",
+      "DEF-0001",
+      "DEF-0002",
+      "METH-0022"
+    ],
+    "localPublicationNote": "Le cœur pédagogique est national. Un ancrage local ne sera ajouté que s’il apporte une comparaison réellement documentée, pas simplement le mot Chartres."
+  },
+  "prepublication": {
+    "status": "TO_REVIEW",
+    "blockers": [
+      "Le renderer doit afficher CAS PÉDAGOGIQUE au même niveau perceptif que les montants 285 000 €, 310 000 € et +25 000 €.",
+      "Vérifier qu’aucun texte ne transforme un prix affiché en prix vendu ou une mutation complexe en prix individuel.",
+      "Aucun CTA commercial ne doit remplacer la méthode autonome."
+    ],
+    "absoluteVetosPassed": true
   }
 }
