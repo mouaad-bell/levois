@@ -14,11 +14,13 @@
   },
   "evidence": [
     {
-      "evidenceId": "INSEE-832df7e2d880897a",
+      "evidenceId": "INSEE-f36f351aab7a2171",
       "role": "local_context_optional",
       "engineUseClass": "HISTORICAL_ONLY",
-      "claim": "En 2023, 75,7 % des actifs de 15 ans ou plus ayant un emploi et résidant dans Chartres Métropole travaillaient dans une commune autre que leur commune de résidence.",
-      "limitation": "Cette donnée ne dit rien sur la distance, la durée, le coût ou la difficulté des trajets.",
+      "claim": "En 2023, 73,7 % des actifs de 15 ans ou plus ayant un emploi et résidant dans le Bassin de vie 2022 de Chartres travaillaient dans une commune autre que leur commune de résidence.",
+      "source": "INSEE — ACT T4 — Bassin de vie 2022 de Chartres",
+      "sourceUrl": "https://www.insee.fr/fr/statistiques/2011101?geo=BV2022-28085#ancre-ACT_T4",
+      "limitation": "Cette donnée ne dit rien sur la distance, la durée, le coût ou la difficulté des trajets et ne décrit pas un ménage particulier.",
       "publicationUse": "Contexte local daté dans l’article uniquement ; ne pas l’utiliser pour prouver le mécanisme du cas fictif."
     }
   ],
@@ -144,7 +146,17 @@
   },
   "article": {
     "title": "Acheter plus loin pour payer moins cher : comment tester ce que le trajet change vraiment",
-    "localContextEvidenceId": "INSEE-832df7e2d880897a",
-    "localContextUse": "Contexte daté uniquement, jamais preuve de durée ou de pénibilité."
+    "localContextEvidenceId": "INSEE-f36f351aab7a2171",
+    "localContextUse": "Contexte 2023 du Bassin de vie 2022 de Chartres uniquement. Ne jamais transformer le changement de commune en durée ou pénibilité de trajet.",
+    "answerShort": "S’éloigner pour payer moins cher peut rester un compromis acceptable, mais la durée supplémentaire n’a de sens qu’en regard de votre organisation réelle. Testez le moment le plus contraint de votre semaine, refaites l’enchaînement depuis le logement envisagé et regardez quelle adaptation devient nécessaire avant de juger l’éloignement."
+  },
+  "prepublication": {
+    "status": "TO_REVIEW",
+    "blockers": [
+      "Conserver la mention CAS FICTIF sur toutes les slides contenant 17 h 30, 18 h 15, 35 min, 45 min, 50 min ou 15 min.",
+      "Si le contexte INSEE est publié, afficher exactement Bassin de vie 2022 de Chartres · 2023 et rappeler qu’il ne mesure pas la durée des trajets.",
+      "Aucun CTA commercial ne doit remplacer la méthode autonome."
+    ],
+    "absoluteVetosPassed": true
   }
 }
