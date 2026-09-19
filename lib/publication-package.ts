@@ -27,6 +27,8 @@ export type PublicationPackage = {
   article: ReturnType<typeof buildAnswerPageBrief>;
   carousel: ReturnType<typeof buildVulgarisationBrief>;
   distribution: ReturnType<typeof buildDistributionBrief>;
+  seo: ReturnType<typeof runSeoPublicationGate>;
+  analytics: ReturnType<typeof buildContentAnalyticsPlan>;
   render: {
     package: ReturnType<typeof buildStructuralRenderPackage>;
     review: ReturnType<typeof reviewCarouselRender>;
@@ -229,6 +231,9 @@ export function buildPublicationPackage(
     canon,
     article,
     carousel,
+    distribution,
+    seo,
+    analytics,
     render: {
       package: renderPackage,
       review: renderReview,
