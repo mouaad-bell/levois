@@ -665,6 +665,8 @@ function PublicationView({
   const publication = buildPublicationPackage(project);
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
+  const [staleChecking, setStaleChecking] = useState(false);
+  const [staleMessage, setStaleMessage] = useState('');
 
   async function saveTraceability() {
     if (!studioKey.trim()) {
@@ -721,6 +723,60 @@ function PublicationView({
       );
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function checkStaleDependencies() {
+    if (!studioKey.trim()) {
+      setStaleMessage('Ajoutez la clé Studio privée avant de vérifier les dépendances.');
+      return;
+    }
+
+    setStaleChecking(true);
+    setStaleMessage('');
+
+    try {
+      const response = await fetch('/api/studio/traceability/stale', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-studio-key': studioKey.trim(),
+        },
+        body: JSON.stringify({ limit: 500 }),
+      });
+
+      const payload = await response.json() as {
+        artifactCount?: number;
+        dependencyCount?: number;
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(
+          payload.error ||
+            'Impossible de vérifier les dépendances.',
+        );
+      }
+
+      const artifacts = payload.artifactCount ?? 0;
+      const dependencies = payload.dependencyCount ?? 0;
+
+      setStaleMessage(
+        artifacts === 0
+          ? 'Aucun contenu enregistré ne dépend d’une preuve modifiée.'
+          : artifacts +
+              ' contenu(s) à revoir · ' +
+              dependencies +
+              ' dépendance(s) modifiée(s).',
+      );
+    } catch (error) {
+      setStaleMessage(
+        error instanceof Error
+          ? error.message
+          : 'Vérification des dépendances impossible.',
+      );
+    } finally {
+      setStaleChecking(false);
     }
   }
 
@@ -792,9 +848,20 @@ function PublicationView({
           >
             {saving ? 'Enregistrement…' : 'Enregistrer la trace D1'}
           </button>
+          <button
+            className={styles.secondaryButton}
+            type="button"
+            onClick={checkStaleDependencies}
+            disabled={staleChecking}
+          >
+            {staleChecking ? 'Vérification…' : 'Vérifier les preuves modifiées'}
+          </button>
         </div>
         {saveMessage ? (
           <p className={styles.researchMeta}>{saveMessage}</p>
+        ) : null}
+        {staleMessage ? (
+          <p className={styles.researchMeta}>{staleMessage}</p>
         ) : null}
       </section>
     </div>
