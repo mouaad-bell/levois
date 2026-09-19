@@ -2,34 +2,76 @@
 
 Ces fichiers servent de jeux de référence pour le moteur éditorial.
 
-## Source de vérité
+## Sources de vérité
 
-- Canon : `CONTENT_EXPERIENCE_V1_2026-09-19`
+- Canon : CONTENT_EXPERIENCE_V1_2026-09-19
 - Evidence Library : V2.1
+- Dépendances : CONTENT_DEPENDENCY_MANIFEST_V1.json
 
-## Pilotes
+## Pilote 01 — Espace / Usage
 
-### 01 — Espace / Usage
+Fichiers :
 
-`PILOT_01_ESPACE_USAGE_CANON_V1.json`
+- PILOT_01_ESPACE_USAGE_CANON_V1.json
+- PILOT_01_RENDER_CONTRACT_V1.json
+- ../../docs/pilots/PILOT_01_80M2_ARTICLE.md
 
-Premier pilote complet avec preuve V2.1 directement réutilisable.
+Question :
 
-Question : comment vérifier si des usages importants peuvent réellement fonctionner ensemble au-delà de la surface totale ?
+Comment vérifier si des usages importants peuvent réellement fonctionner ensemble au-delà de la surface totale ?
 
-### 02 — Lieu / Mobilité
+Preuves principales :
 
-`PILOT_02_MOBILITE_CANON_V1.json`
+- V2-DEF-0029
+- REG-0035 seulement si la règle juridique est conservée et relue avant publication.
 
-Cas fictif pédagogique issu du canon. Une donnée INSEE Chartres Métropole peut servir de contexte historique, mais ne prouve ni durée ni difficulté de trajet.
+Le contexte DVF local n’est pas nécessaire au carrousel : il ne prouve pas le mécanisme d’usage.
 
-### 03 — Prix / Valeur
+## Pilote 02 — Lieu / Mobilité
 
-`PILOT_03_PRIX_VALEUR_CANON_V1.json`
+Fichiers :
 
-Shell canonique autour de `25 000 € d’écart`. Les montants sont pédagogiques tant qu’ils ne sont pas remplacés par des preuves réelles.
+- PILOT_02_MOBILITE_CANON_V1.json
+- PILOT_02_RENDER_CONTRACT_V1.json
+- ../../docs/pilots/PILOT_02_MOBILITE_ARTICLE.md
 
-## Règles
+Question :
+
+Si un logement est moins cher mais plus éloigné, que faut-il tester avant de considérer l’éloignement comme un compromis acceptable ?
+
+Preuve locale de contexte :
+
+- INSEE-f36f351aab7a2171
+- Bassin de vie 2022 de Chartres
+- période 2023
+- 73,7 % des actifs résidents ayant un emploi travaillent dans une autre commune.
+
+Cette preuve ne mesure ni distance, ni durée, ni coût, ni difficulté de trajet.
+
+Les horaires et temps de trajet du récit sont des CAS FICTIFS.
+
+## Pilote 03 — Prix / Valeur
+
+Fichiers :
+
+- PILOT_03_PRIX_VALEUR_CANON_V1.json
+- PILOT_03_RENDER_CONTRACT_V1.json
+- ../../docs/pilots/PILOT_03_PRIX_VALEUR_ARTICLE.md
+
+Question :
+
+Un écart de prix suffit-il à conclure qu’un bien est trop cher ?
+
+Preuves principales :
+
+- METH-0021 — prix affiché / prix vendu ;
+- DEF-0001 — valeur foncière DVF ;
+- DEF-0002 — mutation DVF ;
+- METH-0022 — garde-fou prix au m².
+
+Les montants 285 000 €, 310 000 € et +25 000 € restent CAS PÉDAGOGIQUE tant qu’ils ne sont pas remplacés par des montants documentés.
+
+## Contrat commun
 
 Chaque pilote doit contenir :
 
@@ -38,32 +80,45 @@ Chaque pilote doit contenir :
 - un élément qui la met à l’épreuve ;
 - une conclusion autorisée ;
 - une opération autonome ;
-- trois hooks : direct / scène / comparaison ;
-- six story beats canoniques ;
+- exactement trois hooks : direct / scène / comparaison ;
+- les six fonctions narratives : situation / lecture initiale / friction / démonstration / relecture / prise pratique ;
 - une limite essentielle ;
-- une action autonome.
+- une action autonome ;
+- les evidence_id nécessaires ;
+- une qualification visible des cas fictifs et chiffres pédagogiques.
 
-## Validation
+Le nombre de slides n’est pas canonique. Il dépend du raisonnement.
+
+## Validation locale
 
 Quand le dépôt est disponible localement :
 
-`node scripts/validate-editorial-pilots.mjs`
+- npm run validate:editorial
+- npm run validate:render
+- npm run validate:dependencies
 
-Le script vérifie la structure canonique minimale et bloque notamment les hooks chiffrés sans preuve ou statut pédagogique.
+La commande npm run check exécute ces validations avec le typecheck, les tests d’import, le build et l’audit sécurité.
+
+## Dépendances
+
+CONTENT_DEPENDENCY_MANIFEST_V1.json relie les pilotes aux preuves V2.1.
+
+Une preuve corrigée doit permettre d’identifier les contenus concernés avant republication.
 
 ## Usage
 
 Les pilotes ne sont pas des templates à recopier.
 
-Ils servent à tester :
+Ils testent :
 
 - retrieval V2.1 ;
+- sélection de preuves ;
 - promesse du hook ;
 - progression ;
 - vulgarisation ;
-- article ;
+- article Answers ;
 - storyboard ;
 - renderer ;
 - continuité vers le site.
 
-Un nouveau sujet peut utiliser une autre structure visuelle ou un autre nombre de slides si le raisonnement le justifie.
+Un nouveau sujet peut utiliser une autre composition, un autre nombre de slides ou une autre famille de hook tant que le canon et les preuves restent respectés.
