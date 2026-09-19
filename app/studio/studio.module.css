@@ -15,6 +15,9 @@
   color:var(--studio-text);
 }
 .topbar{max-width:1500px;margin:0 auto 56px;display:flex;justify-content:space-between;gap:24px;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--studio-line)}
+.topbarActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.renderLink{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 14px;border:1px solid var(--studio-line);border-radius:999px;color:var(--studio-text);text-decoration:none;font-size:12px;font-weight:800;letter-spacing:.02em;background:rgba(255,255,255,.025)}
+.renderLink:hover{border-color:color-mix(in srgb,var(--studio-accent) 58%,var(--studio-line));background:color-mix(in srgb,var(--studio-accent) 8%,transparent)}
 .brand{margin:0;font-size:18px;font-weight:800;letter-spacing:.16em}.statusLine{margin:5px 0 0;color:var(--studio-muted);font-size:13px}
 .familyBadge{display:flex;align-items:center;gap:12px;padding:8px 13px 8px 8px;border:1px solid var(--studio-line);border-radius:999px;background:rgba(255,255,255,.035)}
 .familyBadge span{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--studio-accent);color:#07141c;font-weight:900}.familyBadge strong{font-size:13px}
