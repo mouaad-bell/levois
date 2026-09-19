@@ -146,7 +146,7 @@ Chaque génération conserve :
 
 ## Source code
 
-- lib/content-canon-v1.ts
+- lib/content-canon.ts
 - lib/hook-engine.ts
 
 Les anciennes fixtures restent des cas de test. Elles doivent désormais passer ce contrat au lieu de servir de doctrine implicite.
