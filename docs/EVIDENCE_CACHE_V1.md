@@ -262,3 +262,24 @@ Contrôles obligatoires :
 - 25 000 € d’écart → intention price_value + METH-0021.
 
 Des preuves méthodologiques supplémentaires sont signalées sans bloquer si leur ordre varie.
+
+
+## Mise en service complète sur Windows
+
+Quand la base D1 `levois-evidence` a été créée et que son `database_id` est connu :
+
+`powershell -ExecutionPolicy Bypass -File scripts/setup-studio-v21.ps1 -LibraryPath "C:\chemin\LEVOIS_EVIDENCE_LIBRARY_V2_1" -DatabaseId "<DATABASE_ID>"`
+
+Le script :
+
+- ajoute uniquement le binding D1 non secret à `env.studio` ;
+- importe V2.1 ;
+- applique les tables de traçabilité ;
+- lance `npm run check` ;
+- déploie `levois-studio` ;
+- demande la clé Studio de manière masquée si elle n’est pas déjà dans l’environnement ;
+- exécute les trois tests live de retrieval.
+
+Aucune clé OpenAI ni clé Studio n’est écrite dans `wrangler.jsonc`.
+
+Pour une ancienne base prototype pré-V2.1, utiliser d’abord le script d’import avec `-LegacySchema` au lieu du chemin frais.
