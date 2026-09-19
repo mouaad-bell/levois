@@ -672,6 +672,30 @@ function PublicationView({
   const [staleChecking, setStaleChecking] = useState(false);
   const [staleMessage, setStaleMessage] = useState('');
 
+  async function copyPublicationPackage() {
+    const payload = JSON.stringify(publication, null, 2);
+    await navigator.clipboard?.writeText(payload);
+    setSaveMessage('Publication Package copié.');
+  }
+
+  function downloadPublicationPackage() {
+    const payload = JSON.stringify(publication, null, 2);
+    const blob = new Blob([payload], {
+      type: 'application/json;charset=utf-8',
+    });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download =
+      'levois-publication-' +
+      project.projectId +
+      '.json';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  }
+
   async function saveTraceability() {
     if (!studioKey.trim()) {
       setSaveMessage('Ajoutez la clé Studio privée avant d’enregistrer la trace.');
@@ -791,9 +815,25 @@ function PublicationView({
           <p className={styles.kicker}>Publication Package V1</p>
           <h2>{publication.status.replaceAll('_', ' ')}</h2>
         </div>
-        <span data-ready={publication.status === 'ready_for_human_approval' ? 'true' : 'false'}>
-          {publication.status === 'ready_for_human_approval' ? 'HUMAN APPROVAL' : 'NOT READY'}
-        </span>
+        <div className={styles.publicationHeaderActions}>
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={copyPublicationPackage}
+          >
+            Copier le package
+          </button>
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={downloadPublicationPackage}
+          >
+            Télécharger JSON
+          </button>
+          <span data-ready={publication.status === 'ready_for_human_approval' ? 'true' : 'false'}>
+            {publication.status === 'ready_for_human_approval' ? 'HUMAN APPROVAL' : 'NOT READY'}
+          </span>
+        </div>
       </section>
 
       {publication.blockers.length ? (
