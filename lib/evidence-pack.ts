@@ -170,20 +170,6 @@ export function buildEvidencePackFromLibrary(
   const unknowns: StudioUnknown[] = [];
 
   for (const hit of hits) {
-    if (hit.publicationReadiness === 'refresh_required') {
-      unknowns.push({
-        unknownId: 'U' + String(unknowns.length + 1).padStart(3, '0'),
-        question:
-          'Faut-il rafraîchir la preuve ' +
-          hit.evidenceId +
-          ' avant de l’utiliser ?',
-        importance: 'high',
-        reason:
-          'La bibliothèque V2.1 classe cette preuve REFRESH_REQUIRED ou verification_required_before_publication.',
-        blocking: true,
-      });
-    }
-
     if (hit.publicationReadiness === 'property_check') {
       unknowns.push({
         unknownId: 'U' + String(unknowns.length + 1).padStart(3, '0'),
