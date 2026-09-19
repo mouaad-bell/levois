@@ -19,19 +19,19 @@ const items = [
     id: 'space',
     label: '01 · Espace / Usage',
     subtitle: 'Deux chambres. Où travaillez-vous quand les deux sont occupées ?',
-    packageData: pilot01 as CarouselRenderPackage,
+    packageData: pilot01 as unknown as CarouselRenderPackage,
   },
   {
     id: 'mobility',
     label: '02 · Lieu / Mobilité',
     subtitle: 'Moins chère, plus loin : votre soirée fonctionne-t-elle encore ?',
-    packageData: pilot02 as CarouselRenderPackage,
+    packageData: pilot02 as unknown as CarouselRenderPackage,
   },
   {
     id: 'price',
     label: '03 · Prix / Valeur',
     subtitle: '25 000 € d’écart. Trop chère ?',
-    packageData: pilot03 as CarouselRenderPackage,
+    packageData: pilot03 as unknown as CarouselRenderPackage,
   },
 ];
 
