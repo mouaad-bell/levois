@@ -1,0 +1,47 @@
+{
+  "version": "RETRIEVAL_EXPECTATIONS_V1",
+  "evidenceLibraryVersion": "V2.1",
+  "cases": [
+    {
+      "caseId": "surface_usage",
+      "input": "80 m². Où passe la place ?",
+      "expectedIntent": "surface_usage",
+      "mustContainEvidenceIds": [
+        "V2-DEF-0029"
+      ],
+      "shouldContainEvidenceIds": [
+        "DEF-0003",
+        "REG-0035",
+        "METH-0025"
+      ],
+      "maxResultsToCheck": 24,
+      "reason": "La définition de surface doit dominer les homonymes urbanisme/plan."
+    },
+    {
+      "caseId": "mobility",
+      "input": "Plus loin. De quoi ?",
+      "expectedIntent": "mobility",
+      "mustContainEvidenceIds": [
+        "INSEE-f36f351aab7a2171"
+      ],
+      "shouldContainEvidenceIds": [],
+      "maxResultsToCheck": 24,
+      "reason": "Le retrieval doit retrouver un contexte ACT Chartres pertinent plutôt que le bail mobilité."
+    },
+    {
+      "caseId": "price_value",
+      "input": "25 000 € d’écart. Trop chère ?",
+      "expectedIntent": "price_value",
+      "mustContainEvidenceIds": [
+        "METH-0021"
+      ],
+      "shouldContainEvidenceIds": [
+        "DEF-0001",
+        "DEF-0002",
+        "METH-0022"
+      ],
+      "maxResultsToCheck": 24,
+      "reason": "La méthode et les définitions DVF doivent survivre face aux nombreux agrégats de prix."
+    }
+  ]
+}
