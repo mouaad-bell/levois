@@ -2,6 +2,7 @@ import type { ResearchBundle } from './lib/studio-research';
 import { searchEvidenceLibrary, libraryCoverageSummary, type EvidenceDb } from './lib/evidence-library';
 import { buildEvidencePackFromLibrary } from './lib/evidence-pack';
 import type { EditorialBundle } from './lib/studio-editorial';
+import { recordGenerationRun } from './lib/content-traceability-db';
 
 type AssetsBinding = { fetch(request: Request): Promise<Response> };
 
@@ -639,6 +640,30 @@ async function editorial(request: Request, env: StudioEnv) {
   const evidenceIds = new Set(built.evidenceIds);
   const sanitized = sanitizeEditorialBundle(bundle, claimIds, evidenceIds);
 
+  let traceabilityLogged = false;
+  try {
+    await recordGenerationRun(env.LEVOIS_EVIDENCE_DB, {
+      generationId: payload.id || crypto.randomUUID(),
+      inputText: input,
+      pipeline: 'library_only_editorial',
+      canonVersion: 'CONTENT_EXPERIENCE_V1_2026-09-19',
+      evidenceLibraryVersion: 'V21',
+      webUsed: false,
+      model: payload.model || model,
+      evidenceIds: built.evidenceIds,
+      rejectedEvidenceIds: Array.from(
+        new Set([
+          ...built.excludedEvidenceIds,
+          ...sanitized.evidenceSelection.rejectedEvidenceRefs,
+        ]),
+      ),
+      requestId: payload.id || undefined,
+    });
+    traceabilityLogged = true;
+  } catch {
+    traceabilityLogged = false;
+  }
+
   return json({
     bundle: sanitized,
     evidencePack: built.pack,
@@ -650,6 +675,7 @@ async function editorial(request: Request, env: StudioEnv) {
       rejectedEvidence: built.excludedEvidenceIds.length,
       requestId: payload.id || '',
       webUsed: false,
+      traceabilityLogged,
     },
   });
 }
@@ -885,6 +911,29 @@ Tu dois respecter strictement le schéma JSON de sortie.`;
   ]);
   const sanitized = sanitizeBundle(bundle, acceptedSources, allowedEvidenceIds);
 
+  let traceabilityLogged = false;
+  if (env.LEVOIS_EVIDENCE_DB) {
+    try {
+      await recordGenerationRun(env.LEVOIS_EVIDENCE_DB, {
+        generationId: payload.id || crypto.randomUUID(),
+        inputText: input,
+        pipeline: canSkipWeb
+          ? 'library_research_no_web'
+          : 'library_research_with_web',
+        canonVersion: 'CONTENT_EXPERIENCE_V1_2026-09-19',
+        evidenceLibraryVersion: 'V21',
+        webUsed: !canSkipWeb,
+        model: payload.model || model,
+        evidenceIds: Array.from(allowedEvidenceIds),
+        rejectedEvidenceIds: [],
+        requestId: payload.id || undefined,
+      });
+      traceabilityLogged = true;
+    } catch {
+      traceabilityLogged = false;
+    }
+  }
+
   return json({
     bundle: sanitized.bundle,
     meta: {
@@ -896,6 +945,7 @@ Tu dois respecter strictement le schéma JSON de sortie.`;
       libraryHits: libraryHits.length,
       libraryCoverage,
       webSkipped: canSkipWeb,
+      traceabilityLogged,
     },
   });
 }
