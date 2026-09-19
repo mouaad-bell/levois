@@ -4,6 +4,7 @@ import {
   LEVOIS_PREPUBLICATION_QUESTIONS,
   hasAbsoluteVeto,
 } from './content-canon';
+import { evaluateHooks } from './hook-engine';
 
 export type CanonReviewStatus = 'pass' | 'review' | 'fail';
 
@@ -81,6 +82,27 @@ export function reviewCanon(project: StudioProject): CanonReview {
 
   const selectedHook = canon.hookCandidates.find(
     (candidate) => candidate.mode === canon.selectedHookMode,
+  );
+  const knownClaimIds = new Set(
+    project.evidencePack.claims.map((claim) => claim.claimId),
+  );
+  const knownEvidenceIds = new Set(
+    project.evidencePack.claims.flatMap(
+      (claim) => claim.evidenceRefs ?? [],
+    ),
+  );
+  const hookReview = evaluateHooks({
+    brief: canon.decisionFrame,
+    candidates: canon.hookCandidates,
+    bodyConclusion: canon.decisionFrame.authorizedConclusion,
+    bodyFinalOperation:
+      canon.autonomousAction ||
+      canon.decisionFrame.finalOperation,
+    knownEvidenceIds,
+    knownClaimIds,
+  });
+  const selectedHookAccepted = hookReview.accepted.some(
+    (entry) => entry.candidate.mode === canon.selectedHookMode,
   );
   const allSlides = project.storyboard.slides;
   const text = projectText(project);
@@ -170,12 +192,13 @@ export function reviewCanon(project: StudioProject): CanonReview {
     item(
       'promise',
       selectedHook &&
+        selectedHookAccepted &&
         canon.decisionFrame.authorizedConclusion.trim()
         ? 'pass'
         : 'fail',
-      selectedHook
-        ? 'La promesse doit rester bornée par la conclusion autorisée.'
-        : 'Aucun hook sélectionné.',
+      selectedHookAccepted
+        ? 'Hook retenu : promesse et traçabilité compatibles avec le canon.'
+        : 'Le hook retenu échoue au contrôle de promesse, de statut ou de traçabilité.',
     ),
     item(
       'progression',
