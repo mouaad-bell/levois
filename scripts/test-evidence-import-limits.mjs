@@ -61,9 +61,20 @@ const evidence = {
   decision_use: 'Test.',
 };
 
+const excludedEvidence = {
+  ...evidence,
+  evidence_id: 'TEST-DO-NOT-USE',
+  claim: 'Cette preuve reste dans le corpus d audit mais ne doit jamais entrer dans l index FTS publiable.',
+  value: 'excluded',
+  engine_use_class: 'DO_NOT_USE',
+};
+
 fs.writeFileSync(
   path.join(input, '02_EVIDENCE_LIBRARY_V21.jsonl'),
-  JSON.stringify(evidence) + '\n',
+  JSON.stringify(evidence) +
+    '\n' +
+    JSON.stringify(excludedEvidence) +
+    '\n',
 );
 
 const run = spawnSync(
@@ -100,11 +111,27 @@ if (!sqlFiles.length) {
 
 let maxStatement = 0;
 let giantPayloadFound = false;
+let ftsReusableFound = false;
+let ftsDoNotUseFound = false;
 
 for (const file of sqlFiles) {
   const sql = fs.readFileSync(path.join(output, file), 'utf8');
   if (sql.includes('X'.repeat(10_000))) {
     giantPayloadFound = true;
+  }
+
+  if (
+    file.includes('_fts') &&
+    sql.includes('TEST-LARGE-VALUE')
+  ) {
+    ftsReusableFound = true;
+  }
+
+  if (
+    file.includes('_fts') &&
+    sql.includes('TEST-DO-NOT-USE')
+  ) {
+    ftsDoNotUseFound = true;
   }
 
   for (const statement of sql.split(';')) {
@@ -132,8 +159,27 @@ const manifest = JSON.parse(
   fs.readFileSync(path.join(output, 'manifest.json'), 'utf8'),
 );
 
-if (manifest.evidenceRows !== 1) {
-  throw new Error('Le manifest doit compter une preuve.');
+if (manifest.evidenceRows !== 2) {
+  throw new Error('Le manifest doit compter deux preuves.');
+}
+
+if (manifest.ftsRows !== 1) {
+  throw new Error(
+    'Le manifest doit compter une seule preuve dans FTS : ' +
+      manifest.ftsRows,
+  );
+}
+
+if (!ftsReusableFound) {
+  throw new Error(
+    'La preuve réutilisable n’a pas été ajoutée à evidence_search.',
+  );
+}
+
+if (ftsDoNotUseFound) {
+  throw new Error(
+    'Une preuve DO_NOT_USE a été ajoutée à evidence_search.',
+  );
 }
 
 console.log(
