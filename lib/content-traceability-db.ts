@@ -137,12 +137,39 @@ export async function persistTraceabilityManifest(
     .bind(manifest.artifactId)
     .run();
 
-  const snapshots = await evidenceSnapshots(
-    db,
-    manifest.dependencies.map(
-      (dependency) => dependency.evidenceId,
+  const dependencyIds = Array.from(
+    new Set(
+      manifest.dependencies.map(
+        (dependency) => dependency.evidenceId,
+      ),
     ),
   );
+  const snapshots = await evidenceSnapshots(
+    db,
+    dependencyIds,
+  );
+
+  const missingIds = dependencyIds.filter(
+    (evidenceId) => !snapshots.has(evidenceId),
+  );
+  if (missingIds.length) {
+    throw new Error(
+      'Dépendances absentes de la bibliothèque active : ' +
+        missingIds.join(', '),
+    );
+  }
+
+  const forbiddenIds = dependencyIds.filter(
+    (evidenceId) =>
+      snapshots.get(evidenceId)?.engine_use_class ===
+      'DO_NOT_USE',
+  );
+  if (forbiddenIds.length) {
+    throw new Error(
+      'Dépendances DO_NOT_USE interdites : ' +
+        forbiddenIds.join(', '),
+    );
+  }
 
   for (const dependency of manifest.dependencies) {
     const snapshot = snapshots.get(
