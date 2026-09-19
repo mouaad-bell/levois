@@ -16,7 +16,8 @@
     "validate:dependencies": "node scripts/validate-content-dependencies.mjs",
     "validate:answers": "node scripts/validate-answers-pilots.mjs",
     "validate:pilot-evidence": "node scripts/validate-pilot-evidence-snapshot.mjs",
-    "test:d1-schema": "python3 scripts/test-d1-schema.py"
+    "test:d1-schema": "python3 scripts/test-d1-schema.py",
+    "export:pilots": "node scripts/export-pilot-packages.mjs"
   },
   "dependencies": {
     "next": "16.3.5",
