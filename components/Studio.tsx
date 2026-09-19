@@ -6,11 +6,12 @@ import { buildStudioProjectFromResearch, type ResearchApiResponse } from '@/lib/
 import type { StudioProject } from '@/lib/studio-schema';
 import styles from '@/app/studio/studio.module.css';
 
-type Tab = 'scope' | 'evidence' | 'angles' | 'article' | 'storyboard' | 'json';
+type Tab = 'scope' | 'evidence' | 'canon' | 'angles' | 'article' | 'storyboard' | 'json';
 
 const tabs: Array<[Tab, string]> = [
   ['scope', 'Scope'],
   ['evidence', 'Evidence'],
+  ['canon', 'Canon'],
   ['angles', 'Angles'],
   ['article', 'Article'],
   ['storyboard', 'Storyboard'],
@@ -189,6 +190,7 @@ export function Studio() {
       <main className={styles.workspace}>
         {tab === 'scope' ? <ScopeView project={project} /> : null}
         {tab === 'evidence' ? <EvidenceView project={project} /> : null}
+        {tab === 'canon' ? <CanonView project={project} /> : null}
         {tab === 'angles' ? <AnglesView project={project} /> : null}
         {tab === 'article' ? <ArticleView project={project} /> : null}
         {tab === 'storyboard' ? <StoryboardView project={project} /> : null}
@@ -297,6 +299,86 @@ function EvidenceView({ project }: { project: StudioProject }) {
           </div>
         )) : <p>Aucune inconnue déclarée par le dossier.</p>}
         {pack.summary.limitations.map((item) => <p key={item} className={styles.limitText}>→ {item}</p>)}
+      </section>
+    </div>
+  );
+}
+
+
+function CanonView({ project }: { project: StudioProject }) {
+  const canon = project.canon;
+
+  if (!canon) {
+    return (
+      <section className={styles.emptyState}>
+        <strong>Canon non calculé.</strong>
+        <p>
+          La structure locale reste disponible, mais le dossier n’est pas prêt pour une production canonique tant que la recherche n’a pas produit la fiche décision, les trois ouvertures et les six fonctions du récit.
+        </p>
+      </section>
+    );
+  }
+
+  const selectedHook = canon.hookCandidates.find(
+    (candidate) => candidate.mode === canon.selectedHookMode,
+  );
+
+  return (
+    <div className={styles.stack}>
+      <section className={styles.card}>
+        <p className={styles.cardIndex}>Canon · {canon.canonVersion}</p>
+        <h2>{canon.decisionFrame.decision}</h2>
+        <dl className={styles.definitionList}>
+          <div><dt>Personne</dt><dd>{canon.decisionFrame.person}</dd></div>
+          <div><dt>Lecture spontanée</dt><dd>{canon.decisionFrame.spontaneousReading}</dd></div>
+          <div><dt>Mise à l’épreuve</dt><dd>{canon.decisionFrame.pressureTest}</dd></div>
+          <div><dt>Conclusion autorisée</dt><dd>{canon.decisionFrame.authorizedConclusion}</dd></div>
+          <div><dt>Opération finale</dt><dd>{canon.decisionFrame.finalOperation}</dd></div>
+        </dl>
+      </section>
+
+      <section className={styles.card}>
+        <p className={styles.cardIndex}>Trois ouvertures</p>
+        {canon.hookCandidates.map((candidate) => (
+          <div className={styles.sourceRow} key={candidate.mode}>
+            <span>{candidate.mode.toUpperCase()}</span>
+            <div>
+              <strong>{candidate.text}</strong>
+              <p>{candidate.explicitPromise}</p>
+              <small>
+                {candidate.family}
+                {candidate.mode === canon.selectedHookMode ? ' · RETENU' : ''}
+              </small>
+            </div>
+          </div>
+        ))}
+        {selectedHook ? (
+          <p className={styles.limitText}>
+            → Hook retenu : {selectedHook.text}
+          </p>
+        ) : null}
+      </section>
+
+      <section className={styles.card}>
+        <p className={styles.cardIndex}>Progression canonique</p>
+        {canon.storyBeats.map((beat, index) => (
+          <div className={styles.unknownRow} key={beat.function}>
+            <span>{String(index + 1).padStart(2, '0')} · {beat.function}</span>
+            <div>
+              <strong>{beat.copy}</strong>
+              <p>Avant : {beat.before}</p>
+              <p>Après : {beat.after}</p>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <section className={styles.card}>
+        <p className={styles.cardIndex}>Résolution</p>
+        <h3>Limite essentielle</h3>
+        <p>{canon.essentialLimit}</p>
+        <h3>Action autonome</h3>
+        <p>{canon.autonomousAction}</p>
       </section>
     </div>
   );
