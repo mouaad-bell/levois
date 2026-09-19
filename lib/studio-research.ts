@@ -223,7 +223,7 @@ export function buildStudioProjectFromResearch(input: string, bundle: ResearchBu
   const hookReview = evaluateHooks({
     brief: bundle.canon.decisionFrame,
     candidates: bundle.canon.hookCandidates,
-    bodyConclusion: bundle.canon.decisionFrame.authorizedConclusion,
+    bodyConclusion: bundle.articleMaster.centralThesis,
     bodyFinalOperation:
       bundle.canon.autonomousAction ||
       bundle.canon.decisionFrame.finalOperation,
