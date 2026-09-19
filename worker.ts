@@ -673,6 +673,9 @@ async function editorial(request: Request, env: StudioEnv) {
           evidenceLibraryVersion: 'V21',
           webUsed: false,
           model,
+          inputTokens: 0,
+          outputTokens: 0,
+          totalTokens: 0,
           evidenceIds: built.evidenceIds,
           rejectedEvidenceIds: Array.from(
             new Set([
@@ -698,6 +701,9 @@ async function editorial(request: Request, env: StudioEnv) {
           requestId: '',
           webUsed: false,
           retrievalIntent,
+          inputTokens: 0,
+          outputTokens: 0,
+          totalTokens: 0,
           traceabilityLogged,
           cacheHit: true,
         },
