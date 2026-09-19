@@ -295,3 +295,162 @@ export async function findStaleContentDependencies(
 
   return rows.results || [];
 }
+
+
+function staleSeverity(row: {
+  evidence_missing: number;
+  current_engine_use_class: string | null;
+  current_verification_required_before_publication: number | null;
+}) {
+  if (row.evidence_missing) return 'BLOCKING' as const;
+  if (row.current_engine_use_class === 'DO_NOT_USE') {
+    return 'BLOCKING' as const;
+  }
+  if (row.current_engine_use_class === 'REFRESH_REQUIRED') {
+    return 'HIGH' as const;
+  }
+  if (row.current_verification_required_before_publication) {
+    return 'HIGH' as const;
+  }
+  return 'MEDIUM' as const;
+}
+
+function staleReason(row: {
+  evidence_id: string;
+  evidence_missing: number;
+  evidence_status_snapshot: string | null;
+  current_evidence_status: string | null;
+  engine_use_class_snapshot: string | null;
+  current_engine_use_class: string | null;
+  next_review_date_snapshot: string | null;
+  current_next_review_date: string | null;
+  verification_required_before_publication_snapshot: number;
+  current_verification_required_before_publication: number | null;
+}) {
+  if (row.evidence_missing) {
+    return (
+      'La preuve ' +
+      row.evidence_id +
+      ' n’existe plus dans la bibliothèque active.'
+    );
+  }
+
+  const changes: string[] = [];
+
+  if (
+    (row.evidence_status_snapshot || '') !==
+    (row.current_evidence_status || '')
+  ) {
+    changes.push(
+      'statut ' +
+        (row.evidence_status_snapshot || '∅') +
+        ' → ' +
+        (row.current_evidence_status || '∅'),
+    );
+  }
+
+  if (
+    (row.engine_use_class_snapshot || '') !==
+    (row.current_engine_use_class || '')
+  ) {
+    changes.push(
+      'classe moteur ' +
+        (row.engine_use_class_snapshot || '∅') +
+        ' → ' +
+        (row.current_engine_use_class || '∅'),
+    );
+  }
+
+  if (
+    (row.next_review_date_snapshot || '') !==
+    (row.current_next_review_date || '')
+  ) {
+    changes.push(
+      'revue ' +
+        (row.next_review_date_snapshot || '∅') +
+        ' → ' +
+        (row.current_next_review_date || '∅'),
+    );
+  }
+
+  if (
+    Number(
+      row.verification_required_before_publication_snapshot ||
+        0,
+    ) !==
+    Number(
+      row.current_verification_required_before_publication ||
+        0,
+    )
+  ) {
+    changes.push(
+      'vérification avant publication ' +
+        Number(
+          row.verification_required_before_publication_snapshot ||
+            0,
+        ) +
+        ' → ' +
+        Number(
+          row.current_verification_required_before_publication ||
+            0,
+        ),
+    );
+  }
+
+  return (
+    'La preuve ' +
+    row.evidence_id +
+    ' a changé depuis la création du contenu : ' +
+    changes.join(' ; ')
+  );
+}
+
+export async function syncStaleContentReviews(
+  db: EvidenceDb,
+  limit = 500,
+) {
+  const stale = await findStaleContentDependencies(
+    db,
+    limit,
+  );
+
+  const queued = new Set<string>();
+
+  for (const row of stale) {
+    const reviewId =
+      'STALE-' +
+      row.artifact_id +
+      '-' +
+      row.evidence_id;
+
+    const reason = staleReason(row);
+    const severity = staleSeverity(row);
+
+    await db
+      .prepare(
+        [
+          'INSERT INTO content_review_queue (',
+          'review_id, artifact_id, evidence_id, trigger_type, reason, severity, status, detected_at',
+          ") VALUES (?, ?, ?, 'EVIDENCE_STATE_CHANGE', ?, ?, 'OPEN', CURRENT_TIMESTAMP)",
+          'ON CONFLICT(review_id) DO UPDATE SET',
+          "reason=excluded.reason, severity=excluded.severity, status='OPEN',",
+          'detected_at=CURRENT_TIMESTAMP, resolved_at=NULL, resolution=NULL',
+        ].join(' '),
+      )
+      .bind(
+        reviewId,
+        row.artifact_id,
+        row.evidence_id,
+        reason,
+        severity,
+      )
+      .run();
+
+    queued.add(row.artifact_id);
+  }
+
+  return {
+    staleDependencies: stale.length,
+    queuedArtifacts: queued.size,
+  };
+}
