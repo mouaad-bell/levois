@@ -480,31 +480,55 @@ Les claimId doivent être C001, C002, etc. Pour une valeur numérique, mets uniq
 
 Tu dois respecter strictement le schéma JSON de sortie.`;
 
+  const canSkipWeb =
+    Boolean(env.LEVOIS_EVIDENCE_DB) &&
+    libraryCoverage.candidateForWebSkip;
+
+  const responseInput = libraryContext.length
+    ? JSON.stringify({
+        user_input: input,
+        levois_library_evidence: libraryContext,
+        retrieval_summary: libraryCoverage,
+        instruction: canSkipWeb
+          ? 'La bibliothèque fournit assez de preuves directement publiables pour commencer sans web. Utilise ces preuves. Si une lacune subsiste, déclare-la comme unknown plutôt que de fabriquer.'
+          : 'Commence par ces preuves. Si une affirmation nécessaire reste absente ou exige un rafraîchissement, utilise le web uniquement pour cette lacune.',
+      })
+    : input;
+
+  const requestBody: Record<string, unknown> = {
+    model,
+    store: false,
+    max_output_tokens: 12000,
+    instructions,
+    input: responseInput,
+    text: {
+      format: {
+        type: 'json_schema',
+        name: 'levois_research_bundle',
+        strict: true,
+        schema: researchSchema,
+      },
+    },
+    metadata: {
+      app: 'levois-studio',
+      schema: 'research-v1',
+      evidence_policy: 'V21-2026-09-19',
+    },
+  };
+
+  if (!canSkipWeb) {
+    requestBody.max_tool_calls = 8;
+    requestBody.tools = [{ type: 'web_search' }];
+    requestBody.include = ['web_search_call.action.sources'];
+  }
+
   const response = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST',
     headers: {
       authorization: `Bearer ${env.OPENAI_API_KEY}`,
       'content-type': 'application/json',
     },
-    body: JSON.stringify({
-      model,
-      store: false,
-      max_output_tokens: 12000,
-      max_tool_calls: 10,
-      tools: [{ type: 'web_search' }],
-      include: ['web_search_call.action.sources'],
-      instructions,
-      input,
-      text: {
-        format: {
-          type: 'json_schema',
-          name: 'levois_research_bundle',
-          strict: true,
-          schema: researchSchema,
-        },
-      },
-      metadata: { app: 'levois-studio', schema: 'research-v1' },
-    }),
+    body: JSON.stringify(requestBody),
   });
 
   const payload = await response.json() as OpenAIResponse;
@@ -526,7 +550,19 @@ Tu dois respecter strictement le schéma JSON de sortie.`;
   }
 
   const webSources = collectWebSources(payload);
-  const sanitized = sanitizeBundle(bundle, webSources);
+  const librarySources = new Map<string, { url: string; title: string }>();
+  for (const hit of libraryHits) {
+    const url = hit.sourceUrl ? normalizeUrl(hit.sourceUrl) : '';
+    if (url && !librarySources.has(url)) {
+      librarySources.set(url, { url, title: hit.sourceTitle || '' });
+    }
+  }
+
+  const acceptedSources = new Map([
+    ...librarySources.entries(),
+    ...webSources.entries(),
+  ]);
+  const sanitized = sanitizeBundle(bundle, acceptedSources, allowedEvidenceIds);
 
   return json({
     bundle: sanitized.bundle,
@@ -536,6 +572,9 @@ Tu dois respecter strictement le schéma JSON de sortie.`;
       acceptedSources: sanitized.bundle.sources.length,
       downgradedClaims: sanitized.downgradedClaims,
       requestId: payload.id || '',
+      libraryHits: libraryHits.length,
+      libraryCoverage,
+      webSkipped: canSkipWeb,
     },
   });
 }
@@ -546,6 +585,11 @@ export default {
     if (url.pathname === '/api/studio/research') {
       if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
       return research(request, env);
+    }
+
+    if (url.pathname === '/api/studio/library/search') {
+      if (request.method !== 'POST') return json({ error: 'Méthode non autorisée.' }, { status: 405, headers: { allow: 'POST' } });
+      return librarySearch(request, env);
     }
 
     return env.ASSETS.fetch(request);
