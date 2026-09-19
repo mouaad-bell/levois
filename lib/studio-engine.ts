@@ -237,6 +237,488 @@ function distanceFixture(rawInput: string): StudioProject {
   };
 }
 
+
+function surfaceFixture(rawInput: string): StudioProject {
+  const family = STUDIO_FAMILIES.espace_usage;
+
+  const scope: EditorialScope = {
+    rawTopic: rawInput,
+    decisionQuestion:
+      'Comment vérifier si les usages importants peuvent réellement fonctionner ensemble dans un logement, au-delà de sa surface totale ?',
+    audience: 'Grand public, acheteurs ou personnes qui comparent des logements',
+    territory: 'France, avec application locale possible à Chartres et alentours',
+    objective:
+      'Passer d’une lecture par quantité de mètres carrés à un test concret des usages simultanés.',
+    hypothesesToTest: [
+      'Une surface totale jugée suffisante confirme que les usages importants fonctionneront.',
+      'Le nombre de pièces suffit à décrire leur disponibilité au moment où elles sont nécessaires.',
+    ],
+    mustNotAssume: [
+      'Un logement de 80 m² est grand ou petit en soi.',
+      'Deux logements de même surface offrent les mêmes usages.',
+      'Le cas pédagogique décrit la fréquence réelle d’un problème.',
+    ],
+  };
+
+  const evidencePack = summarizeEvidence(
+    {
+      sources: [
+        {
+          sourceId: 'S001',
+          type: 'official_document',
+          publisher: 'INSEE',
+          title: 'Surface du logement — définition',
+          url: 'https://www.insee.fr/fr/metadonnees/definition/c2078',
+          dataPeriod: 'Définition consultée le 18 septembre 2026',
+          geographicScope: 'France — définition statistique',
+          reliability: 'primary',
+        },
+      ],
+      claims: [
+        {
+          claimId: 'C001',
+          claim:
+            'Dans la définition statistique INSEE, la surface du logement correspond à la surface habitable, inclut notamment circulations et sanitaires et exclut notamment terrasses, caves, parkings et greniers.',
+          claimType: 'fact',
+          geographicScope: 'France — définition statistique INSEE',
+          timeScope: 'Définition consultée le 18 septembre 2026',
+          sourceRefs: ['S001'],
+          evidenceRefs: ['V2-DEF-0029'],
+          evidenceStrength: 'strong',
+          status: 'verified',
+          allowedUses: [
+            'Expliquer ce que recouvre la surface dans les statistiques logement.',
+            'Distinguer quantité de surface et organisation des usages.',
+          ],
+          forbiddenInferences: [
+            'Cette définition ne décrit pas la qualité d’un plan.',
+            'Elle ne démontre pas qu’un usage précis fonctionne dans un logement donné.',
+            'Elle ne constitue pas un mesurage Carrez individuel.',
+          ],
+        },
+      ],
+      unknowns: [
+        {
+          unknownId: 'U001',
+          question:
+            'Comment les usages se répartissent-ils dans un logement précis ?',
+          importance: 'high',
+          reason:
+            'La réponse nécessite le plan, les dimensions, les accès et les besoins réels de la personne.',
+          blocking: false,
+        },
+      ],
+    },
+    true,
+    [
+      'Le conflit chambre d’amis / télétravail est un cas fictif pédagogique.',
+      'La surface totale ne permet pas à elle seule de conclure sur l’usage d’un bien particulier.',
+    ],
+  );
+
+  const angles: EditorialAngle[] = [
+    {
+      angleId: 'A',
+      title: 'Deux chambres. Et quand les deux sont occupées ?',
+      promise:
+        'Montrer un conflit d’usage concret que la simple liste des pièces ne révèle pas.',
+      hook:
+        'DEUX CHAMBRES. OÙ TRAVAILLEZ-VOUS QUAND LES DEUX SONT OCCUPÉES ?',
+      centralProof:
+        'La surface décrit une quantité ; le cas pédagogique montre pourquoi l’usage exige une vérification supplémentaire.',
+      saveValue:
+        'Une opération réutilisable : activités simultanées → plan → conditions de fonctionnement.',
+      bridgeQuestion:
+        'Quels usages doivent réellement fonctionner ensemble dans votre recherche ?',
+      claimRefs: ['C001'],
+      selected: true,
+    },
+    {
+      angleId: 'B',
+      title: 'Même surface. Deux usages.',
+      promise:
+        'Passer du total de mètres carrés à la coexistence des usages.',
+      hook: 'MÊME SURFACE. VOS DEUX USAGES TIENNENT-ILS ENSEMBLE ?',
+      centralProof:
+        'La surface ne décrit pas la disponibilité d’une pièce à un moment précis.',
+      saveValue:
+        'Une question plus utile que « est-ce assez grand ? ».',
+      bridgeQuestion:
+        'Quelles activités simultanées devez-vous tester ?',
+      claimRefs: ['C001'],
+    },
+    {
+      angleId: 'C',
+      title: 'La surface ne suffit pas à vérifier l’usage',
+      promise:
+        'Donner la conclusion tôt puis enseigner le test.',
+      hook: 'LA SURFACE SUFFIT-ELLE À VÉRIFIER VOS USAGES ?',
+      centralProof:
+        'Une mesure de surface n’est pas une description complète de l’organisation.',
+      saveValue:
+        'Un test simple à appliquer pendant une visite.',
+      bridgeQuestion:
+        'Quelle contrainte d’usage reste invisible dans votre liste de critères ?',
+      claimRefs: ['C001'],
+    },
+  ];
+
+  const articleMaster: ArticleMaster = {
+    workingTitle:
+      '80 m² : ce que la surface ne vous dit pas sur l’usage d’un logement',
+    centralQuestion:
+      'Deux logements de surface proche peuvent-ils répondre différemment aux mêmes usages ?',
+    centralThesis:
+      'Oui : la surface totale décrit une quantité, mais elle ne suffit pas à confirmer que les usages nécessaires peuvent fonctionner ensemble au même moment.',
+    family: family.id,
+    sections: [
+      {
+        sectionId: 'SEC01',
+        type: 'question',
+        heading: '80 m² répondent à une question de quantité, pas à toutes vos questions d’usage',
+        body:
+          'Une surface peut sembler suffisante sur une annonce. La décision devient plus précise lorsqu’on demande ce que les pièces doivent permettre au même moment.',
+        claimRefs: ['C001'],
+      },
+      {
+        sectionId: 'SEC02',
+        type: 'intuition',
+        heading: 'Deux chambres : la liste paraît complète',
+        body:
+          'Si vous voulez une chambre principale, une chambre d’amis et un bureau dans la seconde pièce, la fiche peut sembler répondre exactement au besoin.',
+        claimRefs: [],
+      },
+      {
+        sectionId: 'SEC03',
+        type: 'proof',
+        heading: 'Ce que la surface mesure réellement',
+        body:
+          'La définition statistique INSEE décrit la surface habitable et ses inclusions ou exclusions. Elle ne décrit ni votre plan d’usage ni la disponibilité d’une pièce à un moment donné.',
+        claimRefs: ['C001'],
+      },
+      {
+        sectionId: 'SEC04',
+        type: 'mechanism',
+        heading: 'Une pièce peut exister et ne pas être disponible au moment où vous en avez besoin',
+        body:
+          'Le problème apparaît lorsque deux activités indispensables utilisent le même espace au même moment. La quantité totale de mètres carrés ne suffit pas à résoudre cette concurrence.',
+        claimRefs: [],
+      },
+      {
+        sectionId: 'SEC05',
+        type: 'case',
+        heading: 'Cas fictif : la chambre d’amis est occupée à 9 h',
+        body:
+          'Votre proche dort encore. Vous devez participer à une réunion confidentielle. Le bureau est dans cette chambre. Le conflit vient de la simultanéité des usages, pas d’un verdict général sur la taille du logement.',
+        claimRefs: [],
+      },
+      {
+        sectionId: 'SEC06',
+        type: 'method',
+        heading: 'Listez, placez, vérifiez',
+        body:
+          'Listez deux activités qui doivent avoir lieu en même temps. Placez-les sur le plan. Vérifiez les accès, le calme, l’intimité et les adaptations réellement possibles.',
+        claimRefs: [],
+      },
+      {
+        sectionId: 'SEC07',
+        type: 'limits',
+        heading: 'Ce test ne classe pas les logements',
+        body:
+          'Un autre espace peut résoudre le conflit. Le logement peut donc très bien convenir. Le test sert à vérifier une possibilité avant d’en faire une certitude.',
+        claimRefs: [],
+      },
+      {
+        sectionId: 'SEC08',
+        type: 'application',
+        heading: 'À votre prochaine visite, testez deux usages simultanés',
+        body:
+          'Choisissez les deux activités les plus importantes qui doivent coexister. Placez-les sur le plan avant de décider que le nombre de pièces ou la surface suffisent.',
+        claimRefs: [],
+      },
+    ],
+    keyTakeaway:
+      'Une pièce disponible sur le plan n’est pas forcément disponible au moment où vous en avez besoin.',
+    transferablePrinciple:
+      'Pour vérifier un usage, testez les activités qui doivent fonctionner en même temps plutôt que seulement la quantité totale disponible.',
+    nextPersonalQuestion:
+      'Quels sont les deux usages qui doivent absolument pouvoir fonctionner ensemble dans votre prochain logement ?',
+    recommendedLevoisPath: {
+      label: 'Mettre ma recherche au clair',
+      path: '/',
+      routeStatus: 'pending',
+      reason:
+        'Le CTA ne doit être activé qu’après vérification que le parcours public reprend réellement les usages et arbitrages du lecteur.',
+    },
+  };
+
+  const storyboard: Storyboard = {
+    format: 'instagram_carousel_4x5',
+    family: family.id,
+    accentColor: family.accent,
+    slideCount: 9,
+    slides: [
+      {
+        slideNumber: 1,
+        narrativeRole: 'hook',
+        objective: 'Faire reconnaître immédiatement un conflit d’usage.',
+        headline: 'DEUX CHAMBRES.',
+        body:
+          'Où travaillez-vous quand les deux sont occupées ?',
+        claimRefs: [],
+        layout: 'HERO_PHOTO',
+        readerEffect: 'stop',
+        assetRequirements: [
+          'Plan pédagogique, non attribué à un bien réel',
+          'Deux usages visibles dans la même pièce',
+        ],
+      },
+      {
+        slideNumber: 2,
+        narrativeRole: 'tension',
+        objective: 'Comprendre la lecture initiale.',
+        headline: 'SUR LE PAPIER, TOUT Y EST.',
+        body:
+          'Deux chambres. Une surface qui paraît suffisante. Un bureau prévu dans la seconde.',
+        claimRefs: [],
+        layout: 'EDITORIAL_SPLIT',
+        readerEffect: 'identification',
+        assetRequirements: ['Liste de critères transformée en plan'],
+      },
+      {
+        slideNumber: 3,
+        narrativeRole: 'case',
+        objective: 'Faire apparaître la friction.',
+        headline: '9 H. LA CHAMBRE EST OCCUPÉE.',
+        body:
+          'CAS FICTIF — Votre proche dort encore. Vous avez une réunion confidentielle. Le bureau est dans sa chambre.',
+        claimRefs: [],
+        layout: 'CASE_DUAL',
+        readerEffect: 'understanding',
+        sourceLabel: 'CAS FICTIF',
+        assetRequirements: ['Conflit DORMIR / TRAVAILLER'],
+      },
+      {
+        slideNumber: 4,
+        narrativeRole: 'proof',
+        objective: 'Distinguer mesure et usage.',
+        headline: 'LE TOTAL NE RÉPOND PAS À CETTE QUESTION.',
+        body:
+          'La surface décrit une quantité. Elle ne vous dit pas, à elle seule, si deux usages nécessaires peuvent fonctionner ensemble.',
+        claimRefs: ['C001'],
+        layout: 'HERO_NUMBER',
+        readerEffect: 'credibility',
+        sourceLabel: 'INSEE · définition de la surface du logement · V2-DEF-0029',
+        assetRequirements: ['80 m² en retrait, plan au premier plan'],
+      },
+      {
+        slideNumber: 5,
+        narrativeRole: 'insight',
+        objective: 'Changer la question.',
+        headline: 'CHANGEZ DE QUESTION.',
+        body:
+          'Au lieu de « est-ce assez grand ? », demandez : « quels usages doivent fonctionner en même temps ? »',
+        claimRefs: [],
+        layout: 'QUESTION_SHIFT',
+        readerEffect: 'clarity',
+        assetRequirements: ['Question initiale remplacée'],
+      },
+      {
+        slideNumber: 6,
+        narrativeRole: 'method',
+        objective: 'Donner l’opération autonome.',
+        headline: 'LISTEZ. PLACEZ. VÉRIFIEZ.',
+        body:
+          'Deux activités simultanées. Leur place sur le plan. Puis les conditions qui permettent à chacune de fonctionner.',
+        claimRefs: [],
+        layout: 'METHOD_STEPS',
+        readerEffect: 'memorization',
+        assetRequirements: ['Trois gestes sur un même plan'],
+      },
+      {
+        slideNumber: 7,
+        narrativeRole: 'transfer',
+        objective: 'Relire le logement sans verdict automatique.',
+        headline: 'LE LOGEMENT PEUT TRÈS BIEN CONVENIR.',
+        body:
+          'Le test ne cherche pas un défaut. Il vérifie une possibilité avant d’en faire une certitude.',
+        claimRefs: [],
+        layout: 'EDITORIAL_SPLIT',
+        readerEffect: 'understanding',
+        assetRequirements: ['Variante résolue ou statut À VÉRIFIER'],
+      },
+      {
+        slideNumber: 8,
+        narrativeRole: 'exercise',
+        objective: 'Faire appliquer immédiatement.',
+        headline: 'TESTEZ LE PROCHAIN PLAN.',
+        body:
+          'Choisissez deux usages qui doivent coexister. Placez-les. Vérifiez accès, calme, intimité et adaptation possible.',
+        claimRefs: [],
+        layout: 'DATA_FIELD',
+        readerEffect: 'participation',
+        assetRequirements: ['Fiche simple réutilisable'],
+      },
+      {
+        slideNumber: 9,
+        narrativeRole: 'bridge',
+        objective: 'Proposer une suite seulement après la résolution.',
+        headline: 'ET DANS VOTRE RECHERCHE ?',
+        body:
+          'Si plusieurs critères se gênent entre eux, mettez votre recherche au clair avant de comparer les annonces.',
+        claimRefs: [],
+        layout: 'FINAL_BRIDGE',
+        readerEffect: 'action',
+        assetRequirements: ['CTA à activer seulement si la destination réelle est vérifiée'],
+      },
+    ],
+    qualityGate: {
+      hook: true,
+      factuality: true,
+      narrative: true,
+      mobileDensity: true,
+      transferValue: true,
+      saveValue: true,
+      levoisBridge: true,
+    },
+  };
+
+  return {
+    schemaVersion: STUDIO_SCHEMA_VERSION,
+    projectId: idFrom(rawInput),
+    status: 'storyboard_ready',
+    input: {
+      inputType: rawInput.includes('?') ? 'question' : 'idea',
+      rawInput,
+    },
+    family,
+    scope,
+    evidencePack,
+    angles,
+    canon: {
+      canonVersion: 'CONTENT_EXPERIENCE_V1_2026-09-19',
+      decisionFrame: {
+        person:
+          'Une personne compare des logements et veut pouvoir télétravailler tout en accueillant ponctuellement un proche.',
+        decision:
+          'Vérifier si le logement permet réellement aux usages importants de fonctionner ensemble.',
+        spontaneousReading:
+          'Deux chambres et environ 80 m² semblent suffire sur la fiche.',
+        pressureTest:
+          'Quand la chambre d’amis est occupée, le bureau installé dans cette même pièce n’est plus disponible au moment de la réunion.',
+        authorizedConclusion:
+          'La surface totale et le nombre de pièces ne suffisent pas, à eux seuls, à confirmer que les usages nécessaires peuvent fonctionner en même temps.',
+        finalOperation:
+          'Lister deux activités simultanées, les placer sur le plan et vérifier ce qui permet à chacune de fonctionner.',
+      },
+      hookCandidates: [
+        {
+          mode: 'direct',
+          family: 'usage',
+          text: 'LA SURFACE SUFFIT-ELLE À VÉRIFIER VOS USAGES ?',
+          explicitPromise:
+            'Montrer pourquoi la surface seule ne permet pas de confirmer un usage.',
+          implicitPromise:
+            'Donner une manière concrète de tester le logement.',
+          claimRefs: ['C001'],
+          evidenceRefs: ['V2-DEF-0029'],
+        },
+        {
+          mode: 'scene',
+          family: 'usage',
+          text:
+            'DEUX CHAMBRES. OÙ TRAVAILLEZ-VOUS QUAND LES DEUX SONT OCCUPÉES ?',
+          explicitPromise:
+            'Montrer un conflit d’usage concret qui n’apparaît pas dans la simple liste des pièces.',
+          implicitPromise:
+            'Donner un test réutilisable sur un autre plan.',
+          claimRefs: [],
+          evidenceRefs: [],
+        },
+        {
+          mode: 'comparison',
+          family: 'comparison',
+          text: 'MÊME SURFACE. VOS DEUX USAGES TIENNENT-ILS ENSEMBLE ?',
+          explicitPromise:
+            'Comparer quantité de mètres carrés et fonctionnement réel.',
+          implicitPromise:
+            'Montrer ce qu’il faut regarder au-delà du total.',
+          claimRefs: ['C001'],
+          evidenceRefs: ['V2-DEF-0029'],
+        },
+      ],
+      selectedHookMode: 'scene',
+      storyBeats: [
+        {
+          function: 'situation',
+          before:
+            'Le lecteur sait seulement qu’il compare un logement avec deux chambres.',
+          after:
+            'Il comprend l’usage recherché : dormir, accueillir et télétravailler.',
+          copy:
+            'Vous cherchez deux chambres. La seconde doit aussi servir de bureau.',
+          claimRefs: [],
+        },
+        {
+          function: 'initial_reading',
+          before: 'Les besoins sont encore abstraits.',
+          after: 'La fiche paraît répondre à la demande.',
+          copy:
+            'Sur le papier, tout y est : deux chambres et une surface qui paraît suffisante.',
+          claimRefs: [],
+        },
+        {
+          function: 'friction',
+          before:
+            'Le bureau et la chambre d’amis semblent compatibles.',
+          after:
+            'Le lecteur voit qu’ils peuvent se gêner au même moment.',
+          copy:
+            'Cas fictif : votre proche dort encore. À 9 h, vous avez une réunion confidentielle. Le bureau est dans sa chambre.',
+          claimRefs: [],
+        },
+        {
+          function: 'demonstration',
+          before:
+            'Le problème pourrait être interprété comme un simple manque de mètres carrés.',
+          after:
+            'Le lecteur comprend que le point décisif est la coexistence des usages.',
+          copy:
+            'La question n’est plus seulement « combien de m² ? ». Elle devient « quels usages doivent fonctionner en même temps, et où ? »',
+          claimRefs: ['C001'],
+        },
+        {
+          function: 'rereading',
+          before:
+            'Le logement semble validé ou rejeté par sa surface.',
+          after:
+            'La surface redevient un contexte, pas un verdict.',
+          copy:
+            'Le logement peut très bien convenir. Mais la surface totale ne suffit pas à le confirmer : il faut tester l’organisation.',
+          claimRefs: [],
+        },
+        {
+          function: 'practical_take',
+          before:
+            'Le lecteur comprend le mécanisme sans encore savoir l’appliquer.',
+          after:
+            'Il possède une opération autonome à refaire sur un plan.',
+          copy:
+            'Listez deux activités simultanées. Placez-les sur le plan. Vérifiez ce qui permet à chacune de fonctionner.',
+          claimRefs: [],
+        },
+      ],
+      essentialLimit:
+        'Le conflit présenté est un cas fictif pédagogique. Il montre une possibilité à tester, pas la fréquence de ce problème ni la qualité d’un logement particulier.',
+      autonomousAction:
+        'Sur le prochain plan, choisissez deux activités qui doivent coexister, placez-les dans les pièces prévues et vérifiez les accès, le calme, l’intimité et les adaptations réellement possibles.',
+    },
+    articleMaster,
+    storyboard,
+    generatedAt: new Date().toISOString(),
+  };
+}
+
 function researchRequiredFixture(rawInput: string, familyId: StudioFamilyId, kind: 'surface' | 'price' | 'generic'): StudioProject {
   const family = STUDIO_FAMILIES[familyId];
   const specific =
@@ -386,7 +868,7 @@ export function buildStudioProject(input: string): StudioProject {
   const rawInput = clean(input);
   if (!rawInput) throw new Error('Ajoutez une idée, une question ou une matière de départ.');
   if (isDistanceFixture(rawInput)) return distanceFixture(rawInput);
-  if (isSurfaceFixture(rawInput)) return researchRequiredFixture(rawInput, 'espace_usage', 'surface');
+  if (isSurfaceFixture(rawInput)) return surfaceFixture(rawInput);
   if (isPriceFixture(rawInput)) return researchRequiredFixture(rawInput, 'prix_valeur', 'price');
   return researchRequiredFixture(rawInput, detectFamily(rawInput), 'generic');
 }
