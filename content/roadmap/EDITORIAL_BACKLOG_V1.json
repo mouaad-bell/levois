@@ -26,9 +26,11 @@
       "domain": "copropriete",
       "familyId": "verifier_transaction",
       "evidenceRefs": [
-        "V2-CFF-0150",
-        "V2-CFF-0151",
-        "V2-CFF-0152"
+        "REG-0020",
+        "REG-0021",
+        "REG-0022",
+        "REG-0023",
+        "V2-CFF-0017"
       ],
       "formats": [
         "answer_article",
@@ -43,8 +45,9 @@
       "domain": "financement",
       "familyId": "budget_financement",
       "evidenceRefs": [
-        "V2-CFF-0121",
-        "V2-CFF-0122"
+        "V2-CFF-0062",
+        "V2-CFF-0056",
+        "V2-CFF-0059"
       ],
       "formats": [
         "answer_article",
@@ -75,8 +78,9 @@
       "domain": "risques",
       "familyId": "bien_technique",
       "evidenceRefs": [
-        "V2-UER-0007",
-        "V2-UER-0008"
+        "RISK-4de786f7430d1d6d",
+        "V2-UER-bd3c5c6b070a10",
+        "V2-UER-cfa86b2991d834"
       ],
       "formats": [
         "answer_article",
@@ -143,8 +147,9 @@
       "domain": "urbanisme",
       "familyId": "verifier_transaction",
       "evidenceRefs": [
-        "V2-UER-0101",
-        "V2-UER-0102"
+        "V21-GAP-9e2c2abc1bfffa",
+        "V21-GAP-e6b5604d303643",
+        "V21-GAP-4faa4fb98fc426"
       ],
       "formats": [
         "answer_article",
@@ -159,8 +164,9 @@
       "domain": "copropriete",
       "familyId": "verifier_transaction",
       "evidenceRefs": [
-        "V2-CFF-0140",
-        "V2-CFF-0141"
+        "REG-0024",
+        "V2-CFF-0003",
+        "V2-CFF-0007"
       ],
       "formats": [
         "answer_article",
@@ -175,8 +181,9 @@
       "domain": "chauffage",
       "familyId": "bien_technique",
       "evidenceRefs": [
-        "V21-BAT-1a004a",
-        "V21-BAT-1a004b"
+        "V21-BAT-64260a66af7af0",
+        "V21-BAT-eb4056f591760f",
+        "V21-BAT-9dbda89fcf5566"
       ],
       "formats": [
         "answer_article",
