@@ -131,7 +131,7 @@ export function buildVulgarisationBrief(project: StudioProject): VulgarisationBr
         slide.narrativeRole === 'exercise',
     ),
     transferValue: hasPracticalTake(slides),
-    continuity: canonGate.controls.continuite.pass,
+    continuity: canonGate.controls.continuity.pass,
     collegienTest:
       project.articleMaster.keyTakeaway
         .split(/[.!?]/)
