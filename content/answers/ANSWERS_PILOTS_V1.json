@@ -26,9 +26,7 @@
       "relatedCarousel": "LEV-PILOT-SPACE-001",
       "ctaStatus": "DISABLED_UNTIL_DESTINATION_REVIEWED",
       "internalLinksCandidates": [
-        "/ressources/",
-        "/votre-rue/",
-        "/situer-ma-vente/"
+        "/ressources/"
       ],
       "freshness": "STATIC_CONCEPT_WITH_PERIODIC_REVIEW",
       "lastEvidenceReview": "2026-09-19"
