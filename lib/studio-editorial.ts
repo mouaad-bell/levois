@@ -82,6 +82,9 @@ export type EditorialApiResponse = {
     requestId: string;
     webUsed: false;
     retrievalIntent?: string;
+    inputTokens?: number | null;
+    outputTokens?: number | null;
+    totalTokens?: number | null;
     traceabilityLogged?: boolean;
     cacheHit?: boolean;
   };
