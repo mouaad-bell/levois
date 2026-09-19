@@ -30,7 +30,9 @@
       "explicitPromise": "Tester le compromis prix / éloignement sur un moment concret.",
       "implicitPromise": "Le lecteur saura refaire le test avec ses propres contraintes.",
       "evidenceRefs": [],
-      "claimRefs": []
+      "claimRefs": [],
+      "evidenceStatus": "non_numeric",
+      "qualifier": ""
     },
     {
       "mode": "scene",
@@ -39,7 +41,9 @@
       "explicitPromise": "Montrer comment une durée supplémentaire peut franchir une limite d’organisation.",
       "implicitPromise": "Le lecteur comprendra pourquoi la marge importe plus que le nombre de minutes seul.",
       "evidenceRefs": [],
-      "claimRefs": []
+      "claimRefs": [],
+      "evidenceStatus": "pedagogical_scenario",
+      "qualifier": "CAS FICTIF"
     },
     {
       "mode": "comparison",
@@ -48,7 +52,9 @@
       "explicitPromise": "Comparer la durée supplémentaire à la marge réellement disponible.",
       "implicitPromise": "Le contenu ne jugera pas la distance en général, mais ce qu’elle change dans une situation.",
       "evidenceRefs": [],
-      "claimRefs": []
+      "claimRefs": [],
+      "evidenceStatus": "pedagogical_scenario",
+      "qualifier": "CAS FICTIF"
     }
   ],
   "selectedHookMode": "direct",
