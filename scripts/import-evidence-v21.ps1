@@ -2,7 +2,8 @@ param(
   [Parameter(Mandatory = $true)]
   [string]$LibraryPath,
   [string]$DatabaseName = "levois-evidence",
-  [switch]$Local
+  [switch]$Local,
+  [switch]$LegacySchema
 )
 
 $ErrorActionPreference = "Stop"
@@ -29,8 +30,10 @@ npx wrangler --version
 Step "Application du schéma D1"
 npx wrangler d1 execute $DatabaseName $remoteFlag --file="db/evidence-library-schema.sql"
 
-Step "Application de la migration V2.1"
-npx wrangler d1 execute $DatabaseName $remoteFlag --file="db/evidence-library-v21-migration.sql"
+if ($LegacySchema) {
+  Step "Migration d un ancien prototype vers V2.1"
+  npx wrangler d1 execute $DatabaseName $remoteFlag --file="db/evidence-library-v21-migration.sql"
+}
 
 Step "Application du schéma de traçabilité contenus"
 npx wrangler d1 execute $DatabaseName $remoteFlag --file="db/content-traceability-schema.sql"
