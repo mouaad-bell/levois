@@ -4,6 +4,12 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import answers from '@/content/answers/ANSWERS_PILOTS_V1.json';
+import evidenceSnapshot from '@/content/pilots/PILOT_EVIDENCE_SNAPSHOT_V1.json';
+import {
+  reviewPublicArticle,
+  type PublicArticleEvidence,
+  type PublicArticleInput,
+} from '@/lib/article-public-contract';
 import {
   parseSimpleMarkdown,
   renderInlineMarkdown,
@@ -83,6 +89,10 @@ export default async function AnswerPreviewPage({
     STUDIO_FAMILIES[
       page.familyId as keyof typeof STUDIO_FAMILIES
     ];
+  const publicReview = reviewPublicArticle(
+    page as PublicArticleInput,
+    evidenceSnapshot.evidence as PublicArticleEvidence[],
+  );
 
   return (
     <main
@@ -121,6 +131,27 @@ export default async function AnswerPreviewPage({
             </span>
           </div>
         </header>
+
+        <section className={styles.contractReview}>
+          <div>
+            <p className={styles.kicker}>
+              CONTRAT ARTICLE PUBLIC V1
+            </p>
+            <h2>
+              {publicReview.readyForHumanReview
+                ? 'Prêt pour revue humaine'
+                : 'Blocage avant revue humaine'}
+            </h2>
+          </div>
+          <ul>
+            {publicReview.checks.map((check) => (
+              <li key={check.id} data-status={check.status}>
+                <strong>{check.status}</strong>
+                <span>{check.reason}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <aside className={styles.limit}>
           <strong>Limite essentielle</strong>

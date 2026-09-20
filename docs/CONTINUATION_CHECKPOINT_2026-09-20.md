@@ -70,7 +70,7 @@ Un `.gitignore` protège les dépendances, sorties Next.js, artefacts de validat
 `npm run check` passe intégralement :
 
 - TypeScript ;
-- autorité unique des 18 pages/layouts Next.js ;
+- autorité unique des 19 pages/layouts Next.js ;
 - trois pilotes canoniques ;
 - trois contrats de rendu ;
 - dépendances contenu → preuves ;
@@ -124,6 +124,32 @@ Garde-fou : les trois pages restent `DRAFT`, donc `noindex` et absentes du
 sitemap et de l'index public Ressources. Le passage explicite à `PUBLISHED`
 avec une `datePublished` valide active l'indexation et leur apparition dans la
 bibliothèque. Aucun déploiement ni merge n'a été effectué.
+
+## Ajout — contrat Article public et exports carrousels
+
+Le contrat `LEVOIS_ARTICLE_PUBLIC_V1` est maintenant documenté, exécutable et
+visible dans chaque aperçu Answers du Studio. Il bloque notamment une page
+sans question décisionnelle, preuve résolue, périmètre, limite, opération
+autonome, traçabilité des sources ou dates de publication cohérentes.
+
+Le carnet SEO/local/inbound est utilisé comme cadre de sélection,
+d'architecture, de diffusion et de link earning. Ses chiffres ne deviennent
+pas automatiquement des preuves : prix instantanés, prévisions, délais,
+statistiques marketing et effets d'aménagement restent à vérifier dans
+l'Evidence Library avant publication.
+
+Un exporteur déterministe produit maintenant :
+
+- des PNG 1080 × 1350 ;
+- un manifeste avec dimensions, poids et SHA-256 ;
+- une planche-contact par pilote ;
+- le lien vers l'article canonique sur la dernière slide ;
+- un contrôle CI qui régénère et vérifie les fichiers.
+
+État exact des contrats actuels : 9 slides pour Espace/Usage, 8 pour Mobilité
+et 8 pour Prix/Valeur. Aucun raccourcissement automatique à six slides n'a été
+effectué, car les canons actuels contiennent explicitement ces 25 étapes. Ce
+point doit être arbitré pendant la recette humaine.
 
 ## Interdits maintenus
 

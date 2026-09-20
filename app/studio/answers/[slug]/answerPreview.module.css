@@ -84,6 +84,54 @@
   background: rgba(255, 255, 255, 0.48);
 }
 
+.contractReview {
+  margin: 38px 0 54px;
+  padding: 24px;
+  border: 1px solid rgba(19, 35, 45, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.contractReview h2 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.035em;
+}
+
+.contractReview ul {
+  margin: 22px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  list-style: none;
+}
+
+.contractReview li {
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 12px;
+  border-radius: 10px;
+  background: rgba(19, 35, 45, 0.045);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.contractReview li strong {
+  color: #147044;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.contractReview li[data-status='review'] strong {
+  color: #8a5a00;
+}
+
+.contractReview li[data-status='block'] strong {
+  color: #a62d22;
+}
+
 .limit strong {
   font-size: 12px;
   letter-spacing: 0.08em;
