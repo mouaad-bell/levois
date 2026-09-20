@@ -1,0 +1,150 @@
+{
+  "dossierId": "LEV-PUB-PRICE-003",
+  "status": "READY_FOR_RENDER_REVIEW",
+  "canonVersion": "CONTENT_EXPERIENCE_V1_2026-09-19",
+  "evidenceLibraryVersion": "V21-2026-09-19",
+  "decision": "Vérifier si un écart de prix porte sur des objets réellement comparables avant d’en tirer une conclusion.",
+  "authorizedConclusion": "Un écart de prix, même exact, ne suffit pas à conclure qu’un bien est trop cher si les objets comparés ne sont pas réellement comparables.",
+  "autonomousAction": "Écrire les deux objets comparés, leur statut, leur date, leur périmètre, leur surface, les différences matérielles connues et les inconnues, puis seulement examiner l’écart.",
+  "evidenceSnapshots": [
+    {
+      "evidenceId": "METH-0021",
+      "role": "asking_vs_sold",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "sourceTier": 1,
+      "status": "REVERIFIED_CONCEPT_ADAPTED",
+      "claim": "Le prix affiché est une intention d’offre ; le prix vendu est la valeur enregistrée de la mutation, sous les limites de la source.",
+      "sourcePublisher": "DGFiP / LEVOIS",
+      "sourceTitle": "DVF — origine des données et distinction opérationnelle avec les annonces",
+      "sourceUrl": "https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres",
+      "retrievedAt": "2026-09-19",
+      "nextReviewDate": "2027-09-19",
+      "forbiddenInference": "Un prix affiché ne prouve pas qu’un acheteur paiera ce montant ; DVF ne restitue pas toutes les caractéristiques qualitatives."
+    },
+    {
+      "evidenceId": "DEF-0001",
+      "role": "dvf_value_scope",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "sourceTier": 1,
+      "status": "VERIFIED_CONCEPT",
+      "claim": "La valeur foncière est le montant de la mutation enregistré et peut couvrir plusieurs locaux ou parcelles.",
+      "sourcePublisher": "DGFiP",
+      "sourceTitle": "DGFiP, notice DVF",
+      "sourceUrl": "https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres",
+      "retrievedAt": "2026-09-18",
+      "nextReviewDate": "2028-09-18"
+    },
+    {
+      "evidenceId": "DEF-0002",
+      "role": "dvf_mutation_scope",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "sourceTier": 1,
+      "status": "VERIFIED_CONCEPT",
+      "claim": "Une mutation est un changement de propriété enregistré et peut comporter plusieurs lignes descriptives.",
+      "sourcePublisher": "DGFiP",
+      "sourceTitle": "DGFiP, notice DVF",
+      "sourceUrl": "https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres",
+      "retrievedAt": "2026-09-18",
+      "nextReviewDate": "2028-09-18"
+    },
+    {
+      "evidenceId": "METH-0022",
+      "role": "price_per_m2_guard",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "sourceTier": 3,
+      "status": "VERIFIED_INTERNAL_DEFINITION",
+      "claim": "Le prix au m² est un rapport entre une valeur de mutation et une surface définie ; sa pertinence dépend du périmètre de la valeur et de la surface.",
+      "sourcePublisher": "LEVOIS",
+      "sourceTitle": "Conventions méthodologiques V2.1",
+      "sourceUrl": "local:V21_METHOD_POLICIES.md",
+      "retrievedAt": "2026-09-19",
+      "nextReviewDate": "2027-09-19",
+      "forbiddenInference": "Ne pas multiplier mécaniquement un prix au m² médian par la surface d’un bien sans ajuster caractéristiques et structure de la mutation."
+    }
+  ],
+  "caseStatus": {
+    "type": "pedagogical_fiction",
+    "visibleQualifier": "CAS PÉDAGOGIQUE",
+    "fictiveNumbers": [
+      "285 000 €",
+      "310 000 €",
+      "+25 000 €"
+    ],
+    "rule": "Les montants servent uniquement à montrer qu’un écart exact n’est interprétable qu’après contrôle de comparabilité."
+  },
+  "assets": {
+    "article": "content/drafts/03_PRICE_VALUE_ARTICLE_V1.md",
+    "editorialPilot": "content/pilots/PILOT_03_PRIX_VALEUR_CANON_V1.json",
+    "renderContract": "content/pilots/PILOT_03_RENDER_CONTRACT_V1.json"
+  },
+  "hook": {
+    "mode": "direct",
+    "text": "25 000 € D’ÉCART. TROP CHÈRE ?",
+    "numericStatus": "pedagogical_scenario",
+    "qualifier": "CAS PÉDAGOGIQUE",
+    "promise": "Tester ce que l’écart permet réellement de conclure après contrôle du périmètre de comparaison."
+  },
+  "essentialLimit": "Un comparable, une vente voisine ou un prix au m² ne constituent pas, à eux seuls, une estimation individuelle. Le cas chiffré est pédagogique.",
+  "prepublicationChecks": [
+    {
+      "id": "subject",
+      "status": "PASS"
+    },
+    {
+      "id": "understanding",
+      "status": "PASS"
+    },
+    {
+      "id": "recognition",
+      "status": "PASS"
+    },
+    {
+      "id": "interest",
+      "status": "PASS"
+    },
+    {
+      "id": "promise",
+      "status": "PASS"
+    },
+    {
+      "id": "progression",
+      "status": "PASS"
+    },
+    {
+      "id": "mechanism",
+      "status": "PASS"
+    },
+    {
+      "id": "limits",
+      "status": "PASS"
+    },
+    {
+      "id": "resolution",
+      "status": "PASS"
+    },
+    {
+      "id": "autonomy",
+      "status": "PASS"
+    },
+    {
+      "id": "format",
+      "status": "REVIEW",
+      "reason": "Recette réelle 1080×1350 sur smartphone encore nécessaire."
+    },
+    {
+      "id": "continuity",
+      "status": "PASS",
+      "reason": "La version autonome ne dépend d’aucun CTA."
+    }
+  ],
+  "absoluteVetos": {
+    "fabricatedFact": false,
+    "unjustifiedFear": false,
+    "commercialGate": false
+  },
+  "remainingBlockers": [
+    "Rendre les slides dans la DA finale et effectuer la recette mobile.",
+    "Afficher CAS PÉDAGOGIQUE au même niveau perceptif que les trois montants.",
+    "Ne jamais transformer le comparable ou le prix au m² en estimation automatique."
+  ]
+}

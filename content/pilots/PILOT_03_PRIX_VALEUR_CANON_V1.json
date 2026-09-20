@@ -1,0 +1,206 @@
+{
+  "pilotId": "LEV-PILOT-PRICE-003",
+  "status": "editorial_ready_case_pedagogique",
+  "canonVersion": "CONTENT_EXPERIENCE_V1_2026-09-19",
+  "familyId": "prix_valeur",
+  "workingTopic": "25 000 € d’écart. Trop chère ?",
+  "numericStatus": "CASE_PEDAGOGIQUE_ONLY",
+  "decisionFrame": {
+    "person": "Une personne envisage un prix et le compare à une vente enregistrée qui semble moins chère.",
+    "decision": "Vérifier si l’écart de prix porte sur des biens et des périmètres réellement comparables avant d’en tirer une conclusion.",
+    "spontaneousReading": "Un prix envisagé 25 000 € au-dessus d’une vente enregistrée paraît indiquer que le bien est trop cher.",
+    "pressureTest": "L’écart ne devient interprétable qu’après vérification du périmètre, des surfaces, du type, de la période et des caractéristiques qui peuvent raisonnablement être comparées.",
+    "authorizedConclusion": "Un écart de prix, même exact, ne suffit pas à conclure qu’un bien est trop cher si les objets comparés ne sont pas réellement comparables.",
+    "finalOperation": "Nommer ce qui est comparé, vérifier le même périmètre et les différences matérielles, puis seulement examiner ce que l’écart de prix permet de dire."
+  },
+  "hookCandidates": [
+    {
+      "mode": "direct",
+      "family": "comparison",
+      "text": "25 000 € D’ÉCART. TROP CHÈRE ?",
+      "explicitPromise": "Tester ce que l’écart permet réellement de conclure.",
+      "implicitPromise": "Le lecteur apprendra à vérifier la comparabilité avant de juger le prix.",
+      "evidenceRefs": [],
+      "claimRefs": [],
+      "guard": "Autorisé uniquement si les deux montants sont sourcés ou explicitement présentés comme CAS PÉDAGOGIQUE sur la couverture.",
+      "evidenceStatus": "pedagogical_scenario",
+      "qualifier": "CAS PÉDAGOGIQUE"
+    },
+    {
+      "mode": "scene",
+      "family": "scope",
+      "text": "UNE VENTE À 285 000 €. VOTRE PRIX À 310 000 €. COMPARE-T-ON LA MÊME CHOSE ?",
+      "explicitPromise": "Faire apparaître la question de périmètre derrière les deux montants.",
+      "implicitPromise": "Le contenu détaillera les conditions nécessaires à une comparaison utile.",
+      "evidenceRefs": [],
+      "claimRefs": [],
+      "guard": "CAS PÉDAGOGIQUE tant qu’aucun dossier réel n’est branché.",
+      "evidenceStatus": "pedagogical_scenario",
+      "qualifier": "CAS PÉDAGOGIQUE"
+    },
+    {
+      "mode": "comparison",
+      "family": "scope",
+      "text": "DEUX PRIX. AVANT L’ÉCART, VÉRIFIEZ LE PÉRIMÈTRE.",
+      "explicitPromise": "Montrer que le calcul d’écart vient après la vérification de comparabilité.",
+      "implicitPromise": "Le lecteur repartira avec un ordre de contrôle réutilisable.",
+      "evidenceRefs": [],
+      "claimRefs": [],
+      "evidenceStatus": "non_numeric",
+      "qualifier": ""
+    }
+  ],
+  "selectedHookMode": "direct",
+  "selectedHookGuard": "Le renderer doit afficher CAS PÉDAGOGIQUE au même niveau perceptif que les montants tant que ces chiffres ne proviennent pas de preuves réelles.",
+  "essentialLimit": "Le prix au m² ou une vente voisine ne constituent pas, à eux seuls, une estimation individuelle. L’état, la localisation fine, le terrain, la configuration, les travaux et la sélection DVF peuvent modifier la comparaison.",
+  "autonomousAction": "Avant de conclure à partir d’un écart, écrivez les deux objets comparés, leur date, leur surface, leur type, leur périmètre et les différences matérielles connues. Marquez ce qui reste inconnu.",
+  "storyBeats": [
+    {
+      "function": "situation",
+      "before": "Le lecteur voit un prix envisagé.",
+      "after": "Il le met face à une vente qui paraît comparable.",
+      "copy": "CAS PÉDAGOGIQUE — Vente enregistrée : 285 000 €. Prix envisagé : 310 000 €."
+    },
+    {
+      "function": "initial_reading",
+      "before": "Les deux nombres sont isolés.",
+      "after": "L’écart paraît fournir une conclusion immédiate.",
+      "copy": "+25 000 €. La première lecture est simple : « trop chère ? »"
+    },
+    {
+      "function": "friction",
+      "before": "Le calcul semble suffire.",
+      "after": "Le lecteur voit que la comparabilité n’est pas encore établie.",
+      "copy": "Même commune ne signifie pas même bien. Même surface ne signifie pas même état. Même période ne signifie pas même situation."
+    },
+    {
+      "function": "demonstration",
+      "before": "L’écart est traité comme une preuve.",
+      "after": "Il devient un résultat conditionnel après contrôle du périmètre.",
+      "copy": "Le calcul est exact. Son interprétation dépend de ce que les deux prix couvrent réellement."
+    },
+    {
+      "function": "rereading",
+      "before": "Le prix envisagé semble automatiquement excessif.",
+      "after": "La conclusion devient suspendue à la comparabilité.",
+      "copy": "La bonne question n’est plus « 25 000 € de trop ? » mais « quelles différences expliquent ou n’expliquent pas cet écart ? »"
+    },
+    {
+      "function": "practical_take",
+      "before": "Le lecteur comprend la limite.",
+      "after": "Il sait contrôler une comparaison.",
+      "copy": "Même type. Même zone utile. Période nommée. Surfaces comparables. Différences connues. Inconnues visibles."
+    }
+  ],
+  "evidenceRequirements": {
+    "beforePublication": [
+      "Les nombres 285 000 €, 310 000 € et +25 000 € restent explicitement CAS PÉDAGOGIQUE s’ils sont conservés.",
+      "Si un cas réel remplace le cas pédagogique, chaque montant doit être relié à une preuve et à son statut : affiché, vendu, envisagé ou calculé.",
+      "Toute donnée DVF doit conserver périmètre géographique, période, structure de mutation et notion de surface.",
+      "n<5 n’est jamais publié comme repère de prix ; 5≤n<15 exige une forte réserve.",
+      "Aucun comparable ni prix au m² ne devient une estimation automatique du bien."
+    ]
+  },
+  "carousel": {
+    "slides": [
+      [
+        "hook",
+        "25 000 € D’ÉCART.",
+        "Trop chère ? · CAS PÉDAGOGIQUE"
+      ],
+      [
+        "initial_reading",
+        "285 000 € / 310 000 €",
+        "+25 000 €. Le calcul est simple."
+      ],
+      [
+        "friction",
+        "MAIS COMPARE-T-ON LA MÊME CHOSE ?",
+        "Type. Surface. État. Période. Micro-localisation. Terrain. Travaux."
+      ],
+      [
+        "demonstration",
+        "L’ÉCART EST UN RÉSULTAT.",
+        "Son sens dépend du périmètre de comparaison."
+      ],
+      [
+        "question_shift",
+        "CHANGEZ DE QUESTION.",
+        "Quelles différences peuvent raisonnablement expliquer l’écart ?"
+      ],
+      [
+        "method",
+        "COMPAREZ DANS CET ORDRE.",
+        "Objet → périmètre → période → différences → inconnues → écart."
+      ],
+      [
+        "limits",
+        "UN COMPARABLE N’EST PAS UNE ESTIMATION.",
+        "Il aide à raisonner ; il ne remplace pas l’examen du bien."
+      ],
+      [
+        "autonomy",
+        "PRENEZ DEUX PRIX.",
+        "Écrivez ce qui est réellement comparable avant de juger l’écart."
+      ]
+    ]
+  },
+  "evidence": [
+    {
+      "evidenceId": "METH-0021",
+      "role": "asking_vs_sold",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "claim": "Le prix affiché est une intention d’offre ; le prix vendu est la valeur enregistrée de la mutation, sous les limites de la source.",
+      "source": "DGFiP / LEVOIS — DVF, origine des données et distinction opérationnelle avec les annonces",
+      "sourceUrl": "https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres",
+      "limitation": "Un prix affiché ne prouve pas qu’un acheteur paiera ce montant ; DVF ne restitue pas toutes les caractéristiques qualitatives."
+    },
+    {
+      "evidenceId": "DEF-0001",
+      "role": "dvf_value_scope",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "claim": "La valeur foncière DVF est le montant de la mutation enregistré ; elle se rapporte à la disposition et peut couvrir plusieurs locaux ou parcelles.",
+      "source": "DGFiP — notice DVF",
+      "sourceUrl": "https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres",
+      "limitation": "Ne pas assimiler automatiquement la valeur d’une mutation complexe au prix d’un seul logement."
+    },
+    {
+      "evidenceId": "DEF-0002",
+      "role": "dvf_mutation_scope",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "claim": "Une mutation est un changement de propriété enregistré ; une mutation DVF peut comporter plusieurs lignes descriptives.",
+      "source": "DGFiP — notice DVF",
+      "sourceUrl": "https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres",
+      "limitation": "Une ligne DVF isolée ne doit pas être interprétée sans vérifier la structure de la mutation."
+    },
+    {
+      "evidenceId": "METH-0022",
+      "role": "price_per_m2_guard",
+      "engineUseClass": "REUSABLE_IMMEDIATELY",
+      "claim": "Le prix au m² est un rapport entre une valeur de mutation et une surface définie ; sa pertinence dépend du périmètre de la valeur et de la surface.",
+      "source": "LEVOIS — Conventions méthodologiques V2.1",
+      "sourceUrl": "local:V21_METHOD_POLICIES.md",
+      "limitation": "Ne pas multiplier mécaniquement un prix au m² médian par la surface d’un bien sans ajuster les caractéristiques et la structure de la mutation."
+    }
+  ],
+  "article": {
+    "title": "25 000 € d’écart : pourquoi deux prix ne sont pas forcément comparables",
+    "answerShort": "Un écart de prix peut être parfaitement calculé et pourtant mal interprété. Avant de conclure qu’un bien est trop cher, vérifiez le statut des deux montants, le périmètre de chaque vente, la période, la surface réellement utilisée et les différences matérielles connues. L’écart vient après la comparabilité, pas avant.",
+    "evidenceRefs": [
+      "METH-0021",
+      "DEF-0001",
+      "DEF-0002",
+      "METH-0022"
+    ],
+    "localPublicationNote": "Le cœur pédagogique est national. Un ancrage local ne sera ajouté que s’il apporte une comparaison réellement documentée, pas simplement le mot Chartres."
+  },
+  "prepublication": {
+    "status": "TO_REVIEW",
+    "blockers": [
+      "Le renderer doit afficher CAS PÉDAGOGIQUE au même niveau perceptif que les montants 285 000 €, 310 000 € et +25 000 €.",
+      "Vérifier qu’aucun texte ne transforme un prix affiché en prix vendu ou une mutation complexe en prix individuel.",
+      "Aucun CTA commercial ne doit remplacer la méthode autonome."
+    ],
+    "absoluteVetosPassed": true
+  }
+}

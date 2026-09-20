@@ -1,0 +1,53 @@
+name: Studio CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Route authority validation
+        run: npm run validate:routes
+      - name: Editorial canon validation
+        run: npm run validate:editorial
+      - name: Render evidence validation
+        run: npm run validate:render
+      - name: Carousel PNG export validation
+        run: npm run validate:carousel-exports
+      - name: Content dependency validation
+        run: npm run validate:dependencies
+      - name: Pilot evidence snapshot validation
+        run: npm run validate:pilot-evidence
+      - name: Pilot package export
+        run: npm run validate:pilot-packages
+      - name: Answers pilot validation
+        run: npm run validate:answers
+      - name: Public article contract validation
+        run: npm run validate:article-public
+      - name: D1 import safety
+        run: npm run test:evidence-import
+      - name: D1 schema smoke test
+        run: npm run test:d1-schema
+      - name: Build
+        run: npm run build
+      - name: Security audit
+        run: npm run security:audit

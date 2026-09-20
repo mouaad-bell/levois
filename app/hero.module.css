@@ -410,3 +410,31 @@
   @keyframes visualIn{from{opacity:0;transform:translateY(22px) scale(.985)}to{opacity:1;transform:none}}
   @keyframes dividerIn{from{transform:scaleY(0);transform-origin:top}to{transform:scaleY(1);transform-origin:top}}
 }
+
+:global(.team-card.safti){
+  background:var(--sand);
+  color:var(--ink);
+}
+
+:global(.network-motif){
+  position:relative;
+  height:170px;
+  margin-top:auto;
+  background:
+    linear-gradient(35deg,transparent 48%,rgba(23,32,43,.18) 49% 50%,transparent 51%),
+    linear-gradient(145deg,transparent 48%,rgba(23,32,43,.12) 49% 50%,transparent 51%);
+}
+
+:global(.network-motif span){
+  position:absolute;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:var(--ink);
+  box-shadow:0 0 0 7px rgba(23,32,43,.08);
+}
+
+:global(.network-motif span:nth-child(1)){left:12%;top:20%}
+:global(.network-motif span:nth-child(2)){right:17%;top:12%}
+:global(.network-motif span:nth-child(3)){left:44%;bottom:18%;background:var(--clay)}
+:global(.network-motif span:nth-child(4)){right:7%;bottom:32%}

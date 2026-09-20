@@ -1,0 +1,104 @@
+{
+  "dossierId": "LEV-PUB-SPACE-001",
+  "status": "READY_FOR_RENDER_REVIEW",
+  "canonVersion": "CONTENT_EXPERIENCE_V1_2026-09-19",
+  "evidenceLibraryVersion": "V21-2026-09-19",
+  "decision": "Vérifier si les usages importants peuvent réellement fonctionner ensemble dans le logement, au-delà de la surface totale.",
+  "authorizedConclusion": "La surface totale et le nombre de pièces ne suffisent pas, à eux seuls, à confirmer que les usages nécessaires peuvent fonctionner en même temps.",
+  "autonomousAction": "Choisir deux activités qui doivent avoir lieu au même moment, les placer sur le plan et vérifier les conditions nécessaires à chacune.",
+  "primaryEvidenceSnapshot": {
+    "evidenceId": "V2-DEF-0029",
+    "engineUseClass": "REUSABLE_IMMEDIATELY",
+    "sourceTier": 1,
+    "status": "VERIFIED_CONCEPT",
+    "claim": "Surface habitable incluant circulations et sanitaires, excluant notamment terrasses, caves, parkings et greniers.",
+    "sourcePublisher": "INSEE",
+    "sourceTitle": "Surface du logement",
+    "sourceUrl": "https://www.insee.fr/fr/metadonnees/definition/c2078",
+    "retrievedAt": "2026-09-18",
+    "nextReviewDate": "2027-09-18",
+    "allowedUse": "Lire les classes de surfaces des statistiques logement.",
+    "forbiddenInference": "Les classes varient selon les sources; ce champ n'est pas un mesurage Carrez individuel.",
+    "verificationRequiredBeforePublication": false
+  },
+  "intentionallyRejectedEvidence": [
+    {
+      "evidenceId": "DVFAGG-07b0238efb7be1c5",
+      "reason": "La distribution historique des appartements 80–100 m² à Chartres ne démontre pas la qualité d’un plan ni la coexistence des usages. L’utiliser dans le carrousel donnerait une impression de preuve locale sans répondre au mécanisme."
+    }
+  ],
+  "assets": {
+    "article": "content/drafts/01_80M2_USAGE_ARTICLE_V1.md",
+    "editorialPilot": "content/pilots/PILOT_01_ESPACE_USAGE_CANON_V1.json",
+    "renderContract": "content/pilots/PILOT_01_RENDER_CONTRACT_V1.json"
+  },
+  "hook": {
+    "mode": "scene",
+    "text": "DEUX CHAMBRES. OÙ TRAVAILLEZ-VOUS QUAND LES DEUX SONT OCCUPÉES ?",
+    "numericStatus": "non_numeric",
+    "promise": "Montrer un conflit d’usage concret que la simple liste des pièces ne révèle pas, puis transmettre un test réutilisable."
+  },
+  "essentialLimit": "Le conflit chambre d’amis / télétravail est un cas fictif pédagogique. Il montre une possibilité à tester, pas la fréquence de ce problème ni la qualité d’un bien particulier.",
+  "prepublicationChecks": [
+    {
+      "id": "subject",
+      "status": "PASS"
+    },
+    {
+      "id": "understanding",
+      "status": "PASS"
+    },
+    {
+      "id": "recognition",
+      "status": "PASS"
+    },
+    {
+      "id": "interest",
+      "status": "PASS"
+    },
+    {
+      "id": "promise",
+      "status": "PASS"
+    },
+    {
+      "id": "progression",
+      "status": "PASS"
+    },
+    {
+      "id": "mechanism",
+      "status": "PASS"
+    },
+    {
+      "id": "limits",
+      "status": "PASS"
+    },
+    {
+      "id": "resolution",
+      "status": "PASS"
+    },
+    {
+      "id": "autonomy",
+      "status": "PASS"
+    },
+    {
+      "id": "format",
+      "status": "REVIEW",
+      "reason": "Recette réelle 1080×1350 sur smartphone encore nécessaire."
+    },
+    {
+      "id": "continuity",
+      "status": "REVIEW",
+      "reason": "La destination du CTA Mettre ma recherche au clair doit être vérifiée avant activation."
+    }
+  ],
+  "absoluteVetos": {
+    "fabricatedFact": false,
+    "unjustifiedFear": false,
+    "commercialGate": false
+  },
+  "remainingBlockers": [
+    "Rendre les slides dans la DA finale et effectuer la recette mobile.",
+    "Vérifier la route publique exacte avant d’activer le CTA.",
+    "Ne pas ajouter REG-0035 à l’article sans relecture au moment de publication si une définition juridique est jugée nécessaire."
+  ]
+}

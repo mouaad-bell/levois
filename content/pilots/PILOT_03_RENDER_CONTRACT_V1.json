@@ -1,0 +1,149 @@
+{
+  "renderVersion": "CAROUSEL_RENDER_CONTRACT_V1",
+  "width": 1080,
+  "height": 1350,
+  "familyId": "prix_valeur",
+  "accent": "#FF4D4D",
+  "assets": [
+    {
+      "assetId": "CASE_PRICE_285_310",
+      "kind": "data",
+      "status": "pedagogical_fiction",
+      "label": "CAS PÉDAGOGIQUE",
+      "source": "Construction éditoriale LEVOIS",
+      "evidenceRefs": [],
+      "alt": "Deux montants fictifs, 285 000 euros et 310 000 euros, utilisés uniquement pour illustrer un problème de comparabilité.",
+      "canImplyPropertyFact": false
+    },
+    {
+      "assetId": "DVF_METHOD",
+      "kind": "document",
+      "status": "real_documented",
+      "label": "DGFiP · DVF",
+      "source": "METH-0021 / DEF-0001 / DEF-0002",
+      "evidenceRefs": [
+        "METH-0021",
+        "DEF-0001",
+        "DEF-0002"
+      ],
+      "alt": "Repères méthodologiques sur prix affiché, valeur foncière et mutation DVF.",
+      "canImplyPropertyFact": false
+    },
+    {
+      "assetId": "PRICE_M2_GUARD",
+      "kind": "document",
+      "status": "real_documented",
+      "label": "LEVOIS · convention méthodologique V2.1",
+      "source": "METH-0022",
+      "evidenceRefs": [
+        "METH-0022"
+      ],
+      "alt": "Garde-fou rappelant qu’un prix au mètre carré dépend du périmètre de la valeur et de la surface.",
+      "canImplyPropertyFact": false
+    }
+  ],
+  "slides": [
+    {
+      "slideNumber": 1,
+      "layout": "HERO_NUMBER",
+      "headline": "25 000 € D’ÉCART.",
+      "body": "Trop chère ?",
+      "sourceLabel": "CAS PÉDAGOGIQUE",
+      "essentialQualifier": "CAS PÉDAGOGIQUE",
+      "assetIds": [
+        "CASE_PRICE_285_310"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 2,
+      "layout": "COMPARISON_DUAL",
+      "headline": "285 000 € / 310 000 €",
+      "body": "+25 000 €. Le calcul est simple.",
+      "sourceLabel": "CAS PÉDAGOGIQUE",
+      "essentialQualifier": "CAS PÉDAGOGIQUE",
+      "assetIds": [
+        "CASE_PRICE_285_310"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 3,
+      "layout": "EDITORIAL_SPLIT",
+      "headline": "MAIS COMPARE-T-ON LA MÊME CHOSE ?",
+      "body": "Type. Surface. État. Période. Micro-localisation. Terrain. Travaux.",
+      "essentialQualifier": "CAS PÉDAGOGIQUE POUR LES MONTANTS",
+      "assetIds": [
+        "CASE_PRICE_285_310",
+        "DVF_METHOD"
+      ],
+      "evidenceRefs": [
+        "METH-0021",
+        "DEF-0001",
+        "DEF-0002"
+      ]
+    },
+    {
+      "slideNumber": 4,
+      "layout": "DATA_FIELD",
+      "headline": "L’ÉCART EST UN RÉSULTAT.",
+      "body": "Son sens dépend de ce que les deux montants couvrent réellement.",
+      "sourceLabel": "DGFiP / LEVOIS · méthodologie DVF",
+      "assetIds": [
+        "DVF_METHOD"
+      ],
+      "evidenceRefs": [
+        "METH-0021",
+        "DEF-0001",
+        "DEF-0002"
+      ]
+    },
+    {
+      "slideNumber": 5,
+      "layout": "QUESTION_SHIFT",
+      "headline": "CHANGEZ DE QUESTION.",
+      "body": "Quelles différences peuvent raisonnablement expliquer l’écart ?",
+      "assetIds": [
+        "CASE_PRICE_285_310"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 6,
+      "layout": "METHOD_STEPS",
+      "headline": "COMPAREZ DANS CET ORDRE.",
+      "body": "Objet → périmètre → période → différences → inconnues → écart.",
+      "assetIds": [
+        "DVF_METHOD",
+        "PRICE_M2_GUARD"
+      ],
+      "evidenceRefs": [
+        "METH-0021",
+        "DEF-0001",
+        "DEF-0002",
+        "METH-0022"
+      ]
+    },
+    {
+      "slideNumber": 7,
+      "layout": "EDITORIAL_SPLIT",
+      "headline": "UN COMPARABLE N’EST PAS UNE ESTIMATION.",
+      "body": "Il aide à raisonner. Il ne remplace pas l’examen du bien.",
+      "sourceLabel": "LEVOIS · METH-0022",
+      "assetIds": [
+        "PRICE_M2_GUARD"
+      ],
+      "evidenceRefs": [
+        "METH-0022"
+      ]
+    },
+    {
+      "slideNumber": 8,
+      "layout": "DATA_FIELD",
+      "headline": "PRENEZ DEUX PRIX.",
+      "body": "Écrivez d’abord ce qui est réellement comparable. Ensuite seulement, jugez l’écart.",
+      "assetIds": [],
+      "evidenceRefs": []
+    }
+  ]
+}

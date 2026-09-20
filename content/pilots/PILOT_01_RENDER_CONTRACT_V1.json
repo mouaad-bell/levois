@@ -1,0 +1,147 @@
+{
+  "renderVersion": "CAROUSEL_RENDER_CONTRACT_V1",
+  "width": 1080,
+  "height": 1350,
+  "assets": [
+    {
+      "assetId": "PLAN_USAGE_GENERIC",
+      "kind": "plan",
+      "status": "illustrative",
+      "label": "SCHÉMA D’USAGE",
+      "source": "Construction éditoriale LEVOIS",
+      "evidenceRefs": [],
+      "alt": "Schéma de logement servant uniquement à placer des usages, sans attribution à un bien réel.",
+      "canImplyPropertyFact": false
+    },
+    {
+      "assetId": "PLAN_CASE_GUEST_WORK",
+      "kind": "plan",
+      "status": "pedagogical_fiction",
+      "label": "CAS FICTIF",
+      "source": "Canon LEVOIS Contenu & expérience V1",
+      "evidenceRefs": [],
+      "alt": "Cas fictif montrant une même chambre utilisée pour dormir et télétravailler.",
+      "canImplyPropertyFact": false
+    },
+    {
+      "assetId": "SURFACE_DEFINITION",
+      "kind": "data",
+      "status": "real_documented",
+      "label": "INSEE — Surface du logement",
+      "source": "V2-DEF-0029",
+      "evidenceRefs": [
+        "V2-DEF-0029"
+      ],
+      "alt": "Repère documentaire rappelant que la surface est une mesure de quantité et non un test d’usage.",
+      "canImplyPropertyFact": false
+    }
+  ],
+  "slides": [
+    {
+      "slideNumber": 1,
+      "familyId": "espace_usage",
+      "layout": "HERO_PHOTO",
+      "headline": "DEUX CHAMBRES.",
+      "body": "Où travaillez-vous quand les deux sont occupées ?",
+      "essentialQualifier": "SCHÉMA D’USAGE — PAS UN BIEN RÉEL",
+      "assetIds": [
+        "PLAN_USAGE_GENERIC"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 2,
+      "familyId": "espace_usage",
+      "layout": "EDITORIAL_SPLIT",
+      "headline": "SUR LE PAPIER, TOUT Y EST.",
+      "body": "Deux chambres. Une surface qui paraît suffisante. Un bureau prévu dans la seconde.",
+      "essentialQualifier": "SCHÉMA D’USAGE",
+      "assetIds": [
+        "PLAN_USAGE_GENERIC"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 3,
+      "familyId": "espace_usage",
+      "layout": "CASE_DUAL",
+      "headline": "9 H. LA CHAMBRE EST OCCUPÉE.",
+      "body": "Votre proche dort encore. Vous avez une réunion confidentielle. Le bureau est dans sa chambre.",
+      "sourceLabel": "CAS FICTIF",
+      "essentialQualifier": "CAS FICTIF",
+      "assetIds": [
+        "PLAN_CASE_GUEST_WORK"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 4,
+      "familyId": "espace_usage",
+      "layout": "HERO_NUMBER",
+      "headline": "LE TOTAL NE RÉPOND PAS À CETTE QUESTION.",
+      "body": "La surface décrit une quantité. Elle ne vous dit pas, à elle seule, si deux usages nécessaires peuvent fonctionner ensemble.",
+      "sourceLabel": "INSEE · V2-DEF-0029",
+      "assetIds": [
+        "SURFACE_DEFINITION",
+        "PLAN_USAGE_GENERIC"
+      ],
+      "evidenceRefs": [
+        "V2-DEF-0029"
+      ]
+    },
+    {
+      "slideNumber": 5,
+      "familyId": "espace_usage",
+      "layout": "QUESTION_SHIFT",
+      "headline": "CHANGEZ DE QUESTION.",
+      "body": "Au lieu de « est-ce assez grand ? », demandez : « quels usages doivent fonctionner en même temps ? »",
+      "assetIds": [
+        "PLAN_USAGE_GENERIC"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 6,
+      "familyId": "espace_usage",
+      "layout": "METHOD_STEPS",
+      "headline": "LISTEZ. PLACEZ. VÉRIFIEZ.",
+      "body": "Deux activités simultanées. Leur place sur le plan. Puis les conditions qui permettent à chacune de fonctionner.",
+      "assetIds": [
+        "PLAN_USAGE_GENERIC"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 7,
+      "familyId": "espace_usage",
+      "layout": "EDITORIAL_SPLIT",
+      "headline": "LE LOGEMENT PEUT TRÈS BIEN CONVENIR.",
+      "body": "Le test ne cherche pas un défaut. Il vérifie une possibilité avant d’en faire une certitude.",
+      "assetIds": [
+        "PLAN_USAGE_GENERIC"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 8,
+      "familyId": "espace_usage",
+      "layout": "DATA_FIELD",
+      "headline": "TESTEZ LE PROCHAIN PLAN.",
+      "body": "Choisissez deux usages qui doivent coexister. Placez-les. Vérifiez accès, calme, intimité et adaptation possible.",
+      "assetIds": [
+        "PLAN_USAGE_GENERIC"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "slideNumber": 9,
+      "familyId": "espace_usage",
+      "layout": "FINAL_BRIDGE",
+      "headline": "ET DANS VOTRE RECHERCHE ?",
+      "body": "Si plusieurs critères se gênent entre eux, mettez votre recherche au clair avant de comparer les annonces.",
+      "essentialQualifier": "CTA À ACTIVER UNIQUEMENT APRÈS RECETTE DE LA DESTINATION",
+      "assetIds": [],
+      "evidenceRefs": []
+    }
+  ]
+}

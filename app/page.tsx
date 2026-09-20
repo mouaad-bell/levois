@@ -132,11 +132,11 @@ export default function HomePage() {
       </section>
 
       <section className="team-section section">
-        <div className="container"><div className="section-head inverse"><div><p className="eyebrow">Qui accompagne ?</p><h2>Un interlocuteur humain, une méthode structurée, une continuité pédagogique.</h2></div><p>Chaque rôle est clair. LEVOIS explique. Léa transmet. Mouaad analyse et accompagne. SAFTI fournit le cadre professionnel.</p></div>
+        <div className="container"><div className="section-head inverse"><div><p className="eyebrow">Qui accompagne ?</p><h2>Un interlocuteur humain, une méthode structurée, un cadre professionnel.</h2></div><p>Chaque rôle est clair. Mouaad écoute, analyse et accompagne. LEVOIS rend le raisonnement visible. SAFTI fournit le cadre professionnel de l’activité immobilière.</p></div>
           <div className="team-grid">
             <article className="team-card photo"><Image src="/images/mouaad.webp" alt="Mouaad Boullourou" width={800} height={800}/><div><small>Mouaad</small><h3>La relation humaine</h3><p>Il écoute, analyse votre situation et engage sa responsabilité professionnelle.</p></div></article>
             <article className="team-card levois"><small>LEVOIS</small><h3>La structure</h3><p>La méthode, les diagnostics, les contenus et les outils qui rendent les décisions plus lisibles.</p><div className="system-motif"></div></article>
-            <article className="team-card photo lea"><Image src="/images/lea.webp" alt="Léa, assistante virtuelle de LEVOIS" width={1104} height={1472}/><div><small>Léa · assistante virtuelle</small><h3>La continuité pédagogique</h3><p>Elle explique, reformule et vous oriente vers la bonne ressource.</p></div></article>
+            <article className="team-card safti"><small>SAFTI</small><h3>Le cadre professionnel</h3><p>Le réseau dans lequel Mouaad exerce son activité de conseiller immobilier indépendant.</p><div className="network-motif" aria-hidden="true"><span/><span/><span/><span/></div></article>
           </div>
         </div>
       </section>
