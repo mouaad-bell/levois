@@ -25,6 +25,8 @@ jobs:
         run: npm ci
       - name: Typecheck
         run: npm run typecheck
+      - name: Route authority validation
+        run: npm run validate:routes
       - name: Editorial canon validation
         run: npm run validate:editorial
       - name: Render evidence validation

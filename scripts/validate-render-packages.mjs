@@ -9,6 +9,17 @@ const files = fs
   .sort();
 
 let failures = 0;
+const allowedKinds = new Set([
+  'photo',
+  'map',
+  'plan',
+  'timeline',
+  'document',
+  'data',
+  'object',
+  'texture',
+  'none',
+]);
 
 function fail(file, message) {
   failures += 1;
@@ -40,6 +51,15 @@ for (const file of files) {
       asset,
     ]),
   );
+
+  for (const asset of assets.values()) {
+    if (!allowedKinds.has(asset.kind)) {
+      fail(
+        file,
+        'asset ' + asset.assetId + ' : kind invalide ' + asset.kind,
+      );
+    }
+  }
 
   for (const slide of data.slides || []) {
     const used = (slide.assetIds || [])
