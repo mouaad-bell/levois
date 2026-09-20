@@ -14,6 +14,7 @@ function kindFromRequirement(
   const value = requirement.toLowerCase();
 
   if (value.includes('photo') || value.includes('photographie')) return 'photo';
+  if (value.includes('chronologie') || value.includes('horaire') || value.includes('timeline')) return 'timeline';
   if (value.includes('carte') || value.includes('territoire') || value.includes('trajet')) return 'map';
   if (value.includes('plan') || value.includes('pièce') || value.includes('piece')) return 'plan';
   if (value.includes('document') || value.includes('dossier') || value.includes('devis')) return 'document';

@@ -15,28 +15,128 @@ function familyAccent(familyId: string) {
   return family?.accent ?? '#00D9F5';
 }
 
-function AssetGlyph({
+function visibleNumbers(slide: CarouselRenderSlide) {
+  const matches = (slide.headline + ' ' + slide.body).match(
+    /\d[\d\s]*(?:€|min(?:ute)?s?|h)?/gi,
+  );
+
+  return [...new Set((matches ?? []).map((value) => value.trim()))].slice(0, 3);
+}
+
+function statusLabel(asset: CarouselVisualAsset) {
+  if (asset.status === 'real_documented') return 'SOURCE';
+  if (asset.status === 'pedagogical_fiction') return 'CAS FICTIF';
+  if (asset.status === 'generated_explanatory') return 'EXPLICATION';
+  return 'VISUEL';
+}
+
+function PlanVisual() {
+  return (
+    <div className={styles.planVisual} aria-hidden="true">
+      <div className={styles.planRoomA}><span>VIVRE</span></div>
+      <div className={styles.planRoomB}><span>DORMIR</span></div>
+      <div className={styles.planRoomC}><span>TRAVAILLER</span></div>
+      <div className={styles.planConflict}><span>2 usages</span></div>
+    </div>
+  );
+}
+
+function MapVisual() {
+  return (
+    <div className={styles.mapVisual} aria-hidden="true">
+      <span className={styles.mapRingA} />
+      <span className={styles.mapRingB} />
+      <span className={styles.mapRoadA} />
+      <span className={styles.mapRoadB} />
+      <span className={styles.mapOrigin}>A</span>
+      <span className={styles.mapDestination}>B</span>
+    </div>
+  );
+}
+
+function TimelineVisual({ numbers }: { numbers: string[] }) {
+  return (
+    <div className={styles.timelineVisual} aria-hidden="true">
+      <div className={styles.timelineTrack}>
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className={styles.timelineNumbers}>
+        {(numbers.length ? numbers : ['DÉPART', 'MARGE', 'ARRIVÉE']).map(
+          (value) => <strong key={value}>{value}</strong>,
+        )}
+      </div>
+    </div>
+  );
+}
+
+function DataVisual({
+  numbers,
   asset,
 }: {
+  numbers: string[];
   asset: CarouselVisualAsset;
 }) {
   return (
+    <div className={styles.dataVisual} aria-hidden="true">
+      <div className={styles.dataNumbers}>
+        {(numbers.length ? numbers : ['FAIT', 'PÉRIMÈTRE']).map(
+          (value, index) => (
+            <strong key={value} data-index={index}>{value}</strong>
+          ),
+        )}
+      </div>
+      <span className={styles.dataCut} />
+      <small>{asset.label || asset.kind}</small>
+    </div>
+  );
+}
+
+function AssetVisual({
+  asset,
+  slide,
+}: {
+  asset: CarouselVisualAsset;
+  slide: CarouselRenderSlide;
+}) {
+  const numbers = visibleNumbers(slide);
+
+  if (asset.kind === 'plan') return <PlanVisual />;
+  if (asset.kind === 'map') return <MapVisual />;
+  if (asset.kind === 'timeline') return <TimelineVisual numbers={numbers} />;
+  if (asset.kind === 'data' || asset.kind === 'document') {
+    return <DataVisual numbers={numbers} asset={asset} />;
+  }
+
+  return (
+    <div className={styles.objectVisual} aria-hidden="true">
+      <span />
+      <span />
+      <span />
+    </div>
+  );
+}
+
+function AssetCard({
+  asset,
+  slide,
+}: {
+  asset: CarouselVisualAsset;
+  slide: CarouselRenderSlide;
+}) {
+  return (
     <div
-      className={styles.assetGlyph}
+      className={styles.assetCard}
       data-kind={asset.kind}
       data-status={asset.status}
       title={asset.alt}
     >
-      <span>{asset.label || asset.kind}</span>
-      <small>
-        {asset.status === 'real_documented'
-          ? 'SOURCE'
-          : asset.status === 'pedagogical_fiction'
-            ? 'CAS FICTIF'
-            : asset.status === 'generated_explanatory'
-              ? 'EXPLICATION'
-              : 'VISUEL'}
-      </small>
+      <AssetVisual asset={asset} slide={slide} />
+      <div className={styles.assetCaption}>
+        <span>{asset.label || asset.kind}</span>
+        <small>{statusLabel(asset)}</small>
+      </div>
     </div>
   );
 }
@@ -71,7 +171,7 @@ function VisualStage({
       data-layout={slide.layout}
     >
       {selected.map((asset) => (
-        <AssetGlyph key={asset.assetId} asset={asset} />
+        <AssetCard key={asset.assetId} asset={asset} slide={slide} />
       ))}
     </div>
   );
@@ -89,6 +189,8 @@ export function CarouselFrame({
   return (
     <article
       className={styles.frame}
+      data-family={slide.familyId}
+      data-layout={slide.layout}
       style={
         {
           '--accent': accent,
@@ -98,7 +200,7 @@ export function CarouselFrame({
       <div className={styles.texture} />
 
       <header className={styles.brandRow}>
-        <span>LEVOIS</span>
+        <span>LEVOIS / DÉCIDER</span>
         <span>
           {String(slide.slideNumber).padStart(2, '0')}
         </span>

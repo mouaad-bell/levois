@@ -104,6 +104,48 @@
   gap: 18px;
 }
 
+.viewActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.viewSwitch {
+  display: flex;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.viewSwitch button {
+  min-width: 64px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(244, 239, 230, 0.62);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.viewSwitch button[data-active="true"] {
+  background: #f4efe6;
+  color: #07121a;
+}
+
+.answerLink {
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(244, 239, 230, 0.78);
+  font-size: 11px;
+  font-weight: 750;
+  text-decoration: none;
+}
+
 .stageHeader p {
   margin: 0 0 4px;
   color: rgba(244, 239, 230, 0.58);
@@ -117,6 +159,10 @@
 .pager {
   display: flex;
   gap: 8px;
+}
+
+.pager[data-hidden="true"] {
+  display: none;
 }
 
 .pager button,
@@ -144,6 +190,36 @@
   display: grid;
   place-items: center;
   padding: 12px 0;
+}
+
+.seriesGrid {
+  align-self: start;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 20px;
+  padding: 14px 0 28px;
+}
+
+.seriesItem {
+  appearance: none;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+  transition: transform 160ms ease;
+}
+
+.seriesItem:hover,
+.seriesItem:focus-visible {
+  transform: translateY(-4px);
+  outline: none;
+}
+
+.seriesItem > article {
+  width: 100%;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.28);
 }
 
 .strip {
@@ -191,5 +267,25 @@
 
   .stage {
     padding: 20px 14px 28px;
+  }
+
+  .stageHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .viewActions {
+    justify-content: flex-start;
+  }
+
+  .seriesGrid {
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  .seriesGrid {
+    grid-template-columns: 1fr;
   }
 }

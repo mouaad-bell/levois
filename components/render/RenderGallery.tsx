@@ -9,6 +9,7 @@ export type RenderGalleryItem = {
   id: string;
   label: string;
   subtitle: string;
+  answerHref: string;
   packageData: CarouselRenderPackage;
 };
 
@@ -19,6 +20,7 @@ export function RenderGallery({
 }) {
   const [activeId, setActiveId] = useState(items[0]?.id ?? '');
   const [slideIndex, setSlideIndex] = useState(0);
+  const [view, setView] = useState<'slide' | 'series'>('slide');
 
   const active = useMemo(
     () => items.find((item) => item.id === activeId) ?? items[0],
@@ -31,6 +33,7 @@ export function RenderGallery({
   function selectPilot(id: string) {
     setActiveId(id);
     setSlideIndex(0);
+    setView('slide');
   }
 
   if (!active || !current) {
@@ -83,36 +86,82 @@ export function RenderGallery({
             </strong>
           </div>
 
-          <div className={styles.pager}>
-            <button
-              type="button"
-              onClick={() =>
-                setSlideIndex((index) => Math.max(index - 1, 0))
-              }
-              disabled={slideIndex === 0}
+          <div className={styles.viewActions}>
+            <div className={styles.viewSwitch} aria-label="Mode d’aperçu">
+              <button
+                type="button"
+                data-active={view === 'slide' ? 'true' : 'false'}
+                onClick={() => setView('slide')}
+              >
+                Slide
+              </button>
+              <button
+                type="button"
+                data-active={view === 'series' ? 'true' : 'false'}
+                onClick={() => setView('series')}
+              >
+                Série
+              </button>
+            </div>
+            <a className={styles.answerLink} href={active.answerHref}>
+              Lire l’article lié ↗
+            </a>
+            <div
+              className={styles.pager}
+              data-hidden={view === 'series' ? 'true' : 'false'}
             >
-              ←
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                setSlideIndex((index) =>
-                  Math.min(index + 1, slides.length - 1),
-                )
-              }
-              disabled={slideIndex >= slides.length - 1}
-            >
-              →
-            </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setSlideIndex((index) => Math.max(index - 1, 0))
+                }
+                disabled={slideIndex === 0}
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setSlideIndex((index) =>
+                    Math.min(index + 1, slides.length - 1),
+                  )
+                }
+                disabled={slideIndex >= slides.length - 1}
+              >
+                →
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className={styles.frameWrap}>
-          <CarouselFrame
-            slide={current}
-            packageData={active.packageData}
-          />
-        </div>
+        {view === 'slide' ? (
+          <div className={styles.frameWrap}>
+            <CarouselFrame
+              slide={current}
+              packageData={active.packageData}
+            />
+          </div>
+        ) : (
+          <div className={styles.seriesGrid}>
+            {slides.map((slide) => (
+              <button
+                key={slide.slideNumber}
+                type="button"
+                className={styles.seriesItem}
+                onClick={() => {
+                  setSlideIndex(slide.slideNumber - 1);
+                  setView('slide');
+                }}
+                aria-label={`Ouvrir la slide ${slide.slideNumber}`}
+              >
+                <CarouselFrame
+                  slide={slide}
+                  packageData={active.packageData}
+                />
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className={styles.strip} aria-label="Slides">
           {slides.map((slide, index) => (
@@ -120,7 +169,10 @@ export function RenderGallery({
               key={slide.slideNumber}
               type="button"
               data-active={index === slideIndex ? 'true' : 'false'}
-              onClick={() => setSlideIndex(index)}
+              onClick={() => {
+                setSlideIndex(index);
+                setView('slide');
+              }}
             >
               {String(slide.slideNumber).padStart(2, '0')}
             </button>

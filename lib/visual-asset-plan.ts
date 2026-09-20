@@ -27,7 +27,11 @@ function modeFor(
 ): AssetProductionMode {
   const text = requirement.toLowerCase();
 
-  if (asset.kind === 'map' || asset.kind === 'data') {
+  if (
+    asset.kind === 'map' ||
+    asset.kind === 'data' ||
+    asset.kind === 'timeline'
+  ) {
     return 'programmatic';
   }
 

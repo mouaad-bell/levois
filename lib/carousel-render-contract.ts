@@ -11,6 +11,7 @@ export type VisualAssetKind =
   | 'photo'
   | 'map'
   | 'plan'
+  | 'timeline'
   | 'document'
   | 'data'
   | 'object'
