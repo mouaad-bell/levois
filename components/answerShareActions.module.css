@@ -1,0 +1,69 @@
+.share {
+  margin-top: 72px;
+  padding: 30px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 30px;
+  border: 1px solid rgba(19, 35, 45, 0.14);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.share h2 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.share p:not(.eyebrow) {
+  margin: 12px 0 0;
+  color: rgba(19, 35, 45, 0.7);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: #a84d31;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.actions {
+  align-content: start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.actions a,
+.actions button {
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid rgba(19, 35, 45, 0.16);
+  border-radius: 999px;
+  background: transparent;
+  color: #13232d;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 760;
+  text-decoration: none;
+}
+
+.actions a:hover,
+.actions button:hover {
+  background: #13232d;
+  color: white;
+}
+
+@media (max-width: 720px) {
+  .share {
+    grid-template-columns: 1fr;
+    padding: 24px 20px;
+  }
+}
+

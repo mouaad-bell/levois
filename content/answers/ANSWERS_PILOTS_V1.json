@@ -29,7 +29,10 @@
         "/ressources/"
       ],
       "freshness": "STATIC_CONCEPT_WITH_PERIODIC_REVIEW",
-      "lastEvidenceReview": "2026-09-19"
+      "lastEvidenceReview": "2026-09-19",
+      "publicationStatus": "DRAFT",
+      "datePublished": "",
+      "dateModified": "2026-09-20"
     },
     {
       "answerId": "LEV-ANS-002",
@@ -54,7 +57,10 @@
         "/ressources/"
       ],
       "freshness": "HISTORICAL_CONTEXT_2023",
-      "lastEvidenceReview": "2026-09-19"
+      "lastEvidenceReview": "2026-09-19",
+      "publicationStatus": "DRAFT",
+      "datePublished": "",
+      "dateModified": "2026-09-20"
     },
     {
       "answerId": "LEV-ANS-003",
@@ -83,7 +89,10 @@
         "/votre-rue/"
       ],
       "freshness": "METHODOLOGY_WITH_PERIODIC_REVIEW",
-      "lastEvidenceReview": "2026-09-19"
+      "lastEvidenceReview": "2026-09-19",
+      "publicationStatus": "DRAFT",
+      "datePublished": "",
+      "dateModified": "2026-09-20"
     }
   ]
 }

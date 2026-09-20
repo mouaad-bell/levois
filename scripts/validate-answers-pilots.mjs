@@ -122,6 +122,27 @@ for (const page of data.pages || []) {
     );
   }
 
+  if (!['DRAFT', 'PUBLISHED'].includes(page.publicationStatus)) {
+    fail(
+      page.answerId +
+        ' : publicationStatus doit être DRAFT ou PUBLISHED',
+    );
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(page.dateModified || '')) {
+    fail(page.answerId + ' : dateModified invalide');
+  }
+
+  if (
+    page.publicationStatus === 'PUBLISHED' &&
+    !/^\d{4}-\d{2}-\d{2}$/.test(page.datePublished || '')
+  ) {
+    fail(
+      page.answerId +
+        ' : datePublished requise pour une page publiée',
+    );
+  }
+
   console.log(
     'OK   —',
     page.answerId,

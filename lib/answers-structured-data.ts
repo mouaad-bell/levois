@@ -1,10 +1,14 @@
-import type { AnswerPageBrief } from './answers-engine';
-
 export type AnswerStructuredDataOptions = {
   siteUrl: string;
   route: string;
   datePublished?: string;
   dateModified?: string;
+  citationUrls?: string[];
+};
+
+export type AnswerStructuredDataBrief = {
+  title: string;
+  metaDescription: string;
 };
 
 function absoluteUrl(base: string, path: string) {
@@ -14,7 +18,7 @@ function absoluteUrl(base: string, path: string) {
 }
 
 export function buildAnswerStructuredData(
-  brief: AnswerPageBrief,
+  brief: AnswerStructuredDataBrief,
   options: AnswerStructuredDataOptions,
 ) {
   const pageUrl = absoluteUrl(options.siteUrl, options.route);
@@ -43,6 +47,9 @@ export function buildAnswerStructuredData(
   }
   if (options.dateModified) {
     article.dateModified = options.dateModified;
+  }
+  if (options.citationUrls?.length) {
+    article.citation = options.citationUrls;
   }
 
   const breadcrumb = {

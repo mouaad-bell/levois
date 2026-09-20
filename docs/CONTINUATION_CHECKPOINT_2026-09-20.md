@@ -107,6 +107,24 @@ Par conséquent, cette reprise ne certifie pas encore :
 6. confronter le renderer aux vrais PNG 1080 × 1350 ;
 7. seulement ensuite décider quels pilotes deviennent publics et quelles routes Answers rejoignent `/ressources/`.
 
+## Ajout — articles partageables et citables
+
+Les trois pilotes Answers disposent maintenant d'une route canonique
+`/ressources/<slug>/` préparée pour le partage et les backlinks :
+
+- métadonnées Open Graph et Twitter ;
+- image sociale déterministe 1200 × 630 par article ;
+- partage natif, LinkedIn, Facebook et WhatsApp ;
+- copie de l'URL, de la citation et d'un lien HTML ;
+- auteur, date de mise à jour, sources officielles, périmètre et limite visibles ;
+- données structurées `Article`, `BreadcrumbList` et `Person`, avec `citation` ;
+- canonical stable et sitemap généré depuis le statut éditorial.
+
+Garde-fou : les trois pages restent `DRAFT`, donc `noindex` et absentes du
+sitemap et de l'index public Ressources. Le passage explicite à `PUBLISHED`
+avec une `datePublished` valide active l'indexation et leur apparition dans la
+bibliothèque. Aucun déploiement ni merge n'a été effectué.
+
 ## Interdits maintenus
 
 - aucun merge automatique dans `main` ;
